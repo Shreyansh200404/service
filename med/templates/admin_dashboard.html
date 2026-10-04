@@ -1,48 +1,1919 @@
 {% extends 'admin_base.html' %}
 
 {% block content %}
-<div class="container-fluid px-0">
-    <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-        <div>
-            <span class="text-uppercase small fw-bold text-primary">Administration</span>
-            <h1 class="h2 fw-bold mt-1 mb-1">Service overview</h1>
-            <p class="text-muted mb-0">Manage public-facing categories and application form links.</p>
+
+<style>
+
+/* =====================================================
+   SEVA ONE - SERVICE OVERVIEW
+   Homepage Theme:
+   Navy + Coral + Cream + Light Blue
+===================================================== */
+
+:root {
+
+    --seva-navy: #073D70;
+    --seva-navy-dark: #123F78;
+    --seva-navy-light: #1D5A94;
+
+    --seva-coral: #F36B4F;
+    --seva-coral-dark: #E85A3F;
+    --seva-coral-light: #FF8A70;
+
+    --seva-cream: #FFF4DF;
+    --seva-cream-dark: #FFE8C4;
+
+    --seva-blue: #EAF5FC;
+    --seva-blue-dark: #D7EBF8;
+
+    --seva-green: #249B63;
+    --seva-green-light: #EAF7F0;
+
+    --seva-purple: #8750D9;
+    --seva-purple-light: #F1EAFE;
+
+    --seva-orange: #F28A35;
+    --seva-orange-light: #FFF0E2;
+
+    --seva-text: #17324D;
+    --seva-muted: #64748B;
+
+    --seva-border: #DCE5ED;
+}
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.overview-page {
+
+    padding:
+        8px 0 40px;
+
+    min-height:
+        calc(100vh - 150px);
+
+    background:
+
+        radial-gradient(
+            circle at 3% 5%,
+            rgba(234,245,252,.95),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 97% 10%,
+            rgba(255,244,223,.9),
+            transparent 30%
+        );
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.overview-header {
+
+    position:
+        relative;
+
+    padding:
+        28px 30px;
+
+    margin-bottom:
+        25px;
+
+    border-radius:
+        20px;
+
+    color:
+        #ffffff;
+
+    overflow:
+        hidden;
+
+    background:
+
+        linear-gradient(
+            120deg,
+            var(--seva-navy),
+            #15578D
+        );
+
+    box-shadow:
+        0 12px 30px
+        rgba(7,61,112,.20);
+}
+
+
+/* Coral accent */
+
+.overview-header::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    left:
+        0;
+
+    top:
+        0;
+
+    width:
+        7px;
+
+    height:
+        100%;
+
+    background:
+        var(--seva-coral);
+}
+
+
+/* Decorative circle */
+
+.overview-header::after {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        220px;
+
+    height:
+        220px;
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(255,255,255,.07);
+
+    right:
+        -50px;
+
+    top:
+        -130px;
+}
+
+
+.overview-header-content {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+}
+
+
+/* =====================================================
+   HEADER LABEL
+===================================================== */
+
+.overview-label {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    font-size:
+        11px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        1px;
+
+    text-transform:
+        uppercase;
+
+    color:
+        rgba(255,255,255,.88);
+
+    margin-bottom:
+        6px;
+}
+
+
+.overview-label i {
+
+    color:
+        var(--seva-coral);
+}
+
+
+/* =====================================================
+   HEADER TITLE
+===================================================== */
+
+.overview-title {
+
+    font-size:
+        29px;
+
+    font-weight:
+        800;
+
+    margin:
+        0 0 6px;
+
+    letter-spacing:
+        .2px;
+}
+
+
+.overview-description {
+
+    color:
+        rgba(255,255,255,.86);
+
+    margin:
+        0;
+
+    font-size:
+        14px;
+}
+
+
+/* =====================================================
+   HEADER BUTTONS
+===================================================== */
+
+.overview-actions {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        flex;
+
+    gap:
+        10px;
+
+    flex-wrap:
+        wrap;
+}
+
+
+/* Preview */
+
+.preview-btn {
+
+    border:
+        1px solid rgba(255,255,255,.4);
+
+    background:
+        rgba(255,255,255,.12);
+
+    color:
+        #ffffff;
+
+    border-radius:
+        10px;
+
+    padding:
+        10px 16px;
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
+
+    text-decoration:
+        none;
+
+    backdrop-filter:
+        blur(8px);
+
+    transition:
+        .25s ease;
+}
+
+
+.preview-btn:hover {
+
+    background:
+        rgba(255,255,255,.23);
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* Manage */
+
+.manage-btn {
+
+    border:
+        none;
+
+    background:
+        var(--seva-coral);
+
+    color:
+        #ffffff;
+
+    border-radius:
+        10px;
+
+    padding:
+        10px 17px;
+
+    font-size:
+        13px;
+
+    font-weight:
+        800;
+
+    text-decoration:
+        none;
+
+    box-shadow:
+        0 5px 15px
+        rgba(243,107,79,.25);
+
+    transition:
+        .25s ease;
+}
+
+
+.manage-btn:hover {
+
+    background:
+        var(--seva-coral-dark);
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* =====================================================
+   STATISTIC CARDS
+===================================================== */
+
+.stat-card {
+
+    position:
+        relative;
+
+    border:
+        none;
+
+    border-radius:
+        18px;
+
+    overflow:
+        hidden;
+
+    min-height:
+        135px;
+
+    box-shadow:
+        0 8px 24px
+        rgba(7,61,112,.10);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+
+.stat-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 15px 32px
+        rgba(7,61,112,.16);
+}
+
+
+.stat-card::after {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        120px;
+
+    height:
+        120px;
+
+    border-radius:
+        50%;
+
+    right:
+        -35px;
+
+    top:
+        -45px;
+
+    background:
+        rgba(255,255,255,.12);
+}
+
+
+.stat-card-body {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        15px;
+
+    height:
+        100%;
+
+    padding:
+        23px;
+}
+
+
+/* =====================================================
+   STAT ICON
+===================================================== */
+
+.stat-icon {
+
+    width:
+        55px;
+
+    height:
+        55px;
+
+    min-width:
+        55px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        15px;
+
+    background:
+        rgba(255,255,255,.20);
+
+    color:
+        #ffffff;
+
+    font-size:
+        21px;
+
+    backdrop-filter:
+        blur(5px);
+
+    box-shadow:
+        0 5px 12px
+        rgba(0,0,0,.10);
+}
+
+
+.stat-label {
+
+    color:
+        rgba(255,255,255,.84);
+
+    font-size:
+        12px;
+
+    font-weight:
+        600;
+
+    margin-bottom:
+        3px;
+}
+
+
+.stat-number {
+
+    color:
+        #ffffff;
+
+    font-size:
+        31px;
+
+    line-height:
+        1;
+
+    font-weight:
+        800;
+
+    margin-bottom:
+        4px;
+}
+
+
+.stat-extra {
+
+    color:
+        rgba(255,255,255,.82);
+
+    font-size:
+        11px;
+}
+
+
+/* =====================================================
+   INDIVIDUAL STAT COLORS
+===================================================== */
+
+/* Main categories */
+
+.stat-purple {
+
+    background:
+        linear-gradient(
+            135deg,
+            #0E5A91,
+            #073D70
+        );
+}
+
+
+/* All services */
+
+.stat-blue {
+
+    background:
+        linear-gradient(
+            135deg,
+            #1C79B5,
+            #075985
+        );
+}
+
+
+/* Active services */
+
+.stat-green {
+
+    background:
+        linear-gradient(
+            135deg,
+            #249B63,
+            #087443
+        );
+}
+
+
+/* Applications */
+
+.stat-orange {
+
+    background:
+        linear-gradient(
+            135deg,
+            #F36B4F,
+            #E85A3F
+        );
+}
+
+
+/* =====================================================
+   APPLICATION LINK
+===================================================== */
+
+.application-link {
+
+    display:
+        block;
+
+    color:
+        inherit;
+
+    text-decoration:
+        none;
+}
+
+
+.application-link:hover {
+
+    color:
+        inherit;
+}
+
+
+/* =====================================================
+   MAIN TABLE CARD
+===================================================== */
+
+.services-card {
+
+    border:
+        1px solid var(--seva-border);
+
+    border-radius:
+        20px;
+
+    overflow:
+        hidden;
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0 10px 28px
+        rgba(7,61,112,.08);
+}
+
+
+/* =====================================================
+   TABLE HEADER
+===================================================== */
+
+.services-card-header {
+
+    padding:
+        20px 23px;
+
+    border:
+        none;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #F2F8FC
+        );
+
+    border-bottom:
+        1px solid #E2EAF0;
+}
+
+
+/* =====================================================
+   SECTION ICON
+===================================================== */
+
+.section-icon {
+
+    width:
+        40px;
+
+    height:
+        40px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        11px;
+
+    background:
+        var(--seva-coral);
+
+    color:
+        #ffffff;
+
+    font-size:
+        16px;
+
+    box-shadow:
+        0 5px 12px
+        rgba(243,107,79,.18);
+}
+
+
+.section-title {
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        17px;
+
+    font-weight:
+        800;
+
+    margin:
+        0;
+}
+
+
+.section-description {
+
+    color:
+        var(--seva-muted);
+
+    font-size:
+        12px;
+
+    margin:
+        3px 0 0;
+}
+
+
+/* =====================================================
+   ADD CATEGORY
+===================================================== */
+
+.add-category-btn {
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    padding:
+        9px 14px;
+
+    background:
+        var(--seva-coral);
+
+    color:
+        #ffffff;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+
+    text-decoration:
+        none;
+
+    box-shadow:
+        0 5px 13px
+        rgba(243,107,79,.22);
+
+    transition:
+        .25s ease;
+}
+
+
+.add-category-btn:hover {
+
+    background:
+        var(--seva-coral-dark);
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 18px
+        rgba(243,107,79,.28);
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.services-table {
+
+    margin:
+        0;
+
+    border-collapse:
+        separate;
+
+    border-spacing:
+        0;
+}
+
+
+/* Table heading */
+
+.services-table thead {
+
+    background:
+        var(--seva-navy);
+}
+
+
+.services-table thead th {
+
+    color:
+        #ffffff;
+
+    border:
+        none;
+
+    padding:
+        14px 15px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        .4px;
+
+    white-space:
+        nowrap;
+}
+
+
+.services-table tbody td {
+
+    padding:
+        16px 15px;
+
+    border-bottom:
+        1px solid #EDF1F4;
+
+    color:
+        #334155;
+
+    font-size:
+        13px;
+
+    vertical-align:
+        middle;
+}
+
+
+.services-table tbody tr {
+
+    transition:
+        background .2s ease;
+}
+
+
+.services-table tbody tr:hover {
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #F5FAFD,
+            #FFF8EE
+        );
+}
+
+
+/* =====================================================
+   CATEGORY
+===================================================== */
+
+.category-name {
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        14px;
+
+    font-weight:
+        800;
+}
+
+
+.category-name i {
+
+    color:
+        var(--seva-coral) !important;
+}
+
+
+.category-description {
+
+    color:
+        #64748B;
+
+    font-size:
+        12px;
+
+    margin-top:
+        3px;
+
+    line-height:
+        1.5;
+}
+
+
+/* =====================================================
+   SUB-SERVICE COUNT
+===================================================== */
+
+.service-count {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    min-width:
+        35px;
+
+    padding:
+        5px 9px;
+
+    border-radius:
+        8px;
+
+    background:
+        var(--seva-blue);
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+
+    border:
+        1px solid var(--seva-blue-dark);
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status-active {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        5px;
+
+    padding:
+        6px 10px;
+
+    border-radius:
+        50px;
+
+    background:
+        #DCFCE7;
+
+    color:
+        #15803D;
+
+    font-size:
+        11px;
+
+    font-weight:
+        800;
+}
+
+
+.status-hidden {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        5px;
+
+    padding:
+        6px 10px;
+
+    border-radius:
+        50px;
+
+    background:
+        #F1F5F9;
+
+    color:
+        #64748B;
+
+    font-size:
+        11px;
+
+    font-weight:
+        800;
+}
+
+
+/* =====================================================
+   MANAGE BUTTON
+===================================================== */
+
+.manage-small-btn {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        5px;
+
+    padding:
+        7px 11px;
+
+    border:
+        1px solid #F5B8A9;
+
+    border-radius:
+        8px;
+
+    background:
+        #FFF2EE;
+
+    color:
+        var(--seva-coral-dark);
+
+    font-size:
+        11px;
+
+    font-weight:
+        800;
+
+    text-decoration:
+        none;
+
+    transition:
+        .2s ease;
+}
+
+
+.manage-small-btn:hover {
+
+    background:
+        var(--seva-coral);
+
+    border-color:
+        var(--seva-coral);
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+
+.empty-state {
+
+    padding:
+        55px 20px;
+
+    text-align:
+        center;
+}
+
+
+.empty-icon {
+
+    width:
+        65px;
+
+    height:
+        65px;
+
+    margin:
+        0 auto 15px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        18px;
+
+    background:
+        var(--seva-blue);
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        25px;
+
+    border:
+        1px solid var(--seva-blue-dark);
+}
+
+
+.empty-title {
+
+    color:
+        var(--seva-text);
+
+    font-size:
+        16px;
+
+    font-weight:
+        700;
+
+    margin-bottom:
+        14px;
+}
+
+
+.create-first-btn {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    border:
+        none;
+
+    border-radius:
+        9px;
+
+    padding:
+        9px 15px;
+
+    background:
+        var(--seva-coral);
+
+    color:
+        #ffffff;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+
+    text-decoration:
+        none;
+
+    box-shadow:
+        0 5px 13px
+        rgba(243,107,79,.20);
+
+    transition:
+        .25s ease;
+}
+
+
+.create-first-btn:hover {
+
+    background:
+        var(--seva-coral-dark);
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 768px) {
+
+    .overview-page {
+
+        padding:
+            5px 0 30px;
+    }
+
+
+    .overview-header {
+
+        padding:
+            23px 20px;
+    }
+
+
+    .overview-title {
+
+        font-size:
+            23px;
+    }
+
+
+    .overview-description {
+
+        font-size:
+            13px;
+    }
+
+
+    .overview-actions {
+
+        margin-top:
+            15px;
+
+        width:
+            100%;
+    }
+
+
+    .overview-actions a {
+
+        flex:
+            1;
+
+        text-align:
+            center;
+    }
+
+
+    .services-card-header {
+
+        padding:
+            17px;
+    }
+
+
+    .services-table thead th,
+    .services-table tbody td {
+
+        padding:
+            12px 10px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .overview-header {
+
+        padding:
+            20px 17px;
+    }
+
+
+    .overview-actions {
+
+        flex-direction:
+            column;
+    }
+
+
+    .overview-actions a {
+
+        width:
+            100%;
+    }
+
+
+    .stat-number {
+
+        font-size:
+            27px;
+    }
+
+
+    .stat-card-body {
+
+        padding:
+            18px;
+    }
+
+
+    .section-title {
+
+        font-size:
+            15px;
+    }
+
+}
+
+</style>
+
+
+<!-- =====================================================
+     PAGE
+===================================================== -->
+
+<div class="overview-page">
+
+
+    <!-- =================================================
+         PAGE HEADER
+    ================================================= -->
+
+    <header
+        class="overview-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+
+        <div class="overview-header-content">
+
+
+            <div class="overview-label">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                Administration
+
+            </div>
+
+
+            <h1 class="overview-title">
+
+                Service Overview
+
+            </h1>
+
+
+            <p class="overview-description">
+
+                Manage public-facing categories and application
+                form links.
+
+            </p>
+
         </div>
-        <div class="d-flex flex-wrap gap-2">
-            <!-- <a class="btn btn-outline-primary" href="{% url 'service_catalog' %}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Preview portal</a> -->
-            <a class="btn btn-primary" href="{% url 'manage_services' %}"><i class="fa-solid fa-sliders me-1"></i> Manage services</a>
+
+
+        <div class="overview-actions">
+
+
+            <!-- Preview Portal -->
+
+            <!--
+            <a
+                class="preview-btn"
+                href="{% url 'service_catalog' %}"
+                target="_blank"
+                rel="noopener">
+
+                <i class="fa-solid fa-arrow-up-right-from-square me-1"></i>
+
+                Preview Portal
+
+            </a>
+            -->
+
+
+            <a
+                class="manage-btn"
+                href="{% url 'manage_services' %}">
+
+                <i class="fa-solid fa-sliders me-1"></i>
+
+                Manage Services
+
+            </a>
+
         </div>
+
     </header>
 
+
+    <!-- =================================================
+         STATISTICS
+    ================================================= -->
+
     <div class="row g-3 mb-4">
-        <div class="col-sm-6 col-xl-4"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3"><span class="rounded-3 p-3 bg-primary-subtle text-primary"><i class="fa-solid fa-layer-group fa-lg"></i></span><div><div class="text-muted small">Main categories</div><div class="fs-3 fw-bold">{{ main_service_count }}</div></div></div></div></div>
-        <div class="col-sm-6 col-xl-4"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3"><span class="rounded-3 p-3 bg-info-subtle text-info"><i class="fa-solid fa-list-check fa-lg"></i></span><div><div class="text-muted small">All sub-services</div><div class="fs-3 fw-bold">{{ service_count }}</div></div></div></div></div>
-        <div class="col-sm-6 col-xl-3"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3"><span class="rounded-3 p-3 bg-success-subtle text-success"><i class="fa-solid fa-circle-check fa-lg"></i></span><div><div class="text-muted small">Active services</div><div class="fs-3 fw-bold">{{ active_service_count }}</div></div></div></div></div>
-        <div class="col-sm-6 col-xl-3"><a class="text-decoration-none text-res  et" href="{% url 'manage_applications' %}"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3"><span class="rounded-3 p-3 bg-warning-subtle text-warning"><i class="fa-solid fa-clipboard-list fa-lg"></i></span><div><div class="text-muted small">Tracked applications</div><div class="fs-3 fw-bold">{{ application_count }}</div><div class="small text-muted">{{ unpaid_application_count }} unpaid</div></div></div></div></a></div>
+
+
+        <!-- MAIN CATEGORIES -->
+
+        <div class="col-sm-6 col-xl-3">
+
+            <div class="stat-card stat-purple h-100">
+
+                <div class="stat-card-body">
+
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="stat-label">
+
+                            Main Categories
+
+                        </div>
+
+
+                        <div class="stat-number">
+
+                            {{ main_service_count }}
+
+                        </div>
+
+
+                        <div class="stat-extra">
+
+                            Service categories
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ALL SERVICES -->
+
+        <div class="col-sm-6 col-xl-3">
+
+            <div class="stat-card stat-blue h-100">
+
+                <div class="stat-card-body">
+
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-list-check"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="stat-label">
+
+                            All Sub-Services
+
+                        </div>
+
+
+                        <div class="stat-number">
+
+                            {{ service_count }}
+
+                        </div>
+
+
+                        <div class="stat-extra">
+
+                            Available services
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTIVE SERVICES -->
+
+        <div class="col-sm-6 col-xl-3">
+
+            <div class="stat-card stat-green h-100">
+
+                <div class="stat-card-body">
+
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="stat-label">
+
+                            Active Services
+
+                        </div>
+
+
+                        <div class="stat-number">
+
+                            {{ active_service_count }}
+
+                        </div>
+
+
+                        <div class="stat-extra">
+
+                            Currently available
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- APPLICATIONS -->
+
+        <div class="col-sm-6 col-xl-3">
+
+            <a
+                class="application-link"
+                href="{% url 'manage_applications' %}">
+
+                <div class="stat-card stat-orange h-100">
+
+                    <div class="stat-card-body">
+
+
+                        <div class="stat-icon">
+
+                            <i class="fa-solid fa-clipboard-list"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="stat-label">
+
+                                Tracked Applications
+
+                            </div>
+
+
+                            <div class="stat-number">
+
+                                {{ application_count }}
+
+                            </div>
+
+
+                            <div class="stat-extra">
+
+                                {{ unpaid_application_count }} unpaid
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
     </div>
 
-    <section class="card">
-        <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
-            <div><h2 class="h5 fw-bold mb-1">Main service categories</h2><p class="small text-muted mb-0">Categories currently set up in the portal.</p></div>
-            <a class="btn btn-sm btn-outline-primary" href="{% url 'add_main_service' %}"><i class="fa-solid fa-plus me-1"></i> Add category</a>
+
+    <!-- =================================================
+         SERVICE CATEGORIES
+    ================================================= -->
+
+    <section class="services-card">
+
+
+        <!-- CARD HEADER -->
+
+        <div
+            class="services-card-header
+                   d-flex
+                   flex-wrap
+                   justify-content-between
+                   align-items-center
+                   gap-3">
+
+
+            <div class="d-flex align-items-center gap-3">
+
+
+                <div class="section-icon">
+
+                    <i class="fa-solid fa-folder-tree"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h2 class="section-title">
+
+                        Main Service Categories
+
+                    </h2>
+
+
+                    <p class="section-description">
+
+                        Categories currently set up in the portal.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <a
+                class="add-category-btn"
+                href="{% url 'add_main_service' %}">
+
+                <i class="fa-solid fa-plus me-1"></i>
+
+                Add Category
+
+            </a>
+
         </div>
+
+
+        <!-- =================================================
+             TABLE
+        ================================================= -->
+
         <div class="table-responsive">
-            <table class="table align-middle mb-0">
-                <thead class="table-light"><tr><th class="ps-4">Category</th><th>Sub-services</th><th>Status</th><th class="text-end pe-4">Action</th></tr></thead>
-                <tbody>
-                    {% for main in main_services %}
+
+
+            <table
+                class="table services-table align-middle mb-0">
+
+
+                <thead>
+
                     <tr>
-                        <td class="ps-4"><div class="fw-semibold">{{ main.name }}</div>{% if main.description %}<div class="small text-muted">{{ main.description|truncatechars:100 }}</div>{% endif %}</td>
-                        <td>{{ main.services.count }}</td>
-                        <td>{% if main.is_active %}<span class="badge rounded-pill text-bg-success">Active</span>{% else %}<span class="badge rounded-pill text-bg-secondary">Hidden</span>{% endif %}</td>
-                        <td class="text-end pe-4"><a class="btn btn-sm btn-outline-primary" href="{% url 'manage_services' %}">Manage</a></td>
+
+                        <th class="ps-4">
+
+                            Category
+
+                        </th>
+
+
+                        <th>
+
+                            Sub-services
+
+                        </th>
+
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+
+                        <th class="text-end pe-4">
+
+                            Action
+
+                        </th>
+
                     </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for main in main_services %}
+
+                    <tr>
+
+
+                        <!-- CATEGORY -->
+
+                        <td class="ps-4">
+
+
+                            <div class="category-name">
+
+                                <i
+                                    class="fa-solid
+                                           fa-folder-open
+                                           me-2">
+
+                                </i>
+
+                                {{ main.name }}
+
+                            </div>
+
+
+                            {% if main.description %}
+
+                            <div class="category-description">
+
+                                {{ main.description|truncatechars:100 }}
+
+                            </div>
+
+                            {% endif %}
+
+
+                        </td>
+
+
+                        <!-- SUB SERVICES -->
+
+                        <td>
+
+                            <span class="service-count">
+
+                                <i class="fa-solid fa-list me-1"></i>
+
+                                {{ main.services.count }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+
+                            {% if main.is_active %}
+
+                            <span class="status-active">
+
+                                <i class="fa-solid fa-circle-check"></i>
+
+                                Active
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="status-hidden">
+
+                                <i class="fa-solid fa-eye-slash"></i>
+
+                                Hidden
+
+                            </span>
+
+                            {% endif %}
+
+
+                        </td>
+
+
+                        <!-- ACTION -->
+
+                        <td class="text-end pe-4">
+
+
+                            <a
+                                class="manage-small-btn"
+                                href="{% url 'manage_services' %}">
+
+                                <i class="fa-solid fa-gear"></i>
+
+                                Manage
+
+                            </a>
+
+
+                        </td>
+
+
+                    </tr>
+
+
                     {% empty %}
-                    <tr><td colspan="4" class="text-center py-5"><div class="text-muted mb-3">No categories have been added yet.</div><a class="btn btn-primary" href="{% url 'add_main_service' %}">Create the first category</a></td></tr>
+
+
+                    <!-- EMPTY STATE -->
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            class="p-0">
+
+
+                            <div class="empty-state">
+
+
+                                <div class="empty-icon">
+
+                                    <i class="fa-solid fa-folder-plus"></i>
+
+                                </div>
+
+
+                                <div class="empty-title">
+
+                                    No categories have been added yet.
+
+                                </div>
+
+
+                                <a
+                                    class="create-first-btn"
+                                    href="{% url 'add_main_service' %}">
+
+                                    <i class="fa-solid fa-plus"></i>
+
+                                    Create First Category
+
+                                </a>
+
+
+                            </div>
+
+
+                        </td>
+
+                    </tr>
+
+
                     {% endfor %}
+
+
                 </tbody>
+
             </table>
+
         </div>
+
     </section>
+
 </div>
+
 {% endblock %}

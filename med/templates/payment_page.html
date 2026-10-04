@@ -1,77 +1,838 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container py-4">
+
+<style>
+    :root {
+        --navy: #073D70;
+        --navy-dark: #123F78;
+        --navy-light: #174EA6;
+
+        --coral: #E86B4C;
+        --coral-dark: #D95638;
+        --coral-soft: #FFF0EB;
+
+        --cream: #FFF4DF;
+        --cream-dark: #FFE8C4;
+
+        --blue-light: #E9F5FC;
+        --blue-border: #D7EBF8;
+
+        --green: #249B63;
+        --green-dark: #19734A;
+        --green-light: #EAF7F0;
+
+        --yellow: #B36B00;
+        --yellow-light: #FFF7E6;
+
+        --red: #DC4C4C;
+        --red-light: #FFF0F0;
+
+        --text: #172033;
+        --muted: #64748B;
+        --border: #DCE5ED;
+    }
+
+    .payment-page {
+        padding: 25px 0 45px;
+    }
+
+    /* PAGE HEADER */
+    .payment-header {
+        position: relative;
+        overflow: hidden;
+
+        padding: 24px 28px;
+        margin-bottom: 24px;
+
+        border-radius: 17px;
+
+        background: linear-gradient(
+            135deg,
+            var(--navy),
+            var(--navy-dark) 70%,
+            #1D5A94
+        );
+
+        box-shadow: 0 10px 28px rgba(7, 61, 112, .13);
+
+        color: #fff;
+    }
+
+    .payment-header::after {
+        content: "";
+
+        position: absolute;
+
+        width: 190px;
+        height: 190px;
+
+        right: -65px;
+        top: -100px;
+
+        border-radius: 50%;
+
+        background: rgba(232, 107, 76, .17);
+    }
+
+    .payment-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+
+        margin-bottom: 17px;
+
+        color: #DCECF8;
+
+        font-size: 11px;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+    .back-link:hover {
+        color: #fff;
+    }
+
+    .page-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        margin-bottom: 5px;
+
+        color: #FFD8CE;
+
+        font-size: 10px;
+        font-weight: 700;
+
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .payment-header h1 {
+        margin: 0 0 5px;
+
+        color: #fff;
+
+        font-size: 26px;
+        font-weight: 750;
+    }
+
+    .payment-header p {
+        margin: 0;
+
+        color: rgba(255,255,255,.76);
+
+        font-size: 12px;
+    }
+
+    /* CARDS */
+    .payment-card {
+        height: 100%;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 16px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 7px 23px rgba(7, 61, 112, .07);
+    }
+
+    .payment-card-header {
+        padding: 17px 20px;
+
+        background: linear-gradient(
+            90deg,
+            var(--blue-light),
+            #F8FBFD
+        );
+
+        border-bottom: 1px solid var(--border);
+    }
+
+    .payment-card-title {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+
+        margin: 0;
+
+        color: var(--navy);
+
+        font-size: 15px;
+        font-weight: 750;
+    }
+
+    .title-icon {
+        width: 34px;
+        height: 34px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 9px;
+
+        background: var(--navy);
+
+        color: #fff;
+
+        font-size: 13px;
+    }
+
+    .payment-card-body {
+        padding: 25px;
+    }
+
+    /* AMOUNT */
+    .amount-label {
+        display: block;
+
+        color: var(--coral-dark);
+
+        font-size: 10px;
+        font-weight: 750;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .amount {
+        color: var(--navy);
+
+        font-size: 38px;
+        font-weight: 800;
+
+        line-height: 1.2;
+
+        margin: 7px 0 20px;
+    }
+
+    /* QR */
+    .qr-wrapper {
+        padding: 13px;
+
+        background: #fff;
+
+        border: 1px solid var(--blue-border);
+
+        border-radius: 14px;
+
+        box-shadow: 0 5px 16px rgba(7, 61, 112, .06);
+    }
+
+    .qr-image {
+        width: 100%;
+        max-width: 280px;
+
+        display: block;
+
+        margin: auto;
+
+        border-radius: 8px;
+    }
+
+    .qr-help {
+        color: var(--muted);
+
+        font-size: 11px;
+        line-height: 1.6;
+
+        margin: 13px 0 0;
+    }
+
+    /* ALERTS */
+    .payment-alert {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 9px;
+
+        padding: 12px 13px;
+
+        border-radius: 9px;
+
+        font-size: 11px;
+        line-height: 1.55;
+
+        margin-bottom: 18px;
+    }
+
+    .payment-alert i {
+        margin-top: 2px;
+    }
+
+    .alert-success-custom {
+        background: var(--green-light);
+
+        border: 1px solid #C8E7D6;
+
+        color: var(--green-dark);
+    }
+
+    .alert-info-custom {
+        background: var(--blue-light);
+
+        border: 1px solid var(--blue-border);
+
+        color: var(--navy);
+    }
+
+    .alert-warning-custom {
+        background: var(--yellow-light);
+
+        border: 1px solid #F3D9A6;
+
+        color: var(--yellow);
+    }
+
+    /* FORM */
+    .payment-form .form-label {
+        color: var(--text);
+
+        font-size: 11px;
+        font-weight: 700;
+
+        margin-bottom: 6px;
+    }
+
+    .payment-form input,
+    .payment-form textarea,
+    .payment-form select {
+        width: 100%;
+
+        border: 1px solid var(--border);
+
+        border-radius: 8px;
+
+        background: #fff;
+
+        color: var(--text);
+
+        font-size: 12px;
+
+        padding: 9px 11px;
+
+        transition: .2s ease;
+    }
+
+    .payment-form input:focus,
+    .payment-form textarea:focus,
+    .payment-form select:focus {
+        border-color: var(--navy-light);
+
+        box-shadow:
+            0 0 0 3px rgba(23, 78, 166, .09);
+
+        outline: none;
+    }
+
+    .payment-form .form-text {
+        color: var(--muted);
+
+        font-size: 10px;
+    }
+
+    .field-error {
+        color: var(--red);
+
+        font-size: 10px;
+
+        margin-top: 4px;
+    }
+
+    /* BUTTONS */
+    .primary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        padding: 10px 17px;
+
+        border-radius: 8px;
+
+        background: var(--coral);
+
+        border: 1px solid var(--coral);
+
+        color: #fff;
+
+        font-size: 12px;
+        font-weight: 650;
+
+        box-shadow:
+            0 5px 13px rgba(232, 107, 76, .16);
+
+        transition: .2s ease;
+    }
+
+    .primary-button:hover {
+        background: var(--coral-dark);
+
+        border-color: var(--coral-dark);
+
+        color: #fff;
+
+        transform: translateY(-1px);
+    }
+
+    .receipt-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 6px;
+
+        padding: 8px 13px;
+
+        border-radius: 8px;
+
+        background: var(--blue-light);
+
+        border: 1px solid var(--blue-border);
+
+        color: var(--navy);
+
+        font-size: 11px;
+        font-weight: 650;
+
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+    .receipt-button:hover {
+        background: var(--navy);
+
+        border-color: var(--navy);
+
+        color: #fff;
+    }
+
+    /* DIVIDER */
+    .payment-divider {
+        border: 0;
+
+        border-top: 1px solid var(--border);
+
+        opacity: 1;
+    }
+
+    .manual-note {
+        color: var(--muted);
+
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 767px) {
+
+        .payment-page {
+            padding-top: 15px;
+        }
+
+        .payment-header {
+            padding: 21px;
+        }
+
+        .payment-header h1 {
+            font-size: 22px;
+        }
+
+        .payment-card-body {
+            padding: 20px;
+        }
+
+        .amount {
+            font-size: 33px;
+        }
+    }
+</style>
+
+
+<div class="container payment-page">
+
     <div class="row justify-content-center">
+
         <div class="col-lg-10 col-xl-9">
-            <div class="mb-4">
-                <a href="{% url 'dashboard' %}" class="text-decoration-none"><i class="fa-solid fa-arrow-left me-1"></i> Back to dashboard</a>
-                <h1 class="h2 fw-bold mt-3 mb-1">Complete service payment</h1>
-                <p class="text-muted mb-0">Application {{ application.receipt_number }} · {{ application.service_name }}</p>
-            </div>
+
+
+            <!-- =========================================
+                 PAGE HEADER
+            ========================================= -->
+
+            <header class="payment-header">
+
+                <div class="payment-header-content">
+
+                    <a
+                        href="{% url 'dashboard' %}"
+                        class="back-link">
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Back to dashboard
+
+                    </a>
+
+
+                    <div class="page-label">
+
+                        <i class="fa-solid fa-credit-card"></i>
+
+                        Secure Service Payment
+
+                    </div>
+
+
+                    <h1>
+                        Complete Service Payment
+                    </h1>
+
+
+                    <p>
+                        Application {{ application.receipt_number }}
+                        · {{ application.service_name }}
+                    </p>
+
+                </div>
+
+            </header>
+
 
             <div class="row g-4">
+
+
+                <!-- =========================================
+                     PAYMENT AMOUNT / QR
+                ========================================= -->
+
                 <div class="col-md-5">
-                    <section class="card h-100">
-                        <div class="card-body p-4 text-center">
-                            <span class="small text-uppercase fw-semibold text-primary">Amount due</span>
-                            <div class="display-6 fw-bold my-2">&#8377;{{ application.amount|floatformat:2 }}</div>
-                            {% if application.amount > 0 %}
-                                {% if application.service.payment_qr_image %}
-                                    <img class="img-fluid border rounded-3 p-2 bg-white" style="max-width:280px" src="{% url 'service_payment_qr' application.service_id %}" alt="PhonePe payment QR code">
-                                    <p class="small text-muted mt-3 mb-0">Scan with PhonePe or another UPI app and pay the exact amount shown.</p>
-                                {% else %}
-                                    <div class="alert alert-warning mt-3 mb-0">The payment QR has not been uploaded for this service yet. Contact the administrator before paying.</div>
-                                {% endif %}
-                            {% else %}
-                                <div class="alert alert-success mt-3 mb-0">No payment is due for this service.</div>
-                            {% endif %}
+
+                    <section class="payment-card">
+
+                        <div class="payment-card-header">
+
+                            <h2 class="payment-card-title">
+
+                                <span class="title-icon">
+
+                                    <i class="fa-solid fa-qrcode"></i>
+
+                                </span>
+
+                                Payment Amount
+
+                            </h2>
+
                         </div>
+
+
+                        <div class="payment-card-body text-center">
+
+                            <span class="amount-label">
+                                Amount Due
+                            </span>
+
+
+                            <div class="amount">
+
+                                &#8377;{{ application.amount|floatformat:2 }}
+
+                            </div>
+
+
+                            {% if application.amount > 0 %}
+
+                                {% if application.service.payment_qr_image %}
+
+                                    <div class="qr-wrapper">
+
+                                        <img
+                                            class="qr-image"
+                                            src="{% url 'service_payment_qr' application.service_id %}"
+                                            alt="PhonePe payment QR code">
+
+                                    </div>
+
+
+                                    <p class="qr-help">
+
+                                        <i class="fa-solid fa-mobile-screen-button me-1"></i>
+
+                                        Scan with PhonePe or another UPI app
+                                        and pay the exact amount shown.
+
+                                    </p>
+
+                                {% else %}
+
+                                    <div class="payment-alert alert-warning-custom text-start mb-0">
+
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                                        <span>
+                                            The payment QR has not been uploaded
+                                            for this service yet. Contact the
+                                            administrator before paying.
+                                        </span>
+
+                                    </div>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <div class="payment-alert alert-success-custom text-start mb-0">
+
+                                    <i class="fa-solid fa-circle-check"></i>
+
+                                    <span>
+                                        No payment is due for this service.
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
                     </section>
+
                 </div>
+
+
+                <!-- =========================================
+                     PAYMENT FORM
+                ========================================= -->
 
                 <div class="col-md-7">
-                    <section class="card h-100">
-                        <div class="card-body p-4">
-                            <h2 class="h5 fw-bold">Payment and application</h2>
+
+                    <section class="payment-card">
+
+                        <div class="payment-card-header">
+
+                            <h2 class="payment-card-title">
+
+                                <span class="title-icon">
+
+                                    <i class="fa-solid fa-file-invoice"></i>
+
+                                </span>
+
+                                Payment & Application
+
+                            </h2>
+
+                        </div>
+
+
+                        <div class="payment-card-body">
+
+
                             {% if application.payment_status == 'paid' %}
-                                <div class="alert alert-success">Payment has been verified by the administrator.</div>
+
+                                <div class="payment-alert alert-success-custom">
+
+                                    <i class="fa-solid fa-circle-check"></i>
+
+                                    <span>
+                                        Payment has been verified by the administrator.
+                                    </span>
+
+                                </div>
+
+
                             {% elif application.payment_status == 'verification_pending' %}
-                                <div class="alert alert-info">Your payment details were submitted and are awaiting administrator verification.</div>
+
+                                <div class="payment-alert alert-info-custom">
+
+                                    <i class="fa-solid fa-clock"></i>
+
+                                    <span>
+                                        Your payment details were submitted
+                                        and are awaiting administrator verification.
+                                    </span>
+
+                                </div>
+
+
                             {% elif application.payment_status == 'waived' %}
-                                <div class="alert alert-success">Payment is waived for this free service.</div>
+
+                                <div class="payment-alert alert-success-custom">
+
+                                    <i class="fa-solid fa-hand-holding-heart"></i>
+
+                                    <span>
+                                        Payment is waived for this free service.
+                                    </span>
+
+                                </div>
+
+
                             {% else %}
-                                <p class="text-muted">After paying, enter the PhonePe UTR/transaction reference. The payment stays unverified until an administrator checks it.</p>
+
+                                <p class="manual-note mb-4">
+
+                                    After paying, enter the PhonePe UTR/transaction
+                                    reference. The payment stays unverified until
+                                    an administrator checks it.
+
+                                </p>
+
                             {% endif %}
+
+
+                            <!-- =========================================
+                                 VERIFIED / FREE SERVICE
+                            ========================================= -->
 
                             {% if application.payment_status == 'paid' or application.payment_status == 'waived' or application.amount == 0 %}
+
                                 <form method="post">
+
                                     {% csrf_token %}
-                                    <button class="btn btn-primary" type="submit">Continue to Google Form <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i></button>
+
+                                    <button
+                                        class="primary-button"
+                                        type="submit">
+
+                                        Continue to Google Form
+
+                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+                                    </button>
+
                                 </form>
+
+
                             {% else %}
-                                <form method="post" novalidate>
+
+
+                                <!-- =========================================
+                                     PAYMENT DETAILS FORM
+                                ========================================= -->
+
+                                <form
+                                    method="post"
+                                    class="payment-form"
+                                    novalidate>
+
                                     {% csrf_token %}
+
+
                                     {% for field in form %}
+
                                         <div class="mb-3">
-                                            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                                            <label
+                                                class="form-label"
+                                                for="{{ field.id_for_label }}">
+
+                                                {{ field.label }}
+
+                                            </label>
+
+
                                             {{ field }}
-                                            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
-                                            {% for error in field.errors %}<div class="small text-danger">{{ error }}</div>{% endfor %}
+
+
+                                            {% if field.help_text %}
+
+                                                <div class="form-text">
+
+                                                    {{ field.help_text }}
+
+                                                </div>
+
+                                            {% endif %}
+
+
+                                            {% for error in field.errors %}
+
+                                                <div class="field-error">
+
+                                                    <i class="fa-solid fa-circle-exclamation me-1"></i>
+
+                                                    {{ error }}
+
+                                                </div>
+
+                                            {% endfor %}
+
                                         </div>
+
                                     {% endfor %}
-                                    <button class="btn btn-primary" type="submit">Submit details and continue <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i></button>
+
+
+                                    <button
+                                        class="primary-button"
+                                        type="submit">
+
+                                        Submit details and continue
+
+                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+                                    </button>
+
                                 </form>
+
                             {% endif %}
 
-                            <hr class="my-4">
-                            <a class="btn btn-outline-secondary" href="{% url 'application_receipt' application.pk %}"><i class="fa-solid fa-receipt me-1"></i> View application receipt</a>
-                            <p class="small text-muted mt-3 mb-0">PhonePe QR payments are verified manually. This portal does not receive automatic payment confirmation from PhonePe.</p>
+
+                            <hr class="payment-divider my-4">
+
+
+                            <!-- RECEIPT -->
+
+                            <a
+                                class="receipt-button"
+                                href="{% url 'application_receipt' application.pk %}">
+
+                                <i class="fa-solid fa-receipt"></i>
+
+                                View application receipt
+
+                            </a>
+
+
+                            <p class="manual-note mt-3 mb-0">
+
+                                <i class="fa-solid fa-circle-info me-1"></i>
+
+                                PhonePe QR payments are verified manually.
+                                This portal does not receive automatic payment
+                                confirmation from PhonePe.
+
+                            </p>
+
                         </div>
+
                     </section>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
+
 {% endblock %}

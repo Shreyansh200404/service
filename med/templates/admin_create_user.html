@@ -1,34 +1,1280 @@
 {% extends 'admin_base.html' %}
 
 {% block content %}
-<div class="container py-4">
-    <section class="card shadow-sm mx-auto" style="max-width:760px">
-        <div class="card-body p-4 p-md-5">
-            <a href="{% url 'manage_users' %}" class="small text-decoration-none"><i class="fa-solid fa-arrow-left me-1"></i> Back to users</a>
-            <h1 class="h3 fw-bold mt-3">Create requested account</h1>
-            <p class="text-muted">Review the request, assign a username and initial password, then share those credentials with the user securely.</p>
-            <div class="rounded-3 bg-light p-3 mb-4">
-                <div class="fw-semibold">{{ registration_request.full_name }}</div>
-                <div class="small text-muted">{{ registration_request.email }}</div>
-                {% if registration_request.reason %}<div class="small mt-2">{{ registration_request.reason }}</div>{% endif %}
-            </div>
-            <form method="post" novalidate>
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="mb-3">
-                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.help_text %}<div class="form-text">{{ field.help_text|safe }}</div>{% endif %}
-                        {% for error in field.errors %}<div class="small text-danger">{{ error }}</div>{% endfor %}
-                    </div>
-                {% endfor %}
-                {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
-                <div class="d-flex gap-2">
-                    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-user-check me-1"></i> Create account</button>
-                    <a class="btn btn-outline-secondary" href="{% url 'manage_users' %}">Cancel</a>
+
+<style>
+
+    /* =====================================================
+       SEVA ONE - CREATE ACCOUNT PAGE
+       Homepage Color Theme
+       Navy + Coral + Cream + Light Blue
+    ===================================================== */
+
+    :root {
+
+        --seva-navy: #073D70;
+        --seva-navy-dark: #123F78;
+        --seva-navy-light: #1D5A94;
+
+        --seva-coral: #F36B4F;
+        --seva-coral-dark: #E85A3F;
+        --seva-coral-light: #FF8A70;
+
+        --seva-cream: #FFF4DF;
+        --seva-cream-dark: #FFE8C4;
+
+        --seva-blue: #E9F5FC;
+        --seva-blue-dark: #D7EBF8;
+
+        --seva-green: #249B63;
+        --seva-green-light: #EAF7F0;
+
+        --seva-purple: #8B4DE8;
+        --seva-purple-light: #F1EAFE;
+
+        --seva-text: #17324D;
+        --seva-muted: #64748B;
+
+        --seva-border: #DCE5ED;
+
+        --seva-white: #FFFFFF;
+    }
+
+
+    /* =====================================================
+       PAGE BACKGROUND
+    ===================================================== */
+
+    .account-page {
+
+        min-height:
+            calc(100vh - 150px);
+
+        padding:
+            28px 15px 50px;
+
+        background:
+
+            radial-gradient(
+                circle at 5% 5%,
+                rgba(233,245,252,.95),
+                transparent 28%
+            ),
+
+            radial-gradient(
+                circle at 95% 15%,
+                rgba(255,244,223,.90),
+                transparent 30%
+            );
+    }
+
+
+    /* =====================================================
+       MAIN CARD
+    ===================================================== */
+
+    .account-card {
+
+        max-width:
+            780px;
+
+        margin:
+            auto;
+
+        border:
+            1px solid var(--seva-border);
+
+        border-radius:
+            20px;
+
+        background:
+            rgba(255,255,255,.98);
+
+        box-shadow:
+            0 15px 40px rgba(7,61,112,.11);
+
+        overflow:
+            hidden;
+
+        transition:
+            .25s ease;
+    }
+
+
+    .account-card:hover {
+
+        box-shadow:
+            0 20px 50px rgba(7,61,112,.14);
+    }
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .account-header {
+
+        position:
+            relative;
+
+        padding:
+            30px 32px;
+
+        color:
+            white;
+
+        background:
+
+            linear-gradient(
+                120deg,
+                var(--seva-navy),
+                #14558C
+            );
+
+        overflow:
+            hidden;
+    }
+
+
+    /* Coral accent */
+
+    .account-header::before {
+
+        content:
+            "";
+
+        position:
+            absolute;
+
+        left:
+            0;
+
+        top:
+            0;
+
+        width:
+            7px;
+
+        height:
+            100%;
+
+        background:
+            var(--seva-coral);
+    }
+
+
+    /* Decorative circle */
+
+    .account-header::after {
+
+        content:
+            "";
+
+        position:
+            absolute;
+
+        width:
+            220px;
+
+        height:
+            220px;
+
+        border-radius:
+            50%;
+
+        background:
+            rgba(255,255,255,.07);
+
+        right:
+            -75px;
+
+        top:
+            -115px;
+    }
+
+
+    .header-content {
+
+        position:
+            relative;
+
+        z-index:
+            2;
+    }
+
+
+    /* =====================================================
+       HEADER ICON
+    ===================================================== */
+
+    .header-icon {
+
+        width:
+            58px;
+
+        height:
+            58px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            15px;
+
+        background:
+            var(--seva-coral);
+
+        color:
+            white;
+
+        font-size:
+            24px;
+
+        margin-bottom:
+            15px;
+
+        box-shadow:
+            0 8px 18px rgba(0,0,0,.16);
+    }
+
+
+    .account-title {
+
+        margin:
+            0;
+
+        font-size:
+            27px;
+
+        font-weight:
+            800;
+
+        letter-spacing:
+            .2px;
+    }
+
+
+    .account-subtitle {
+
+        margin:
+            7px 0 0;
+
+        color:
+            rgba(255,255,255,.88);
+
+        font-size:
+            14px;
+
+        line-height:
+            1.6;
+
+        max-width:
+            650px;
+    }
+
+
+    /* =====================================================
+       BODY
+    ===================================================== */
+
+    .account-body {
+
+        padding:
+            30px;
+    }
+
+
+    /* =====================================================
+       BACK LINK
+    ===================================================== */
+
+    .back-link {
+
+        display:
+            inline-flex;
+
+        align-items:
+            center;
+
+        gap:
+            7px;
+
+        padding:
+            8px 13px;
+
+        border-radius:
+            8px;
+
+        background:
+            var(--seva-blue);
+
+        border:
+            1px solid var(--seva-blue-dark);
+
+        color:
+            var(--seva-navy);
+
+        font-size:
+            13px;
+
+        font-weight:
+            700;
+
+        text-decoration:
+            none;
+
+        transition:
+            .2s ease;
+    }
+
+
+    .back-link:hover {
+
+        background:
+            var(--seva-navy);
+
+        color:
+            white;
+
+        transform:
+            translateX(-2px);
+    }
+
+
+    /* =====================================================
+       REQUEST INFORMATION
+    ===================================================== */
+
+    .request-box {
+
+        position:
+            relative;
+
+        margin:
+            23px 0 28px;
+
+        padding:
+            20px 20px 20px 23px;
+
+        border-radius:
+            14px;
+
+        background:
+
+            linear-gradient(
+                135deg,
+                #EEF8FD,
+                #FFF7E9
+            );
+
+        border:
+            1px solid #D9EAF4;
+
+        overflow:
+            hidden;
+    }
+
+
+    /* Coral left line */
+
+    .request-box::before {
+
+        content:
+            "";
+
+        position:
+            absolute;
+
+        width:
+            5px;
+
+        height:
+            100%;
+
+        left:
+            0;
+
+        top:
+            0;
+
+        background:
+            var(--seva-coral);
+    }
+
+
+    .request-label {
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            8px;
+
+        color:
+            var(--seva-navy);
+
+        font-size:
+            12px;
+
+        font-weight:
+            800;
+
+        text-transform:
+            uppercase;
+
+        letter-spacing:
+            .7px;
+
+        margin-bottom:
+            9px;
+    }
+
+
+    .request-label i {
+
+        color:
+            var(--seva-coral);
+    }
+
+
+    .request-name {
+
+        color:
+            var(--seva-navy);
+
+        font-size:
+            19px;
+
+        font-weight:
+            800;
+
+        margin-bottom:
+            4px;
+    }
+
+
+    .request-email {
+
+        color:
+            #126A9A;
+
+        font-size:
+            14px;
+
+        font-weight:
+            600;
+    }
+
+
+    .request-reason {
+
+        margin-top:
+            13px;
+
+        padding:
+            11px 13px;
+
+        border-radius:
+            9px;
+
+        background:
+            rgba(255,255,255,.80);
+
+        border:
+            1px solid rgba(220,229,237,.75);
+
+        color:
+            #475569;
+
+        font-size:
+            13px;
+
+        line-height:
+            1.6;
+    }
+
+
+    .request-reason strong {
+
+        color:
+            var(--seva-navy);
+    }
+
+
+    /* =====================================================
+       FORM SECTION TITLE
+    ===================================================== */
+
+    .form-section-title {
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            10px;
+
+        color:
+            var(--seva-navy);
+
+        font-size:
+            18px;
+
+        font-weight:
+            800;
+
+        margin-bottom:
+            20px;
+    }
+
+
+    .form-section-title i {
+
+        width:
+            35px;
+
+        height:
+            35px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            9px;
+
+        background:
+            var(--seva-coral);
+
+        color:
+            white;
+
+        font-size:
+            14px;
+
+        box-shadow:
+            0 5px 12px rgba(243,107,79,.18);
+    }
+
+
+    /* =====================================================
+       FORM
+    ===================================================== */
+
+    .form-label {
+
+        color:
+            #334155;
+
+        font-size:
+            13px;
+
+        font-weight:
+            700;
+
+        margin-bottom:
+            7px;
+    }
+
+
+    form input,
+    form select,
+    form textarea {
+
+        width:
+            100%;
+
+        border:
+            1px solid #D5E0E9;
+
+        border-radius:
+            9px;
+
+        background:
+            #FFFFFF;
+
+        color:
+            var(--seva-text);
+
+        padding:
+            11px 13px;
+
+        font-size:
+            14px;
+
+        outline:
+            none;
+
+        transition:
+            border-color .2s ease,
+            box-shadow .2s ease;
+    }
+
+
+    form input:hover,
+    form select:hover,
+    form textarea:hover {
+
+        border-color:
+            #B8CBD9;
+    }
+
+
+    form input:focus,
+    form select:focus,
+    form textarea:focus {
+
+        border-color:
+            var(--seva-navy);
+
+        box-shadow:
+            0 0 0 3px
+            rgba(7,61,112,.10);
+    }
+
+
+    form textarea {
+
+        min-height:
+            100px;
+
+        resize:
+            vertical;
+    }
+
+
+    .form-text {
+
+        color:
+            var(--seva-muted);
+
+        font-size:
+            12px;
+
+        margin-top:
+            6px;
+    }
+
+
+    .text-danger {
+
+        color:
+            #C62828 !important;
+
+        font-size:
+            12px;
+
+        font-weight:
+            600;
+
+        margin-top:
+            5px;
+
+        display:
+            block;
+    }
+
+
+    /* =====================================================
+       ERROR ALERT
+    ===================================================== */
+
+    .custom-error {
+
+        border:
+            none;
+
+        border-left:
+            5px solid #DC3F3F;
+
+        border-radius:
+            9px;
+
+        background:
+            #FDECEC;
+
+        color:
+            #991B1B;
+
+        font-size:
+            13px;
+
+        font-weight:
+            600;
+
+        padding:
+            13px 15px;
+    }
+
+
+    /* =====================================================
+       SECURITY NOTE
+    ===================================================== */
+
+    .security-note {
+
+        display:
+            flex;
+
+        align-items:
+            flex-start;
+
+        gap:
+            11px;
+
+        margin-top:
+            20px;
+
+        padding:
+            14px 15px;
+
+        border-radius:
+            10px;
+
+        background:
+            var(--seva-green-light);
+
+        border:
+            1px solid #C8EBD8;
+
+        color:
+            #166534;
+
+        font-size:
+            12px;
+
+        line-height:
+            1.6;
+    }
+
+
+    .security-note i {
+
+        color:
+            var(--seva-green);
+
+        font-size:
+            17px;
+
+        margin-top:
+            2px;
+    }
+
+
+    .security-note strong {
+
+        color:
+            #176B43;
+    }
+
+
+    /* =====================================================
+       FORM ACTIONS
+    ===================================================== */
+
+    .form-actions {
+
+        display:
+            flex;
+
+        gap:
+            10px;
+
+        margin-top:
+            25px;
+
+        padding-top:
+            22px;
+
+        border-top:
+            1px solid #E2E8F0;
+    }
+
+
+    /* =====================================================
+       CREATE ACCOUNT
+    ===================================================== */
+
+    .btn-create {
+
+        border:
+            none;
+
+        border-radius:
+            9px;
+
+        padding:
+            11px 20px;
+
+        background:
+            var(--seva-coral);
+
+        color:
+            white;
+
+        font-size:
+            14px;
+
+        font-weight:
+            750;
+
+        box-shadow:
+            0 6px 15px rgba(243,107,79,.22);
+
+        transition:
+            .22s ease;
+    }
+
+
+    .btn-create:hover {
+
+        background:
+            var(--seva-coral-dark);
+
+        color:
+            white;
+
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 9px 20px rgba(243,107,79,.28);
+    }
+
+
+    /* =====================================================
+       CANCEL
+    ===================================================== */
+
+    .btn-cancel {
+
+        border:
+            1px solid #CBD5E1;
+
+        border-radius:
+            9px;
+
+        padding:
+            10px 19px;
+
+        background:
+            white;
+
+        color:
+            #475569;
+
+        font-size:
+            14px;
+
+        font-weight:
+            700;
+
+        text-decoration:
+            none;
+
+        transition:
+            .22s ease;
+    }
+
+
+    .btn-cancel:hover {
+
+        background:
+            var(--seva-blue);
+
+        color:
+            var(--seva-navy);
+
+        border-color:
+            #B6D1E3;
+
+        transform:
+            translateY(-2px);
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width:768px) {
+
+        .account-page {
+
+            padding:
+                15px 10px 30px;
+        }
+
+
+        .account-header {
+
+            padding:
+                25px 22px;
+        }
+
+
+        .account-body {
+
+            padding:
+                22px 18px;
+        }
+
+
+        .account-title {
+
+            font-size:
+                22px;
+        }
+
+
+        .account-subtitle {
+
+            font-size:
+                13px;
+        }
+
+
+        .form-actions {
+
+            flex-direction:
+                column;
+        }
+
+
+        .btn-create,
+        .btn-cancel {
+
+            width:
+                100%;
+
+            text-align:
+                center;
+
+            justify-content:
+                center;
+        }
+
+    }
+
+
+    @media(max-width:480px) {
+
+        .request-box {
+
+            padding:
+                17px;
+        }
+
+
+        .request-name {
+
+            font-size:
+                17px;
+        }
+
+
+        .account-header {
+
+            padding:
+                23px 18px;
+        }
+
+
+        .account-body {
+
+            padding:
+                20px 15px;
+        }
+
+    }
+
+</style>
+
+
+<!-- =====================================================
+     PAGE
+===================================================== -->
+
+<div class="account-page">
+
+
+    <section class="account-card">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================= -->
+
+        <div class="account-header">
+
+            <div class="header-content">
+
+
+                <div class="header-icon">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
                 </div>
-            </form>
+
+
+                <h1 class="account-title">
+
+                    Create Requested Account
+
+                </h1>
+
+
+                <p class="account-subtitle">
+
+                    Review the registration request, assign a
+                    username and initial password, then securely
+                    share the credentials with the user.
+
+                </p>
+
+            </div>
+
         </div>
+
+
+        <!-- =================================================
+             BODY
+        ================================================= -->
+
+        <div class="account-body">
+
+
+            <!-- BACK -->
+
+            <a
+                href="{% url 'manage_users' %}"
+                class="back-link">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Back to Users
+
+            </a>
+
+
+            <!-- =================================================
+                 REQUEST DETAILS
+            ================================================= -->
+
+            <div class="request-box">
+
+
+                <div class="request-label">
+
+                    <i class="fa-solid fa-file-lines"></i>
+
+                    Registration Request
+
+                </div>
+
+
+                <div class="request-name">
+
+                    {{ registration_request.full_name }}
+
+                </div>
+
+
+                <div class="request-email">
+
+                    <i class="fa-solid fa-envelope me-1"></i>
+
+                    {{ registration_request.email }}
+
+                </div>
+
+
+                {% if registration_request.reason %}
+
+                <div class="request-reason">
+
+                    <strong>
+
+                        <i class="fa-solid fa-message me-1"></i>
+
+                        Reason:
+
+                    </strong>
+
+                    {{ registration_request.reason }}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =================================================
+                 FORM TITLE
+            ================================================= -->
+
+            <div class="form-section-title">
+
+                <i class="fa-solid fa-user-gear"></i>
+
+                Account Details
+
+            </div>
+
+
+            <!-- =================================================
+                 FORM
+            ================================================= -->
+
+            <form
+                method="post"
+                novalidate>
+
+                {% csrf_token %}
+
+
+                <!-- FORM FIELDS -->
+
+                {% for field in form %}
+
+                <div class="mb-3">
+
+
+                    <label
+                        class="form-label"
+                        for="{{ field.id_for_label }}">
+
+                        {{ field.label }}
+
+                    </label>
+
+
+                    {{ field }}
+
+
+                    {% if field.help_text %}
+
+                    <div class="form-text">
+
+                        {{ field.help_text|safe }}
+
+                    </div>
+
+                    {% endif %}
+
+
+                    {% for error in field.errors %}
+
+                    <div class="small text-danger">
+
+                        <i class="fa-solid fa-circle-exclamation me-1"></i>
+
+                        {{ error }}
+
+                    </div>
+
+                    {% endfor %}
+
+
+                </div>
+
+                {% endfor %}
+
+
+                <!-- NON FIELD ERRORS -->
+
+                {% for error in form.non_field_errors %}
+
+                <div class="custom-error mb-3">
+
+                    <i class="fa-solid fa-triangle-exclamation me-1"></i>
+
+                    {{ error }}
+
+                </div>
+
+                {% endfor %}
+
+
+                <!-- =================================================
+                     SECURITY NOTE
+                ================================================= -->
+
+                <div class="security-note">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <div>
+
+                        <strong>
+                            Security reminder:
+                        </strong>
+
+                        Share the initial login credentials with
+                        the requested user through a secure
+                        communication channel. Do not expose
+                        passwords publicly.
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     ACTIONS
+                ================================================= -->
+
+                <div class="form-actions">
+
+
+                    <button
+                        class="btn-create"
+                        type="submit">
+
+                        <i class="fa-solid fa-user-check me-1"></i>
+
+                        Create Account
+
+                    </button>
+
+
+                    <a
+                        class="btn-cancel"
+                        href="{% url 'manage_users' %}">
+
+                        <i class="fa-solid fa-xmark me-1"></i>
+
+                        Cancel
+
+                    </a>
+
+
+                </div>
+
+
+            </form>
+
+        </div>
+
     </section>
+
 </div>
+
 {% endblock %}

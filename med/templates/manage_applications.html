@@ -1,96 +1,1025 @@
 {% extends 'admin_base.html' %}
 
 {% block content %}
+
+<style>
+    :root {
+        --navy: #073D70;
+        --navy-dark: #123F78;
+        --navy-light: #174EA6;
+
+        --coral: #E86B4C;
+        --coral-dark: #D95638;
+        --coral-light: #FFF0EB;
+
+        --cream: #FFF4DF;
+        --cream-dark: #FFE8C4;
+
+        --blue-light: #E9F5FC;
+        --blue-border: #D7EBF8;
+
+        --green: #249B63;
+        --purple: #8B4DE8;
+        --cyan: #18A9C7;
+
+        --text: #172033;
+        --muted: #64748B;
+        --border: #DCE5ED;
+    }
+
+
+    /* =========================================
+       PAGE HEADER
+    ========================================= */
+
+    .applications-header {
+        background: linear-gradient(
+            135deg,
+            var(--navy),
+            var(--navy-dark)
+        );
+
+        border-radius: 16px;
+
+        padding: 25px 28px;
+
+        color: white;
+
+        box-shadow:
+            0 8px 25px rgba(7, 61, 112, 0.12);
+
+        position: relative;
+        overflow: hidden;
+    }
+
+
+    .applications-header::after {
+        content: "";
+
+        position: absolute;
+
+        width: 180px;
+        height: 180px;
+
+        border-radius: 50%;
+
+        background: rgba(232, 107, 76, .15);
+
+        right: -60px;
+        top: -80px;
+    }
+
+
+    .applications-header > * {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .header-label {
+        color: #FFD8CE;
+
+        letter-spacing: 1.2px;
+
+        font-size: 11px;
+    }
+
+
+    .applications-header h1 {
+        color: #fff;
+    }
+
+
+    .applications-header p {
+        color: rgba(255,255,255,.75);
+    }
+
+
+    .shown-badge {
+        background: rgba(255,255,255,.12);
+
+        color: #fff;
+
+        border: 1px solid rgba(255,255,255,.2);
+
+        padding: 8px 14px;
+    }
+
+
+    /* =========================================
+       ALERTS
+    ========================================= */
+
+    .portal-alert {
+        border-radius: 10px;
+
+        border: none;
+
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       FILTER CARD
+    ========================================= */
+
+    .filter-card {
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 15px;
+
+        box-shadow:
+            0 5px 18px rgba(7,61,112,.06);
+    }
+
+
+    .filter-card .form-label {
+        color: var(--navy);
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+
+    .filter-card .form-select {
+        border: 1px solid var(--border);
+
+        border-radius: 9px;
+
+        min-height: 42px;
+
+        font-size: 13px;
+
+        color: var(--text);
+
+        box-shadow: none;
+    }
+
+
+    .filter-card .form-select:focus {
+        border-color: var(--navy-light);
+
+        box-shadow:
+            0 0 0 3px rgba(23,78,166,.08);
+    }
+
+
+    /* =========================================
+       BUTTONS
+    ========================================= */
+
+    .btn-filter {
+        background: var(--coral);
+
+        border-color: var(--coral);
+
+        color: #fff;
+
+        border-radius: 9px;
+
+        font-weight: 600;
+    }
+
+
+    .btn-filter:hover {
+        background: var(--coral-dark);
+
+        border-color: var(--coral-dark);
+
+        color: #fff;
+    }
+
+
+    .btn-clear {
+        color: var(--navy);
+
+        border-color: var(--border);
+
+        background: #fff;
+
+        border-radius: 9px;
+    }
+
+
+    .btn-clear:hover {
+        background: var(--blue-light);
+
+        border-color: var(--blue-border);
+
+        color: var(--navy);
+    }
+
+
+    /* =========================================
+       TABLE CARD
+    ========================================= */
+
+    .applications-table-card {
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 16px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 7px 22px rgba(7,61,112,.07);
+    }
+
+
+    .applications-table {
+        margin: 0;
+    }
+
+
+    .applications-table thead th {
+        background: var(--navy);
+
+        color: #fff;
+
+        border: none;
+
+        font-size: 12px;
+
+        font-weight: 600;
+
+        padding: 15px 12px;
+
+        white-space: nowrap;
+    }
+
+
+    .applications-table thead th:first-child {
+        border-radius: 0;
+    }
+
+
+    .applications-table tbody td {
+        padding: 16px 12px;
+
+        border-color: #E8EEF3;
+
+        vertical-align: middle;
+
+        font-size: 13px;
+
+        color: var(--text);
+    }
+
+
+    .applications-table tbody tr {
+        transition: .2s ease;
+    }
+
+
+    .applications-table tbody tr:hover {
+        background: var(--blue-light);
+    }
+
+
+    .applications-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+
+    /* =========================================
+       APPLICANT
+    ========================================= */
+
+    .applicant-name {
+        color: var(--navy);
+
+        font-weight: 700;
+    }
+
+
+    .applicant-email {
+        color: var(--muted);
+
+        font-size: 11px;
+    }
+
+
+    /* =========================================
+       SERVICE
+    ========================================= */
+
+    .service-name {
+        color: var(--text);
+
+        font-weight: 600;
+    }
+
+
+    .main-service {
+        color: var(--muted);
+
+        font-size: 11px;
+    }
+
+
+    .transaction-ref {
+        margin-top: 4px;
+
+        font-size: 11px;
+
+        color: var(--muted);
+    }
+
+
+    .receipt-link {
+        display: inline-block;
+
+        margin-top: 4px;
+
+        color: var(--coral-dark);
+
+        text-decoration: none;
+
+        font-size: 11px;
+
+        font-weight: 600;
+    }
+
+
+    .receipt-link:hover {
+        color: var(--navy);
+    }
+
+
+    /* =========================================
+       AMOUNT
+    ========================================= */
+
+    .amount {
+        color: var(--navy);
+
+        font-weight: 700;
+
+        white-space: nowrap;
+    }
+
+
+    /* =========================================
+       DATE
+    ========================================= */
+
+    .application-date {
+        color: var(--text);
+
+        font-weight: 500;
+
+        white-space: nowrap;
+    }
+
+
+    .application-time {
+        color: var(--muted);
+
+        font-size: 11px;
+    }
+
+
+    /* =========================================
+       STATUS FORM
+    ========================================= */
+
+    .status-form {
+        min-width: 360px;
+    }
+
+
+    .status-form .form-select {
+        border: 1px solid var(--border);
+
+        border-radius: 8px;
+
+        font-size: 12px;
+
+        min-height: 36px;
+
+        box-shadow: none;
+    }
+
+
+    .status-form .form-select:focus {
+        border-color: var(--navy-light);
+
+        box-shadow:
+            0 0 0 3px rgba(23,78,166,.08);
+    }
+
+
+    .btn-save {
+        background: var(--navy);
+
+        border-color: var(--navy);
+
+        color: #fff;
+
+        border-radius: 8px;
+
+        font-weight: 600;
+
+        min-height: 36px;
+    }
+
+
+    .btn-save:hover {
+        background: var(--navy-dark);
+
+        border-color: var(--navy-dark);
+
+        color: #fff;
+    }
+
+
+    /* =========================================
+       EMPTY STATE
+    ========================================= */
+
+    .empty-state {
+        padding: 60px 20px !important;
+
+        background: #fff;
+    }
+
+
+    .empty-icon {
+        width: 58px;
+        height: 58px;
+
+        margin: 0 auto 15px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+
+        background: var(--blue-light);
+
+        color: var(--navy);
+
+        font-size: 24px;
+    }
+
+
+    .empty-state-title {
+        color: var(--navy);
+
+        font-weight: 700;
+    }
+
+
+    .empty-state-text {
+        color: var(--muted);
+
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+
+    @media (max-width: 991px) {
+
+        .status-form {
+            min-width: 280px;
+        }
+
+    }
+
+
+    @media (max-width: 767px) {
+
+        .applications-header {
+            padding: 22px 20px;
+        }
+
+        .applications-header h1 {
+            font-size: 24px;
+        }
+
+        .status-form {
+            min-width: 230px;
+        }
+
+    }
+
+
+    @media (max-width: 575px) {
+
+        .filter-card {
+            border-radius: 12px;
+        }
+
+        .applications-table-card {
+            border-radius: 12px;
+        }
+
+        .applications-header {
+            border-radius: 12px;
+        }
+
+    }
+
+</style>
+
+
 <div class="container-fluid px-0">
-    <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+    <!-- =========================================
+         PAGE HEADER
+    ========================================= -->
+
+    <header class="applications-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
         <div>
-            <span class="small text-uppercase fw-bold text-primary">User management</span>
-            <h1 class="h2 fw-bold mt-1 mb-1">Service applications</h1>
-            <p class="text-muted mb-0">Review applicants and keep payment and work progress up to date.</p>
+
+            <span class="header-label text-uppercase fw-bold">
+                User Management
+            </span>
+
+            <h1 class="h2 fw-bold mt-1 mb-1">
+                Service Applications
+            </h1>
+
+            <p class="mb-0">
+                Review applicants and keep payment and work progress up to date.
+            </p>
+
         </div>
-        <span class="badge rounded-pill text-bg-light">{{ applications|length }} shown</span>
+
+
+        <span class="badge rounded-pill shown-badge">
+            {{ applications|length }} shown
+        </span>
+
     </header>
 
-    {% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>{% endfor %}
 
-    <form method="get" class="card card-body mb-3">
-        <div class="row g-2 align-items-end">
-            <div class="col-sm-6 col-lg-3">
-                <label for="filterService" class="form-label">Service</label>
-                <select name="service" id="filterService" class="form-select">
-                    <option value="">All services</option>
-                    {% for service in services %}
-                        <option value="{{ service.pk }}" {% if selected_service == service.pk|stringformat:'s' %}selected{% endif %}>{{ service.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-                <label for="filterPayment" class="form-label">Payment</label>
-                <select name="payment_status" id="filterPayment" class="form-select">
-                    <option value="">All payment statuses</option>
-                    {% for value, label in payment_statuses %}<option value="{{ value }}" {% if selected_payment_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-                </select>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-                <label for="filterWork" class="form-label">Work</label>
-                <select name="work_status" id="filterWork" class="form-select">
-                    <option value="">All work statuses</option>
-                    {% for value, label in work_statuses %}<option value="{{ value }}" {% if selected_work_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-                </select>
-            </div>
-            <div class="col-sm-6 col-lg-3 d-flex gap-2">
-                <button class="btn btn-primary flex-grow-1" type="submit"><i class="fa-solid fa-filter me-1"></i> Filter</button>
-                <a class="btn btn-outline-secondary" href="{% url 'manage_applications' %}">Clear</a>
-            </div>
+    <!-- =========================================
+         MESSAGES
+    ========================================= -->
+
+    {% for message in messages %}
+
+        <div class="alert alert-{{ message.tags|default:'info' }} portal-alert">
+            {{ message }}
         </div>
+
+    {% endfor %}
+
+
+    <!-- =========================================
+         FILTERS
+    ========================================= -->
+
+    <form method="get"
+          class="card card-body filter-card mb-4">
+
+        <div class="row g-3 align-items-end">
+
+            <!-- Service -->
+
+            <div class="col-sm-6 col-lg-3">
+
+                <label
+                    for="filterService"
+                    class="form-label">
+
+                    Service
+
+                </label>
+
+
+                <select
+                    name="service"
+                    id="filterService"
+                    class="form-select">
+
+                    <option value="">
+                        All services
+                    </option>
+
+                    {% for service in services %}
+
+                        <option
+                            value="{{ service.pk }}"
+                            {% if selected_service == service.pk|stringformat:'s' %}
+                                selected
+                            {% endif %}>
+
+                            {{ service.name }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Payment -->
+
+            <div class="col-sm-6 col-lg-3">
+
+                <label
+                    for="filterPayment"
+                    class="form-label">
+
+                    Payment
+
+                </label>
+
+
+                <select
+                    name="payment_status"
+                    id="filterPayment"
+                    class="form-select">
+
+                    <option value="">
+                        All payment statuses
+                    </option>
+
+                    {% for value, label in payment_statuses %}
+
+                        <option
+                            value="{{ value }}"
+                            {% if selected_payment_status == value %}
+                                selected
+                            {% endif %}>
+
+                            {{ label }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Work -->
+
+            <div class="col-sm-6 col-lg-3">
+
+                <label
+                    for="filterWork"
+                    class="form-label">
+
+                    Work
+
+                </label>
+
+
+                <select
+                    name="work_status"
+                    id="filterWork"
+                    class="form-select">
+
+                    <option value="">
+                        All work statuses
+                    </option>
+
+                    {% for value, label in work_statuses %}
+
+                        <option
+                            value="{{ value }}"
+                            {% if selected_work_status == value %}
+                                selected
+                            {% endif %}>
+
+                            {{ label }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Buttons -->
+
+            <div class="col-sm-6 col-lg-3 d-flex gap-2">
+
+                <button
+                    class="btn btn-filter flex-grow-1"
+                    type="submit">
+
+                    <i class="fa-solid fa-filter me-1"></i>
+
+                    Filter
+
+                </button>
+
+
+                <a
+                    class="btn btn-clear"
+                    href="{% url 'manage_applications' %}">
+
+                    Clear
+
+                </a>
+
+            </div>
+
+        </div>
+
     </form>
 
-    <div class="card">
+
+    <!-- =========================================
+         APPLICATION TABLE
+    ========================================= -->
+
+    <div class="applications-table-card">
+
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr><th class="ps-3">Applicant</th><th>Service</th><th>Amount</th><th>Applied</th><th class="text-end pe-3">Payment and work status</th></tr>
-                </thead>
-                <tbody>
-                    {% for application in applications %}
+
+            <table class="table table-hover align-middle applications-table mb-0">
+
+                <thead>
+
                     <tr>
-                        <td class="ps-3">
-                            <div class="fw-semibold">{{ application.applicant_name }}</div>
-                            <div class="small text-muted">{{ application.applicant_email|default:"No email provided" }}</div>
-                        </td>
-                        <td>
-                            <div>{{ application.service_name }}</div>
-                            {% if application.service %}<div class="small text-muted">{{ application.service.main_service.name }}</div>{% endif %}
-                            <div class="small">PhonePe ref: {{ application.transaction_ref|default:"Not submitted" }}</div>
-                            <div><a class="small" href="{% url 'application_receipt' application.pk %}">View receipt</a></div>
-                        </td>
-                        <td class="text-nowrap">&#8377;{{ application.amount|floatformat:2 }}</td>
-                        <td class="text-nowrap">{{ application.created_at|date:"M j, Y" }}<div class="small text-muted">{{ application.created_at|date:"g:i a" }}</div></td>
-                        <td class="text-end pe-3">
-                            <form method="post" action="{% url 'update_application_status' application.pk %}" class="row g-2 align-items-center justify-content-end">
-                                {% csrf_token %}
-                                <div class="col-12 col-sm-5 col-lg-4">
-                                    <label class="visually-hidden" for="payment-{{ application.pk }}">Payment status</label>
-                                    <select class="form-select form-select-sm" name="payment_status" id="payment-{{ application.pk }}">
-                                        {% for value, label in payment_statuses %}<option value="{{ value }}" {% if application.payment_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-                                    </select>
-                                </div>
-                                <div class="col-12 col-sm-5 col-lg-4">
-                                    <label class="visually-hidden" for="work-{{ application.pk }}">Work status</label>
-                                    <select class="form-select form-select-sm" name="work_status" id="work-{{ application.pk }}">
-                                        {% for value, label in work_statuses %}<option value="{{ value }}" {% if application.work_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-                                    </select>
-                                </div>
-                                <div class="col-12 col-lg-auto"><button class="btn btn-sm btn-primary w-100" type="submit">Save</button></div>
-                            </form>
-                        </td>
+
+                        <th class="ps-3">
+                            Applicant
+                        </th>
+
+                        <th>
+                            Service
+                        </th>
+
+                        <th>
+                            Amount
+                        </th>
+
+                        <th>
+                            Applied
+                        </th>
+
+                        <th class="text-end pe-3">
+                            Payment and Work Status
+                        </th>
+
                     </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for application in applications %}
+
+                    <tr>
+
+                        <!-- Applicant -->
+
+                        <td class="ps-3">
+
+                            <div class="applicant-name">
+                                {{ application.applicant_name }}
+                            </div>
+
+                            <div class="applicant-email">
+                                {{ application.applicant_email|default:"No email provided" }}
+                            </div>
+
+                        </td>
+
+
+                        <!-- Service -->
+
+                        <td>
+
+                            <div class="service-name">
+                                {{ application.service_name }}
+                            </div>
+
+
+                            {% if application.service %}
+
+                                <div class="main-service">
+                                    {{ application.service.main_service.name }}
+                                </div>
+
+                            {% endif %}
+
+
+                            <div class="transaction-ref">
+
+                                <i class="fa-solid fa-receipt me-1"></i>
+
+                                PhonePe ref:
+                                {{ application.transaction_ref|default:"Not submitted" }}
+
+                            </div>
+
+
+                            <div>
+
+                                <a
+                                    class="receipt-link"
+                                    href="{% url 'application_receipt' application.pk %}">
+
+                                    <i class="fa-solid fa-file-invoice me-1"></i>
+                                    View receipt
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Amount -->
+
+                        <td>
+
+                            <span class="amount">
+                                &#8377;{{ application.amount|floatformat:2 }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- Applied -->
+
+                        <td>
+
+                            <div class="application-date">
+                                {{ application.created_at|date:"M j, Y" }}
+                            </div>
+
+                            <div class="application-time">
+                                {{ application.created_at|date:"g:i a" }}
+                            </div>
+
+                        </td>
+
+
+                        <!-- Status -->
+
+                        <td class="text-end pe-3">
+
+                            <form
+                                method="post"
+                                action="{% url 'update_application_status' application.pk %}"
+                                class="row g-2 align-items-center justify-content-end status-form">
+
+                                {% csrf_token %}
+
+
+                                <!-- Payment Status -->
+
+                                <div class="col-12 col-sm-5 col-lg-4">
+
+                                    <label
+                                        class="visually-hidden"
+                                        for="payment-{{ application.pk }}">
+
+                                        Payment status
+
+                                    </label>
+
+
+                                    <select
+                                        class="form-select form-select-sm"
+                                        name="payment_status"
+                                        id="payment-{{ application.pk }}">
+
+                                        {% for value, label in payment_statuses %}
+
+                                            <option
+                                                value="{{ value }}"
+                                                {% if application.payment_status == value %}
+                                                    selected
+                                                {% endif %}>
+
+                                                {{ label }}
+
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+
+                                <!-- Work Status -->
+
+                                <div class="col-12 col-sm-5 col-lg-4">
+
+                                    <label
+                                        class="visually-hidden"
+                                        for="work-{{ application.pk }}">
+
+                                        Work status
+
+                                    </label>
+
+
+                                    <select
+                                        class="form-select form-select-sm"
+                                        name="work_status"
+                                        id="work-{{ application.pk }}">
+
+                                        {% for value, label in work_statuses %}
+
+                                            <option
+                                                value="{{ value }}"
+                                                {% if application.work_status == value %}
+                                                    selected
+                                                {% endif %}>
+
+                                                {{ label }}
+
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+
+                                <!-- Save -->
+
+                                <div class="col-12 col-lg-auto">
+
+                                    <button
+                                        class="btn btn-sm btn-save w-100"
+                                        type="submit">
+
+                                        <i class="fa-solid fa-floppy-disk me-1"></i>
+
+                                        Save
+
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+
                     {% empty %}
-                    <tr><td colspan="5" class="text-center py-5"><i class="fa-solid fa-inbox fa-2x text-muted mb-3"></i><div class="fw-semibold">No applications found</div><div class="small text-muted">Applications will appear here when users apply through the portal.</div></td></tr>
+
+                    <!-- Empty State -->
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="text-center empty-state">
+
+                            <div class="empty-icon">
+
+                                <i class="fa-solid fa-inbox"></i>
+
+                            </div>
+
+
+                            <div class="empty-state-title">
+                                No applications found
+                            </div>
+
+
+                            <div class="empty-state-text">
+                                Applications will appear here when users apply
+                                through the portal.
+                            </div>
+
+                        </td>
+
+                    </tr>
+
                     {% endfor %}
+
                 </tbody>
+
             </table>
+
         </div>
+
     </div>
+
 </div>
+
 {% endblock %}

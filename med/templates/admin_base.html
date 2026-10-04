@@ -1,227 +1,1138 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
 
-    <title>SEVA ONE</title>
+<head>
 
     <meta charset="UTF-8">
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap -->
+    <title>SEVA ONE</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
     <!-- Font Awesome -->
-
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     {% include 'theme_toggle.html' %}
 
     <style>
 
-        body{
-            margin:0;
-            padding:0;
-            background:#f4f7fb;
-            font-family:Arial, sans-serif;
+        /* =====================================================
+           SEVA ONE COLOR PALETTE
+        ===================================================== */
+
+        :root {
+
+            --seva-navy: #073D70;
+            --seva-navy-dark: #123F78;
+            --seva-navy-light: #1D5A94;
+
+            --seva-coral: #F36B4F;
+            --seva-coral-dark: #E85A3F;
+            --seva-coral-light: #FF8A70;
+
+            --seva-cream: #FFF4DF;
+            --seva-cream-dark: #FFE8C4;
+
+            --seva-blue-bg: #E9F5FC;
+            --seva-blue-soft: #DFEEF9;
+
+            --seva-green: #249B63;
+            --seva-green-light: #E9F7F1;
+
+            --seva-purple: #8B4DE8;
+            --seva-purple-light: #F1EAFE;
+
+            --seva-cyan: #18A9C7;
+            --seva-cyan-light: #E5F8FC;
+
+            --seva-orange: #E89A16;
+            --seva-orange-light: #FFF4DA;
+
+            --seva-red: #DC3F3F;
+            --seva-red-light: #FDECEC;
+
+            --seva-text: #17324D;
+            --seva-muted: #64748B;
+
+            --seva-border: #DCE5ED;
+
+            --seva-page: #F7F8FA;
+
+            --seva-white: #FFFFFF;
+
+            --seva-shadow:
+                0 10px 28px rgba(7,61,112,.09);
         }
 
-        /* Navbar */
 
-        .navbar-custom{
-            background:linear-gradient(to right,#2563eb,#06b6d4);
-            padding:15px 40px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
         }
 
-        .logo-section{
-            display:flex;
-            align-items:center;
-            gap:12px;
+
+        html {
+            scroll-behavior: smooth;
         }
 
-        .logo-icon{
-            width:150px;
-            height:52px;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            background:transparent;
-            border-radius:14px;
-            overflow:hidden;
-            box-shadow:none;
+
+        body {
+
+            margin: 0;
+
+            padding: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            color: var(--seva-text);
+
+            background:
+
+                radial-gradient(
+                    circle at 0% 0%,
+                    rgba(223,238,249,.75),
+                    transparent 28%
+                ),
+
+                radial-gradient(
+                    circle at 100% 100%,
+                    rgba(255,232,196,.50),
+                    transparent 30%
+                ),
+
+                var(--seva-page);
         }
 
-        .logo-icon img{
-            width:100%;
-            height:100%;
-            object-fit:contain;
-            display:block;
+
+        /* =====================================================
+           ADMIN NAVBAR
+        ===================================================== */
+
+        .navbar-custom {
+
+            position: relative;
+
+            display: flex;
+
+            background:
+                #FFFFFF;
+
+            padding:
+                13px clamp(16px,4vw,50px);
+
+            gap: 18px;
+
+            border-bottom:
+                1px solid var(--seva-border);
+
+            box-shadow:
+                0 6px 20px rgba(7,61,112,.08);
+
+            overflow: hidden;
         }
 
-        .navbar-title{
-            color:white;
-            font-size:30px;
-            font-weight:bold;
-            margin:0;
+
+        /* SEVA ONE colored line */
+
+        .navbar-custom::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--seva-coral) 0%,
+                    var(--seva-coral) 18%,
+                    var(--seva-navy) 18%,
+                    var(--seva-navy) 82%,
+                    var(--seva-coral) 82%,
+                    var(--seva-coral) 100%
+                );
         }
 
-        .navbar-subtitle{
-            color:#dbeafe;
-            font-size:14px;
-            margin:0;
+
+        /* =====================================================
+           LOGO
+        ===================================================== */
+
+        .logo-section {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            flex-shrink: 0;
         }
 
-        /* Buttons */
 
-        .nav-buttons{
-            display:flex;
-            gap:12px;
-            align-items:center;
-            flex-wrap:wrap;
+        .logo-icon {
+
+            width: 150px;
+
+            height: 54px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background: #FFFFFF;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            padding: 3px;
         }
 
-        .btn-custom{
-            border:none;
-            padding:10px 18px;
-            border-radius:10px;
-            font-weight:600;
-            transition:0.3s;
-            text-decoration:none;
-            display:flex;
-            align-items:center;
-            gap:8px;
+
+        .logo-icon img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: contain;
+
+            display: block;
         }
 
-        /* Home */
 
-        .btn-home{
-            background:white;
-            color:#2563eb;
+        /* =====================================================
+           BRAND
+        ===================================================== */
+
+        .navbar-title {
+
+            color:
+                var(--seva-navy);
+
+            font-size:
+                23px;
+
+            font-weight:
+                850;
+
+            letter-spacing:
+                .04em;
+
+            margin:
+                0;
         }
 
-        .btn-home:hover{
-            background:#dbeafe;
-            color:#2563eb;
+
+        .navbar-subtitle {
+
+            color:
+                var(--seva-muted);
+
+            font-size:
+                11px;
+
+            margin:
+                3px 0 0;
+
+            letter-spacing:
+                .03em;
         }
 
-        /* Add Medicine */
 
-        .btn-medicine{
-            background:#2563eb;
-            color:white;
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        .nav-buttons {
+
+            position: relative;
+
+            z-index: 3;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: flex-end;
+
+            gap: 7px;
+
+            flex-wrap: wrap;
+
+            margin-left: auto;
         }
 
-        .btn-medicine:hover{
-            background:#1d4ed8;
-            color:white;
+
+        /* =====================================================
+           COMMON NAV BUTTON
+        ===================================================== */
+
+        .btn-custom {
+
+            border: none;
+
+            padding:
+                9px 13px;
+
+            border-radius:
+                8px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                750;
+
+            text-decoration:
+                none;
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            gap:
+                7px;
+
+            white-space:
+                nowrap;
+
+            transition:
+                all .22s ease;
         }
 
-        /* Add Diagnosis */
 
-        .btn-diagnosis{
-            background:#16a34a;
-            color:white;
+        .btn-custom:hover {
+
+            transform:
+                translateY(-2px);
         }
 
-        .btn-diagnosis:hover{
-            background:#15803d;
-            color:white;
+
+        /* =====================================================
+           OVERVIEW
+        ===================================================== */
+
+        .btn-home {
+
+            background:
+                var(--seva-navy);
+
+            color:
+                #FFFFFF;
+
+            box-shadow:
+                0 5px 12px rgba(7,61,112,.15);
         }
 
-        /* Register User */
 
-        .btn-user{
-            background:#7c3aed;
-            color:white;
+        .btn-home:hover {
+
+            background:
+                var(--seva-navy-dark);
+
+            color:
+                #FFFFFF;
         }
 
-        .btn-user:hover{
-            background:#6d28d9;
-            color:white;
+
+        /* =====================================================
+           MANAGE SERVICES
+        ===================================================== */
+
+        .btn-services {
+
+            background:
+                var(--seva-coral);
+
+            color:
+                #FFFFFF;
+
+            box-shadow:
+                0 5px 12px rgba(243,107,79,.15);
         }
 
-        /* Logout */
 
-        .btn-logout{
-            background:#ef4444;
-            color:white;
+        .btn-services:hover {
+
+            background:
+                var(--seva-coral-dark);
+
+            color:
+                #FFFFFF;
         }
 
-        .btn-logout:hover{
-            background:#dc2626;
-            color:white;
+
+        /* =====================================================
+           APPLICATIONS
+        ===================================================== */
+
+        .btn-applications {
+
+            background:
+                var(--seva-purple);
+
+            color:
+                #FFFFFF;
+
+            box-shadow:
+                0 5px 12px rgba(139,77,232,.15);
         }
 
-        /* Content */
 
-        .content-container{
-            padding:35px;
+        .btn-applications:hover {
+
+            background:
+                #7536D2;
+
+            color:
+                #FFFFFF;
         }
 
-        /* Responsive */
 
-        @media(max-width:768px){
+        /* =====================================================
+           USERS
+        ===================================================== */
 
-            .navbar-custom{
-                flex-direction:column;
-                gap:20px;
-                text-align:center;
+        .btn-users {
+
+            background:
+                var(--seva-cyan);
+
+            color:
+                #FFFFFF;
+
+            box-shadow:
+                0 5px 12px rgba(24,169,199,.15);
+        }
+
+
+        .btn-users:hover {
+
+            background:
+                #118EA8;
+
+            color:
+                #FFFFFF;
+        }
+
+
+        /* =====================================================
+           CONTACT
+        ===================================================== */
+
+        .btn-contact {
+
+            background:
+                var(--seva-green);
+
+            color:
+                #FFFFFF;
+
+            box-shadow:
+                0 5px 12px rgba(36,155,99,.15);
+        }
+
+
+        .btn-contact:hover {
+
+            background:
+                #1C8052;
+
+            color:
+                #FFFFFF;
+        }
+
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        .btn-logout {
+
+            background:
+                var(--seva-coral);
+
+            color:
+                #FFFFFF;
+
+            box-shadow:
+                0 5px 12px rgba(243,107,79,.15);
+        }
+
+
+        .btn-logout:hover {
+
+            background:
+                var(--seva-coral-dark);
+
+            color:
+                #FFFFFF;
+        }
+
+
+        /* =====================================================
+           THEME TOGGLE
+        ===================================================== */
+
+        .theme-toggle {
+
+            width:
+                38px;
+
+            height:
+                38px;
+
+            border:
+                1px solid #D4E1EB;
+
+            border-radius:
+                50%;
+
+            background:
+                #F4F8FB;
+
+            color:
+                var(--seva-navy);
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            cursor:
+                pointer;
+
+            transition:
+                .2s;
+        }
+
+
+        .theme-toggle:hover {
+
+            background:
+                var(--seva-navy);
+
+            color:
+                #FFFFFF;
+        }
+
+
+        /* =====================================================
+           CONTENT
+        ===================================================== */
+
+        .content-container {
+
+            min-height:
+                calc(100vh - 125px);
+
+            padding:
+                clamp(20px,3vw,40px);
+
+            background:
+                transparent;
+        }
+
+
+        /* =====================================================
+           COMMON CARD
+        ===================================================== */
+
+        .card {
+
+            border:
+                1px solid var(--seva-border);
+
+            border-radius:
+                16px;
+
+            background:
+                rgba(255,255,255,.96);
+
+            box-shadow:
+                var(--seva-shadow);
+
+            overflow:
+                hidden;
+        }
+
+
+        .card-hover {
+
+            transition:
+                transform .22s ease,
+                box-shadow .22s ease;
+        }
+
+
+        .card-hover:hover {
+
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                0 18px 36px rgba(7,61,112,.13);
+        }
+
+
+        /* =====================================================
+           COMMON PRIMARY BUTTON
+        ===================================================== */
+
+        .btn-primary {
+
+            background:
+                var(--seva-navy);
+
+            border-color:
+                var(--seva-navy);
+
+            color:
+                #FFFFFF;
+        }
+
+
+        .btn-primary:hover {
+
+            background:
+                var(--seva-navy-dark);
+
+            border-color:
+                var(--seva-navy-dark);
+
+            color:
+                #FFFFFF;
+        }
+
+
+        /* =====================================================
+           CORAL BUTTON
+        ===================================================== */
+
+        .btn-coral {
+
+            background:
+                var(--seva-coral);
+
+            border:
+                none;
+
+            color:
+                #FFFFFF;
+        }
+
+
+        .btn-coral:hover {
+
+            background:
+                var(--seva-coral-dark);
+
+            color:
+                #FFFFFF;
+        }
+
+
+        /* =====================================================
+           SUCCESS
+        ===================================================== */
+
+        .btn-success {
+
+            background:
+                var(--seva-green);
+
+            border-color:
+                var(--seva-green);
+
+            color:
+                #FFFFFF;
+        }
+
+
+        /* =====================================================
+           INFO
+        ===================================================== */
+
+        .btn-info {
+
+            background:
+                var(--seva-cyan);
+
+            border-color:
+                var(--seva-cyan);
+
+            color:
+                #FFFFFF;
+        }
+
+
+        /* =====================================================
+           WARNING
+        ===================================================== */
+
+        .btn-warning {
+
+            background:
+                var(--seva-orange);
+
+            border-color:
+                var(--seva-orange);
+
+            color:
+                #FFFFFF;
+        }
+
+
+        /* =====================================================
+           DANGER
+        ===================================================== */
+
+        .btn-danger {
+
+            background:
+                var(--seva-red);
+
+            border-color:
+                var(--seva-red);
+
+            color:
+                #FFFFFF;
+        }
+
+
+        /* =====================================================
+           FORM CONTROLS
+        ===================================================== */
+
+        .form-control,
+        .form-select {
+
+            border:
+                1px solid #D5E0E9;
+
+            border-radius:
+                8px;
+
+            padding:
+                10px 12px;
+
+            color:
+                var(--seva-text);
+
+            background:
+                #FFFFFF;
+        }
+
+
+        .form-control:focus,
+        .form-select:focus {
+
+            border-color:
+                var(--seva-navy);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(7,61,112,.10);
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table {
+
+            margin-bottom:
+                0;
+        }
+
+
+        .table thead {
+
+            background:
+                var(--seva-navy);
+
+            color:
+                #FFFFFF;
+        }
+
+
+        .table thead th {
+
+            border:
+                none;
+
+            padding:
+                13px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                750;
+        }
+
+
+        .table tbody td {
+
+            padding:
+                13px;
+
+            vertical-align:
+                middle;
+        }
+
+
+        .table tbody tr {
+
+            transition:
+                background .2s ease;
+        }
+
+
+        .table tbody tr:hover {
+
+            background:
+                #F1F8FC;
+        }
+
+
+        /* =====================================================
+           BADGES
+        ===================================================== */
+
+        .badge {
+
+            border-radius:
+                7px;
+
+            padding:
+                6px 9px;
+
+            font-weight:
+                700;
+        }
+
+
+        /* =====================================================
+           COLOR UTILITY CLASSES
+        ===================================================== */
+
+        .seva-navy-bg {
+            background:
+                var(--seva-navy) !important;
+            color: white !important;
+        }
+
+
+        .seva-coral-bg {
+            background:
+                var(--seva-coral) !important;
+            color: white !important;
+        }
+
+
+        .seva-cream-bg {
+            background:
+                var(--seva-cream) !important;
+        }
+
+
+        .seva-blue-bg {
+            background:
+                var(--seva-blue-bg) !important;
+        }
+
+
+        .seva-green-bg {
+            background:
+                var(--seva-green-light) !important;
+        }
+
+
+        .seva-purple-bg {
+            background:
+                var(--seva-purple-light) !important;
+        }
+
+
+        .seva-cyan-bg {
+            background:
+                var(--seva-cyan-light) !important;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .portal-footer {
+
+            color:
+                var(--seva-muted);
+
+            font-size:
+                12px;
+
+            text-align:
+                center;
+
+            padding:
+                18px;
+
+            background:
+                #FFFFFF;
+
+            border-top:
+                1px solid var(--seva-border);
+
+            letter-spacing:
+                .03em;
+        }
+
+
+        .portal-footer::before {
+
+            content:
+                "✦ ";
+
+            color:
+                var(--seva-coral);
+        }
+
+
+        .portal-footer::after {
+
+            content:
+                " ✦";
+
+            color:
+                var(--seva-navy);
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media(max-width:1200px) {
+
+            .navbar-custom {
+
+                flex-direction:
+                    column;
+
+                text-align:
+                    center;
             }
 
-            .nav-buttons{
-                justify-content:center;
+
+            .logo-section {
+
+                justify-content:
+                    center;
+            }
+
+
+            .nav-buttons {
+
+                width:
+                    100%;
+
+                justify-content:
+                    center;
+
+                margin-left:
+                    0;
             }
 
         }
 
-        /* Citizen service portal theme */
-        body{background:#f3f6fa;color:#14213d;font-family:Inter,"Segoe UI",Arial,sans-serif}
-        .navbar-custom{background:#fff;padding:14px clamp(16px,4vw,56px);border-bottom:1px solid #e2e8f0;box-shadow:0 4px 18px rgba(15,23,42,.05);gap:16px}
-        .logo-icon{background:#e8f0fe;border-radius:14px;overflow:hidden}
-        .logo-badge{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;letter-spacing:1px;color:#fff;background:linear-gradient(135deg, #174ea6, #2563eb)}
-        .navbar-title{color:#14213d;font-size:20px;font-weight:750}
-        .navbar-subtitle{color:#64748b;font-size:12px}
-        .nav-buttons{gap:8px;flex-wrap:wrap}
-        .btn-custom{border-radius:9px;padding:9px 13px;font-size:14px}
-        .btn-home{background:#edf4ff;color:#174ea6}
-        .btn-home:hover{background:#dbeafe;color:#174ea6}
-        .btn-medicine{background:#174ea6;color:#fff}
-        .btn-medicine:hover{background:#123f86;color:#fff}
-        .btn-user{background:#0e7490;color:#fff}
-        .btn-user:hover{background:#155e75;color:#fff}
-        .content-container{min-height:calc(100vh - 110px);padding:clamp(18px,3vw,40px)}
-        .card{border:1px solid #e7edf4;border-radius:16px}
-        .portal-footer{color:#64748b;font-size:13px;text-align:center;padding:18px}
-        @media(max-width:768px){.navbar-custom{padding:16px;text-align:center}.nav-buttons{justify-content:center}}
+
+        @media(max-width:768px) {
+
+            .navbar-custom {
+
+                padding:
+                    17px 12px;
+            }
+
+
+            .logo-section {
+
+                flex-direction:
+                    column;
+
+                gap:
+                    7px;
+            }
+
+
+            .logo-icon {
+
+                width:
+                    140px;
+
+                height:
+                    50px;
+            }
+
+
+            .navbar-title {
+
+                font-size:
+                    21px;
+            }
+
+
+            .navbar-subtitle {
+
+                font-size:
+                    10px;
+            }
+
+
+            .nav-buttons {
+
+                gap:
+                    6px;
+            }
+
+
+            .btn-custom {
+
+                padding:
+                    8px 10px;
+
+                font-size:
+                    11px;
+            }
+
+
+            .content-container {
+
+                padding:
+                    18px 12px;
+            }
+
+        }
+
+
+        @media(max-width:480px) {
+
+            .nav-buttons {
+
+                display:
+                    grid;
+
+                grid-template-columns:
+                    repeat(2,1fr);
+
+                width:
+                    100%;
+            }
+
+
+            .btn-custom {
+
+                width:
+                    100%;
+            }
+
+
+            .theme-toggle {
+
+                width:
+                    100%;
+
+                border-radius:
+                    8px;
+
+                grid-column:
+                    span 2;
+            }
+
+        }
 
     </style>
 
 </head>
 
+
 <body>
 
-<!-- Navbar -->
 
-<div class="navbar-custom d-flex justify-content-between align-items-center">
+<!-- =====================================================
+     ADMIN NAVBAR
+===================================================== -->
 
-    <!-- Left Logo -->
+<div
+    class="navbar-custom d-flex justify-content-between align-items-center">
+
+
+    <!-- =================================================
+         LOGO
+    ================================================= -->
 
     <div class="logo-section">
 
         <div class="logo-icon">
-            <img src="{% static 'seva-one-logo.jpg' %}" alt="SEVA ONE logo">
+
+            <img
+                src="{% static 'seva-one-logo.jpg' %}"
+                alt="SEVA ONE Logo">
+
         </div>
+
 
         <div>
 
             <h1 class="navbar-title">
                 SEVA ONE
             </h1>
+
 
             <p class="navbar-subtitle">
                 Manage citizen service categories and applications
@@ -231,26 +1142,132 @@
 
     </div>
 
-    <!-- Right Buttons -->
 
-    <nav class="nav-buttons" aria-label="Admin navigation">
-        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color theme" title="Switch color theme" aria-pressed="false"></button>
-        <a href="{% url 'admin_dashboard' %}" class="btn-custom btn-home"><i class="fa-solid fa-gauge-high"></i> Overview</a>
-        <a href="{% url 'manage_services' %}" class="btn-custom btn-medicine"><i class="fa-solid fa-list-check"></i> Manage services</a>
-        <a href="{% url 'manage_applications' %}" class="btn-custom btn-medicine"><i class="fa-solid fa-clipboard-list"></i> Applications</a>
-        <a href="{% url 'manage_users' %}" class="btn-custom btn-medicine"><i class="fa-solid fa-users"></i> Users</a>
-        <a href="{% url 'manage_contact_details' %}" class="btn-custom btn-medicine"><i class="fa-solid fa-address-card"></i> Contact info</a>
-        <!-- <a href="{% url 'service_catalog' %}" class="btn-custom btn-home"><i class="fa-solid fa-arrow-up-right-from-square"></i> View portal</a> -->
+    <!-- =================================================
+         ADMIN NAVIGATION
+    ================================================= -->
+
+    <nav
+        class="nav-buttons"
+        aria-label="Admin navigation">
+
+
+        <!-- THEME -->
+
+        <button
+            class="theme-toggle"
+            type="button"
+            data-theme-toggle
+            aria-label="Switch color theme"
+            title="Switch color theme"
+            aria-pressed="false">
+
+            <i class="fa-solid fa-circle-half-stroke"></i>
+
+        </button>
+
+
+        <!-- OVERVIEW -->
+
+        <a
+            href="{% url 'admin_dashboard' %}"
+            class="btn-custom btn-home">
+
+            <i class="fa-solid fa-gauge-high"></i>
+
+            <span>
+                Overview
+            </span>
+
+        </a>
+
+
+        <!-- MANAGE SERVICES -->
+
+        <a
+            href="{% url 'manage_services' %}"
+            class="btn-custom btn-services">
+
+            <i class="fa-solid fa-list-check"></i>
+
+            <span>
+                Manage Services
+            </span>
+
+        </a>
+
+
+        <!-- APPLICATIONS -->
+
+        <a
+            href="{% url 'manage_applications' %}"
+            class="btn-custom btn-applications">
+
+            <i class="fa-solid fa-clipboard-list"></i>
+
+            <span>
+                Applications
+            </span>
+
+        </a>
+
+
+        <!-- USERS -->
+
+        <a
+            href="{% url 'manage_users' %}"
+            class="btn-custom btn-users">
+
+            <i class="fa-solid fa-users"></i>
+
+            <span>
+                Users
+            </span>
+
+        </a>
+
+
+        <!-- CONTACT -->
+
+        <a
+            href="{% url 'manage_contact_details' %}"
+            class="btn-custom btn-contact">
+
+            <i class="fa-solid fa-address-card"></i>
+
+            <span>
+                Contact Info
+            </span>
+
+        </a>
+
+
+        <!-- LOGOUT -->
+
         {% if user.is_authenticated %}
-            <a href="{% url 'logout' %}" class="btn-custom btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sign out</a>
+
+        <a
+            href="{% url 'logout' %}"
+            class="btn-custom btn-logout">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            <span>
+                Sign Out
+            </span>
+
+        </a>
+
         {% endif %}
+
     </nav>
 
 </div>
 
-<footer class="portal-footer">SEVA ONE · Administration</footer>
 
-<!-- Page Content -->
+<!-- =====================================================
+     PAGE CONTENT
+===================================================== -->
 
 <div class="content-container">
 
@@ -260,7 +1277,30 @@
 
 </div>
 
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="portal-footer">
+
+    SEVA ONE · Administration · Citizen Services Portal
+
+</footer>
+
+
+<!-- PASSWORD TOGGLE -->
+
 {% include 'password_toggle_script.html' %}
 
+
+<!-- BOOTSTRAP JS -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
 </body>
+
 </html>

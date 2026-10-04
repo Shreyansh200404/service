@@ -1,86 +1,641 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+    :root {
+        --navy: #073D70;
+        --navy-dark: #123F78;
+        --navy-light: #1D5A94;
+        --coral: #F36B4F;
+        --coral-dark: #E85A3F;
+        --coral-light: #FF8A70;
+        --cream: #FFF4DF;
+        --cream-dark: #FFE8C4;
+        --blue-light: #E9F5FC;
+        --blue-border: #D7EBF8;
+        --green: #249B63;
+        --purple: #8B4DE8;
+        --cyan: #18A9C7;
+        --text: #17324D;
+        --muted: #64748B;
+        --border: #DCE5ED;
+    }
+
+    body {
+        background: #F7F8FA;
+    }
+
+    /* Hero */
+    .services-hero {
+        background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 65%, var(--navy-light) 100%);
+        border: none;
+        border-radius: 22px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .services-hero::after {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: rgba(243, 107, 79, 0.16);
+        right: -70px;
+        top: -80px;
+    }
+
+    .services-hero::before {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: rgba(255, 244, 223, 0.08);
+        right: 160px;
+        bottom: -90px;
+    }
+
+    .services-hero > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-label {
+        color: #FFD8C9;
+        letter-spacing: 1.4px;
+        font-size: 0.78rem;
+    }
+
+    .services-hero h1 {
+        color: #fff;
+    }
+
+    .services-hero p {
+        color: rgba(255,255,255,0.78);
+    }
+
+    .btn-hero {
+        background: var(--coral);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        transition: .2s ease;
+    }
+
+    .btn-hero:hover {
+        background: var(--coral-dark);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    /* Section headings */
+    .section-title {
+        color: var(--navy);
+    }
+
+    .section-subtitle {
+        color: var(--muted);
+    }
+
+    .total-badge {
+        background: var(--cream);
+        color: var(--coral-dark);
+        border: 1px solid var(--cream-dark);
+        font-weight: 600;
+    }
+
+    /* Applications */
+    .applications-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(7, 61, 112, 0.07);
+    }
+
+    .application-row {
+        transition: background .2s ease;
+    }
+
+    .application-row:hover {
+        background: var(--blue-light);
+    }
+
+    .application-row:last-child {
+        border-bottom: none !important;
+    }
+
+    .application-name {
+        color: var(--navy);
+    }
+
+    .status-paid {
+        background: #E8F7EF !important;
+        color: #19734A !important;
+    }
+
+    .status-waived {
+        background: #EEF2F5 !important;
+        color: #526477 !important;
+    }
+
+    .status-pending {
+        background: #E5F7FB !important;
+        color: #087D96 !important;
+    }
+
+    .status-warning {
+        background: var(--cream) !important;
+        color: #A96700 !important;
+    }
+
+    .work-status {
+        background: var(--blue-light) !important;
+        color: var(--navy) !important;
+    }
+
+    .btn-receipt {
+        color: var(--navy);
+        border-color: var(--navy);
+        background: #fff;
+    }
+
+    .btn-receipt:hover {
+        background: var(--navy);
+        color: #fff;
+    }
+
+    .btn-payment {
+        color: var(--coral-dark);
+        border-color: var(--coral);
+        background: #fff;
+    }
+
+    .btn-payment:hover {
+        background: var(--coral);
+        color: #fff;
+    }
+
+    /* Search */
+    .service-search {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 3px 12px rgba(7, 61, 112, 0.04);
+    }
+
+    .service-search .input-group-text {
+        border: none;
+        color: var(--navy);
+    }
+
+    .service-search .form-control {
+        border: none;
+        box-shadow: none;
+    }
+
+    .service-search:focus-within {
+        border-color: var(--navy-light);
+        box-shadow: 0 0 0 3px rgba(7, 61, 112, 0.08);
+    }
+
+    /* Service cards */
+    .service-card article {
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 6px 18px rgba(7, 61, 112, 0.07);
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .service-card article:hover {
+        transform: translateY(-5px);
+        border-color: var(--blue-border);
+        box-shadow: 0 12px 28px rgba(7, 61, 112, 0.12);
+    }
+
+    .service-icon {
+        width: 48px;
+        height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        background: var(--cream);
+        color: var(--coral);
+        font-size: 1.15rem;
+    }
+
+    .category-badge {
+        background: var(--blue-light);
+        color: var(--navy);
+        border: 1px solid var(--blue-border);
+        font-weight: 600;
+    }
+
+    .service-title {
+        color: var(--navy);
+    }
+
+    .service-description {
+        color: var(--muted);
+        min-height: 48px;
+    }
+
+    .service-fee {
+        color: var(--navy);
+    }
+
+    .btn-apply {
+        background: var(--coral);
+        border: 1px solid var(--coral);
+        color: #fff;
+        border-radius: 9px;
+        font-weight: 600;
+        padding: 10px 16px;
+        transition: .2s ease;
+    }
+
+    .btn-apply:hover {
+        background: var(--coral-dark);
+        border-color: var(--coral-dark);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    /* Empty state */
+    .empty-card {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: #fff;
+    }
+
+    .empty-icon {
+        color: var(--navy);
+    }
+
+    #noSearchResults {
+        background: var(--blue-light);
+        color: var(--navy);
+        border-color: var(--blue-border) !important;
+        border-radius: 12px;
+    }
+
+    @media (max-width: 767px) {
+        .services-hero {
+            border-radius: 16px;
+        }
+
+        .services-hero h1 {
+            font-size: 1.9rem;
+        }
+
+        .service-search {
+            width: 100%;
+            max-width: none !important;
+        }
+    }
+</style>
+
 <div class="container-fluid px-0">
-    <section class="p-4 p-lg-5 mb-4 rounded-4 text-white" style="background:linear-gradient(120deg,#123f86,#0e7490)">
-        <div class="row align-items-center g-3">
+
+    <!-- Hero -->
+    <section class="services-hero p-4 p-lg-5 mb-5 shadow-sm">
+        <div class="row align-items-center g-4">
+
             <div class="col-lg-8">
-                <span class="small text-uppercase fw-bold opacity-75">Citizen Services</span>
-                <h1 class="display-6 fw-bold mt-2">What can we help you with?</h1>
-                <p class="mb-0 opacity-75">Browse categories, review the available applications, and continue using the form linked to each service.</p>
+                <span class="hero-label small text-uppercase fw-bold">
+                    Citizen Services
+                </span>
+
+                <h1 class="display-6 fw-bold mt-2 mb-3">
+                    What can we help you with?
+                </h1>
+
+                <p class="mb-0">
+                    Browse categories, review the available applications,
+                    and continue using the form linked to each service.
+                </p>
             </div>
-            <div class="col-lg-4 text-lg-end"><a href="{% url 'service_catalog' %}" class="btn btn-light text-primary fw-semibold"><i class="fa-solid fa-arrow-right me-2"></i>Browse all services</a></div>
+
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'service_catalog' %}"
+                   class="btn btn-hero fw-semibold px-4 py-2 shadow-sm">
+                    <i class="fa-solid fa-arrow-right me-2"></i>
+                    Browse all services
+                </a>
+            </div>
+
         </div>
     </section>
 
+
+    <!-- My Applications -->
     <section class="mb-5">
+
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
-            <div><h2 class="h4 fw-bold mb-1">My applications</h2><p class="text-muted mb-0">Track payment and work progress for your requests.</p></div>
-            <span class="badge rounded-pill text-bg-light">{{ applications|length }} total</span>
+
+            <div>
+                <h2 class="h4 fw-bold mb-1 section-title">
+                    My applications
+                </h2>
+
+                <p class="section-subtitle mb-0">
+                    Track payment and work progress for your requests.
+                </p>
+            </div>
+
+            <span class="badge rounded-pill total-badge px-3 py-2">
+                {{ applications|length }} total
+            </span>
+
         </div>
-        <div class="card">
+
+
+        <div class="applications-card">
+
             {% for application in applications %}
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-3 border-bottom">
+
+                <div class="application-row d-flex flex-wrap justify-content-between align-items-center gap-3 p-3 border-bottom">
+
                     <div>
-                        <div class="fw-semibold">{{ application.service_name }}</div>
-                        <div class="small text-muted">Applied {{ application.created_at|date:"M j, Y, g:i a" }} · Amount: &#8377;{{ application.amount|floatformat:2 }}</div>
+                        <div class="fw-semibold application-name">
+                            {{ application.service_name }}
+                        </div>
+
+                        <div class="small text-muted mt-1">
+                            Applied {{ application.created_at|date:"M j, Y, g:i a" }}
+                            · Amount:
+                            &#8377;{{ application.amount|floatformat:2 }}
+                        </div>
                     </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <span class="badge {% if application.payment_status == 'paid' %}text-bg-success{% elif application.payment_status == 'waived' %}text-bg-secondary{% elif application.payment_status == 'verification_pending' %}text-bg-info{% else %}text-bg-warning{% endif %}">Payment: {{ application.get_payment_status_display }}</span>
-                        <span class="badge text-bg-info">Work: {{ application.get_work_status_display }}</span>
-                        <a class="btn btn-sm btn-outline-primary" href="{% url 'application_receipt' application.pk %}">Receipt</a>
-                        {% if application.payment_status == 'unpaid' or application.payment_status == 'verification_pending' %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'payment_page' application.pk %}">Payment page</a>{% endif %}
+
+
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+
+                        <!-- Payment Status -->
+                        <span class="badge rounded-pill px-3 py-2
+                            {% if application.payment_status == 'paid' %}
+                                status-paid
+                            {% elif application.payment_status == 'waived' %}
+                                status-waived
+                            {% elif application.payment_status == 'verification_pending' %}
+                                status-pending
+                            {% else %}
+                                status-warning
+                            {% endif %}">
+
+                            Payment:
+                            {{ application.get_payment_status_display }}
+
+                        </span>
+
+
+                        <!-- Work Status -->
+                        <span class="badge rounded-pill px-3 py-2 work-status">
+                            Work:
+                            {{ application.get_work_status_display }}
+                        </span>
+
+
+                        <!-- Receipt -->
+                        <a class="btn btn-sm btn-outline-primary btn-receipt"
+                           href="{% url 'application_receipt' application.pk %}">
+                            <i class="fa-solid fa-receipt me-1"></i>
+                            Receipt
+                        </a>
+
+
+                        <!-- Payment -->
+                        {% if application.payment_status == 'unpaid' or application.payment_status == 'verification_pending' %}
+
+                            <a class="btn btn-sm btn-outline-secondary btn-payment"
+                               href="{% url 'payment_page' application.pk %}">
+                                <i class="fa-solid fa-credit-card me-1"></i>
+                                Payment page
+                            </a>
+
+                        {% endif %}
+
                     </div>
+
                 </div>
+
             {% empty %}
-                <div class="p-4 text-center text-muted">You haven’t applied for a service yet.</div>
+
+                <div class="p-5 text-center text-muted">
+
+                    <i class="fa-solid fa-folder-open fa-2x empty-icon mb-3"></i>
+
+                    <h3 class="h5 fw-bold section-title">
+                        No applications yet
+                    </h3>
+
+                    <p class="mb-0">
+                        You haven’t applied for a service yet.
+                    </p>
+
+                </div>
+
             {% endfor %}
+
         </div>
+
     </section>
 
+
+    <!-- Service Heading + Search -->
     <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-3">
-        <div><h2 class="h4 fw-bold mb-1">Service categories</h2><p class="text-muted mb-0">Select an application to continue to its Google Form.</p></div>
-        <div class="input-group" style="max-width:320px"><span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span><input id="serviceSearch" class="form-control" placeholder="Search services" aria-label="Search services"></div>
+
+        <div>
+            <h2 class="h4 fw-bold mb-1 section-title">
+                Service categories
+            </h2>
+
+            <p class="section-subtitle mb-0">
+                Select an application to continue to its Google Form.
+            </p>
+        </div>
+
+
+        <div class="input-group service-search"
+             style="max-width:320px">
+
+            <span class="input-group-text bg-white">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+
+            <input id="serviceSearch"
+                   class="form-control"
+                   placeholder="Search services"
+                   aria-label="Search services">
+
+        </div>
+
     </div>
 
-    <div class="row g-3" id="serviceGrid">
+
+    <!-- Services -->
+    <div class="row g-4" id="serviceGrid">
+
         {% for service in services %}
-            <div class="col-md-6 col-xl-4 service-card" data-search="{{ service.main_service.name|lower }} {{ service.name|lower }} {{ service.description|lower }}">
-                    <article class="card h-100 shadow-sm">
-                        <div class="card-body p-4 d-flex flex-column">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <span class="rounded-3 p-3 bg-primary-subtle text-primary"><i class="fa-solid fa-file-signature fa-lg"></i></span>
-                                <span class="badge rounded-pill text-bg-light">{{ service.main_service.name }}</span>
-                            </div>
-                            <h3 class="h5 fw-bold">{{ service.name }}</h3>
-                            {% if service.description %}<p class="text-muted">{{ service.description }}</p>{% else %}<p class="text-muted">Apply online using the application form for this service.</p>{% endif %}
-                            <div class="d-flex justify-content-between align-items-center border-top pt-3 mb-3">
-                                <span class="small text-muted">Service fee</span>
-                                <strong>{% if service.amount %}&#8377;{{ service.amount|floatformat:2 }}{% else %}Free{% endif %}</strong>
-                            </div>
-                            <form method="post" action="{% url 'apply_for_service' service.pk %}" class="mt-auto">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-primary w-100">Apply now <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i></button>
-                            </form>
+
+            <div class="col-md-6 col-xl-4 service-card"
+                 data-search="{{ service.main_service.name|lower }} {{ service.name|lower }} {{ service.description|lower }}">
+
+                <article class="card h-100">
+
+                    <div class="card-body p-4 d-flex flex-column">
+
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+
+                            <span class="service-icon">
+                                <i class="fa-solid fa-file-signature"></i>
+                            </span>
+
+                            <span class="badge rounded-pill category-badge px-3 py-2">
+                                {{ service.main_service.name }}
+                            </span>
+
                         </div>
-                    </article>
-                </div>
+
+
+                        <h3 class="h5 fw-bold service-title">
+                            {{ service.name }}
+                        </h3>
+
+
+                        {% if service.description %}
+
+                            <p class="service-description">
+                                {{ service.description }}
+                            </p>
+
+                        {% else %}
+
+                            <p class="service-description">
+                                Apply online using the application form
+                                for this service.
+                            </p>
+
+                        {% endif %}
+
+
+                        <div class="d-flex justify-content-between align-items-center border-top pt-3 mb-3 mt-auto">
+
+                            <span class="small text-muted">
+                                Service fee
+                            </span>
+
+                            <strong class="service-fee">
+                                {% if service.amount %}
+                                    &#8377;{{ service.amount|floatformat:2 }}
+                                {% else %}
+                                    Free
+                                {% endif %}
+                            </strong>
+
+                        </div>
+
+
+                        <form method="post"
+                              action="{% url 'apply_for_service' service.pk %}">
+
+                            {% csrf_token %}
+
+                            <button type="submit"
+                                    class="btn btn-apply w-100">
+
+                                Apply now
+
+                                <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </article>
+
+            </div>
+
         {% empty %}
-            <div class="col-12"><div class="card text-center p-5"><i class="fa-solid fa-folder-open fa-2x text-primary mb-3"></i><h3 class="h5">Services are being prepared</h3><p class="text-muted mb-0">Please check back soon.</p></div></div>
+
+            <div class="col-12">
+
+                <div class="empty-card text-center p-5">
+
+                    <i class="fa-solid fa-folder-open fa-2x empty-icon mb-3"></i>
+
+                    <h3 class="h5 fw-bold section-title">
+                        Services are being prepared
+                    </h3>
+
+                    <p class="text-muted mb-0">
+                        Please check back soon.
+                    </p>
+
+                </div>
+
+            </div>
+
         {% endfor %}
+
     </div>
-    <div id="noSearchResults" class="alert alert-light border text-center mt-3 d-none">No matching services found.</div>
+
+
+    <!-- No Search Results -->
+    <div id="noSearchResults"
+         class="alert text-center mt-4 d-none">
+
+        <i class="fa-solid fa-magnifying-glass me-2"></i>
+        No matching services found.
+
+    </div>
+
 </div>
+
+
 <script>
-    document.getElementById('serviceSearch').addEventListener('input', function () {
-        const term = this.value.trim().toLowerCase();
-        let visible = 0;
-        document.querySelectorAll('.service-card').forEach(function (card) {
-            const matches = card.dataset.search.includes(term);
-            card.classList.toggle('d-none', !matches);
-            if (matches) visible++;
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const searchInput = document.getElementById('serviceSearch');
+        const noResults = document.getElementById('noSearchResults');
+
+        if (!searchInput) return;
+
+        searchInput.addEventListener('input', function () {
+
+            const term = this.value.trim().toLowerCase();
+
+            let visible = 0;
+
+            document.querySelectorAll('.service-card').forEach(function (card) {
+
+                const searchText = card.dataset.search || '';
+
+                const matches = searchText.includes(term);
+
+                card.classList.toggle('d-none', !matches);
+
+                if (matches) {
+                    visible++;
+                }
+
+            });
+
+            noResults.classList.toggle(
+                'd-none',
+                visible > 0
+            );
+
         });
-        document.getElementById('noSearchResults').classList.toggle('d-none', visible > 0);
+
     });
 </script>
+
 {% endblock %}

@@ -1,27 +1,609 @@
 {% extends 'admin_base.html' %}
 
 {% block content %}
-<div class="container py-4">
-    <section class="card mx-auto shadow-sm" style="max-width:760px">
-        <div class="card-body p-4 p-md-5">
-            <a href="{% url 'manage_users' %}" class="small text-decoration-none"><i class="fa-solid fa-arrow-left me-1"></i> Back to user management</a>
-            <h1 class="h3 fw-bold mt-3">Portal contact details</h1>
-            <p class="text-muted">These details appear on the public Contact page. Use an international dialing code for WhatsApp links.</p>
-            {% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}
-            <form method="post" novalidate>
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="mb-3">
-                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
-                        {% for error in field.errors %}<div class="small text-danger">{{ error }}</div>{% endfor %}
-                    </div>
-                {% endfor %}
-                {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
-                <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk me-1"></i> Save contact details</button>
-            </form>
+
+<style>
+    :root {
+        --navy: #073D70;
+        --navy-dark: #123F78;
+        --navy-light: #174EA6;
+
+        --coral: #E86B4C;
+        --coral-dark: #D95638;
+        --coral-light: #FFF0EB;
+
+        --cream: #FFF4DF;
+        --cream-dark: #FFE8C4;
+
+        --blue-light: #E9F5FC;
+        --blue-border: #D7EBF8;
+
+        --text: #172033;
+        --muted: #64748B;
+        --border: #DCE5ED;
+    }
+
+
+    /* =========================================
+       PAGE
+    ========================================= */
+
+    .contact-settings-page {
+        min-height: calc(100vh - 100px);
+        padding: 20px 0 40px;
+    }
+
+
+    /* =========================================
+       MAIN CARD
+    ========================================= */
+
+    .contact-settings-card {
+        max-width: 760px;
+
+        margin: 0 auto;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 18px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 10px 30px rgba(7, 61, 112, 0.08);
+    }
+
+
+    /* =========================================
+       CARD HEADER
+    ========================================= */
+
+    .contact-settings-header {
+        background:
+            linear-gradient(
+                135deg,
+                var(--navy) 0%,
+                var(--navy-dark) 70%,
+                #1D5A94 100%
+            );
+
+        padding: 25px 30px;
+
+        color: #fff;
+
+        position: relative;
+
+        overflow: hidden;
+    }
+
+
+    .contact-settings-header::after {
+        content: "";
+
+        position: absolute;
+
+        width: 180px;
+        height: 180px;
+
+        border-radius: 50%;
+
+        background: rgba(232, 107, 76, .15);
+
+        right: -60px;
+        top: -80px;
+    }
+
+
+    .contact-settings-header > * {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .header-icon {
+        width: 48px;
+        height: 48px;
+
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+
+        background: var(--coral);
+
+        color: #fff;
+
+        font-size: 20px;
+
+        margin-bottom: 14px;
+    }
+
+
+    .contact-settings-header h1 {
+        font-size: 24px;
+
+        font-weight: 700;
+
+        margin-bottom: 6px;
+    }
+
+
+    .contact-settings-header p {
+        margin: 0;
+
+        color: rgba(255,255,255,.76);
+
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       CARD BODY
+    ========================================= */
+
+    .contact-settings-body {
+        padding: 30px;
+    }
+
+
+    /* =========================================
+       BACK LINK
+    ========================================= */
+
+    .back-link {
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 5px;
+
+        color: var(--navy-light);
+
+        text-decoration: none;
+
+        font-size: 12px;
+
+        font-weight: 600;
+
+        margin-bottom: 22px;
+    }
+
+
+    .back-link:hover {
+        color: var(--coral-dark);
+    }
+
+
+    /* =========================================
+       INFO BOX
+    ========================================= */
+
+    .settings-info {
+        display: flex;
+
+        align-items: flex-start;
+
+        gap: 12px;
+
+        padding: 14px 16px;
+
+        margin-bottom: 25px;
+
+        background: var(--blue-light);
+
+        border: 1px solid var(--blue-border);
+
+        border-radius: 11px;
+
+        color: var(--navy);
+
+        font-size: 12px;
+    }
+
+
+    .settings-info i {
+        color: var(--coral);
+
+        font-size: 16px;
+
+        margin-top: 2px;
+    }
+
+
+    /* =========================================
+       FORM
+    ========================================= */
+
+    .contact-form .form-label {
+        color: var(--navy);
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        margin-bottom: 7px;
+    }
+
+
+    .contact-form input,
+    .contact-form textarea,
+    .contact-form select {
+        width: 100%;
+
+        border: 1px solid var(--border);
+
+        border-radius: 9px;
+
+        padding: 11px 13px;
+
+        font-size: 13px;
+
+        color: var(--text);
+
+        background: #fff;
+
+        outline: none;
+
+        transition: .2s ease;
+    }
+
+
+    .contact-form input:focus,
+    .contact-form textarea:focus,
+    .contact-form select:focus {
+        border-color: var(--navy-light);
+
+        box-shadow:
+            0 0 0 3px rgba(23, 78, 166, .08);
+    }
+
+
+    .contact-form textarea {
+        min-height: 100px;
+
+        resize: vertical;
+    }
+
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+        color: #94A3B8;
+    }
+
+
+    .contact-form .form-text {
+        color: var(--muted);
+
+        font-size: 11px;
+
+        margin-top: 5px;
+    }
+
+
+    /* =========================================
+       SUCCESS MESSAGE
+    ========================================= */
+
+    .success-alert {
+        background: #EAF7F0;
+
+        color: #19734A;
+
+        border: 1px solid #C7E8D7;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+
+        padding: 12px 15px;
+    }
+
+
+    .error-alert {
+        border-radius: 10px;
+
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       BUTTONS
+    ========================================= */
+
+    .form-actions {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 12px;
+
+        margin-top: 25px;
+
+        padding-top: 20px;
+
+        border-top: 1px solid #E8EEF3;
+    }
+
+
+    .btn-save {
+        background: var(--coral);
+
+        border: 1px solid var(--coral);
+
+        color: #fff;
+
+        border-radius: 9px;
+
+        padding: 10px 20px;
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        transition: .2s ease;
+    }
+
+
+    .btn-save:hover {
+        background: var(--coral-dark);
+
+        border-color: var(--coral-dark);
+
+        color: #fff;
+
+        transform: translateY(-1px);
+    }
+
+
+    .btn-back {
+        color: var(--navy);
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 9px;
+
+        padding: 10px 18px;
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+
+    .btn-back:hover {
+        background: var(--blue-light);
+
+        border-color: var(--blue-border);
+
+        color: var(--navy);
+    }
+
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+
+    @media (max-width: 576px) {
+
+        .contact-settings-page {
+            padding: 10px 0 30px;
+        }
+
+        .contact-settings-header {
+            padding: 22px 20px;
+        }
+
+        .contact-settings-header h1 {
+            font-size: 21px;
+        }
+
+        .contact-settings-body {
+            padding: 22px 20px;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+            align-items: stretch;
+        }
+
+        .btn-save,
+        .btn-back {
+            width: 100%;
+            text-align: center;
+        }
+
+    }
+</style>
+
+
+<div class="container-fluid px-0 contact-settings-page">
+
+    <section class="contact-settings-card">
+
+        <!-- =========================================
+             HEADER
+        ========================================= -->
+
+        <div class="contact-settings-header">
+
+            <div class="header-icon">
+                <i class="fa-solid fa-address-book"></i>
+            </div>
+
+            <h1>
+                Portal Contact Details
+            </h1>
+
+            <p>
+                Manage the contact information displayed on the public
+                SEVA ONE Contact page.
+            </p>
+
         </div>
+
+
+        <!-- =========================================
+             BODY
+        ========================================= -->
+
+        <div class="contact-settings-body">
+
+            <!-- Back -->
+
+            <a href="{% url 'manage_users' %}"
+               class="back-link">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Back to user management
+
+            </a>
+
+
+            <!-- Information -->
+
+            <div class="settings-info">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <div>
+                    These details appear on the public
+                    <strong>Contact</strong> page.
+                    Use an international dialing code for WhatsApp links.
+                </div>
+
+            </div>
+
+
+            <!-- Messages -->
+
+            {% for message in messages %}
+
+                <div class="alert success-alert">
+
+                    <i class="fa-solid fa-circle-check me-2"></i>
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+
+            <!-- Form -->
+
+            <form method="post"
+                  novalidate
+                  class="contact-form">
+
+                {% csrf_token %}
+
+
+                {% for field in form %}
+
+                    <div class="mb-3">
+
+                        <label
+                            class="form-label"
+                            for="{{ field.id_for_label }}">
+
+                            {{ field.label }}
+
+                        </label>
+
+
+                        {{ field }}
+
+
+                        {% if field.help_text %}
+
+                            <div class="form-text">
+
+                                <i class="fa-solid fa-circle-info me-1"></i>
+
+                                {{ field.help_text }}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        {% for error in field.errors %}
+
+                            <div class="small text-danger mt-1">
+
+                                <i class="fa-solid fa-circle-exclamation me-1"></i>
+
+                                {{ error }}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endfor %}
+
+
+                <!-- Non-field errors -->
+
+                {% for error in form.non_field_errors %}
+
+                    <div class="alert alert-danger error-alert">
+
+                        <i class="fa-solid fa-circle-exclamation me-2"></i>
+
+                        {{ error }}
+
+                    </div>
+
+                {% endfor %}
+
+
+                <!-- Actions -->
+
+                <div class="form-actions">
+
+                    <a href="{% url 'manage_users' %}"
+                       class="btn-back">
+
+                        <i class="fa-solid fa-arrow-left me-1"></i>
+
+                        Cancel
+
+                    </a>
+
+
+                    <button
+                        class="btn-save"
+                        type="submit">
+
+                        <i class="fa-solid fa-floppy-disk me-1"></i>
+
+                        Save Contact Details
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
     </section>
+
 </div>
+
 {% endblock %}

@@ -1,28 +1,526 @@
 {% extends 'admin_base.html' %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="card shadow-sm mx-auto" style="max-width: 720px;">
-        <div class="card-body p-4">
-            <h1 class="h3">{{ title }}</h1>
-            <p class="text-muted">{{ help_text }}</p>
-            <form method="post" enctype="multipart/form-data" novalidate>
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="mb-3">
-                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
-                        {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                    </div>
-                {% endfor %}
-                {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
-                <div class="d-flex gap-2">
-                    <button class="btn btn-primary" type="submit">{{ submit_label|default:"Save" }}</button>
-                    <a class="btn btn-outline-secondary" href="{% url 'manage_services' %}">Cancel</a>
+
+<style>
+    :root {
+        --navy: #073D70;
+        --navy-dark: #123F78;
+        --navy-light: #174EA6;
+
+        --coral: #E86B4C;
+        --coral-dark: #D95638;
+        --coral-soft: #FFF0EB;
+
+        --cream: #FFF4DF;
+        --cream-dark: #FFE8C4;
+
+        --blue-light: #E9F5FC;
+        --blue-border: #D7EBF8;
+
+        --red: #DC4C4C;
+        --red-light: #FFF0F0;
+
+        --text: #172033;
+        --muted: #64748B;
+        --border: #DCE5ED;
+    }
+
+    .service-form-page {
+        padding: 15px 0 45px;
+    }
+
+    /* =========================================
+       FORM CARD
+    ========================================= */
+
+    .service-form-card {
+        width: 100%;
+        max-width: 720px;
+
+        margin: auto;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 18px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 10px 28px rgba(7, 61, 112, .09);
+    }
+
+    /* =========================================
+       CARD TOP
+    ========================================= */
+
+    .form-card-top {
+        position: relative;
+        overflow: hidden;
+
+        padding: 25px 28px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--navy),
+                var(--navy-dark) 70%,
+                #1D5A94
+            );
+
+        color: #fff;
+    }
+
+    .form-card-top::after {
+        content: "";
+
+        position: absolute;
+
+        width: 180px;
+        height: 180px;
+
+        right: -70px;
+        top: -95px;
+
+        border-radius: 50%;
+
+        background: rgba(232, 107, 76, .18);
+    }
+
+    .form-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .form-label-top {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        color: #FFD8CE;
+
+        font-size: 10px;
+        font-weight: 750;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+
+        margin-bottom: 6px;
+    }
+
+    .form-card-top h1 {
+        color: #fff;
+
+        font-size: 25px;
+        font-weight: 750;
+
+        margin: 0 0 6px;
+    }
+
+    .form-card-top p {
+        max-width: 590px;
+
+        color: rgba(255,255,255,.76);
+
+        font-size: 12px;
+        line-height: 1.6;
+
+        margin: 0;
+    }
+
+    /* =========================================
+       FORM BODY
+    ========================================= */
+
+    .service-form-body {
+        padding: 28px;
+    }
+
+    /* =========================================
+       FORM FIELDS
+    ========================================= */
+
+    .service-form .form-label {
+        display: block;
+
+        color: var(--text);
+
+        font-size: 12px;
+        font-weight: 700;
+
+        margin-bottom: 7px;
+    }
+
+    .service-form input,
+    .service-form textarea,
+    .service-form select {
+        width: 100%;
+
+        min-height: 44px;
+
+        padding: 9px 12px;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 9px;
+
+        color: var(--text);
+
+        font-size: 12px;
+
+        outline: none;
+
+        transition:
+            border-color .2s ease,
+            box-shadow .2s ease;
+    }
+
+    .service-form textarea {
+        min-height: 105px;
+
+        resize: vertical;
+    }
+
+    .service-form input[type="file"] {
+        padding: 8px;
+    }
+
+    .service-form input:focus,
+    .service-form textarea:focus,
+    .service-form select:focus {
+        border-color: var(--navy-light);
+
+        box-shadow:
+            0 0 0 3px rgba(23, 78, 166, .09);
+    }
+
+    .service-form input::placeholder,
+    .service-form textarea::placeholder {
+        color: #94A3B8;
+    }
+
+    /* CHECKBOX */
+    .service-form input[type="checkbox"] {
+        width: auto;
+
+        min-height: auto;
+
+        margin-right: 7px;
+
+        accent-color: var(--navy);
+    }
+
+    /* HELP TEXT */
+    .field-help {
+        margin-top: 5px;
+
+        color: var(--muted);
+
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    /* ERRORS */
+    .field-error {
+        margin-top: 5px;
+
+        color: var(--red);
+
+        font-size: 10px;
+        line-height: 1.45;
+    }
+
+    .form-error {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 8px;
+
+        padding: 11px 13px;
+
+        margin-bottom: 18px;
+
+        background: var(--red-light);
+
+        border: 1px solid #F3C4C4;
+
+        border-radius: 9px;
+
+        color: var(--red);
+
+        font-size: 11px;
+    }
+
+    /* =========================================
+       ACTIONS
+    ========================================= */
+
+    .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 9px;
+
+        padding-top: 8px;
+
+        margin-top: 20px;
+
+        border-top: 1px solid var(--border);
+    }
+
+    .save-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        min-height: 42px;
+
+        padding: 9px 18px;
+
+        border-radius: 8px;
+
+        background: var(--coral);
+
+        border: 1px solid var(--coral);
+
+        color: #fff;
+
+        font-size: 12px;
+        font-weight: 650;
+
+        box-shadow:
+            0 5px 13px rgba(232, 107, 76, .16);
+
+        transition: .2s ease;
+    }
+
+    .save-button:hover {
+        background: var(--coral-dark);
+
+        border-color: var(--coral-dark);
+
+        color: #fff;
+
+        transform: translateY(-1px);
+    }
+
+    .cancel-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        min-height: 42px;
+
+        padding: 9px 18px;
+
+        border-radius: 8px;
+
+        background: var(--blue-light);
+
+        border: 1px solid var(--blue-border);
+
+        color: var(--navy);
+
+        font-size: 12px;
+        font-weight: 650;
+
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+    .cancel-button:hover {
+        background: var(--navy);
+
+        border-color: var(--navy);
+
+        color: #fff;
+    }
+
+    @media (max-width: 576px) {
+
+        .service-form-page {
+            padding: 5px 0 35px;
+        }
+
+        .form-card-top {
+            padding: 22px 20px;
+        }
+
+        .form-card-top h1 {
+            font-size: 22px;
+        }
+
+        .service-form-body {
+            padding: 22px 20px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .save-button,
+        .cancel-button {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<div class="container service-form-page">
+
+    <section class="service-form-card">
+
+
+        <!-- =========================================
+             HEADER
+        ========================================= -->
+
+        <div class="form-card-top">
+
+            <div class="form-header-content">
+
+                <div class="form-label-top">
+
+                    <i class="fa-solid fa-sliders"></i>
+
+                    Service Configuration
+
                 </div>
-            </form>
+
+
+                <h1>
+                    {{ title }}
+                </h1>
+
+
+                <p>
+                    {{ help_text }}
+                </p>
+
+            </div>
+
         </div>
-    </div>
+
+
+        <!-- =========================================
+             FORM
+        ========================================= -->
+
+        <div class="service-form-body">
+
+            <form
+                method="post"
+                enctype="multipart/form-data"
+                class="service-form"
+                novalidate>
+
+                {% csrf_token %}
+
+
+                {% for field in form %}
+
+                    <div class="mb-3">
+
+                        <label
+                            class="form-label"
+                            for="{{ field.id_for_label }}">
+
+                            {{ field.label }}
+
+                        </label>
+
+
+                        {{ field }}
+
+
+                        {% if field.help_text %}
+
+                            <div class="field-help">
+
+                                <i class="fa-solid fa-circle-info me-1"></i>
+
+                                {{ field.help_text }}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        {% for error in field.errors %}
+
+                            <div class="field-error">
+
+                                <i class="fa-solid fa-circle-exclamation me-1"></i>
+
+                                {{ error }}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endfor %}
+
+
+                <!-- NON-FIELD ERRORS -->
+
+                {% for error in form.non_field_errors %}
+
+                    <div class="form-error">
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                        <span>{{ error }}</span>
+
+                    </div>
+
+                {% endfor %}
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <button
+                        class="save-button"
+                        type="submit">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        {{ submit_label|default:"Save" }}
+
+                    </button>
+
+
+                    <a
+                        class="cancel-button"
+                        href="{% url 'manage_services' %}">
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
 </div>
+
 {% endblock %}

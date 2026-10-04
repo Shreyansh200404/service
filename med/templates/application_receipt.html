@@ -1,54 +1,1384 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center gap-3 mb-3 receipt-actions">
+
+<style>
+
+/* =====================================================
+   SEVA ONE - PAYMENT RECEIPT
+   Homepage Theme:
+   Navy + Coral + Cream + Light Blue
+===================================================== */
+
+:root {
+    --seva-navy: #073D70;
+    --seva-navy-dark: #123F78;
+    --seva-navy-light: #1D5A94;
+
+    --seva-coral: #F36B4F;
+    --seva-coral-dark: #E85A3F;
+
+    --seva-cream: #FFF4DF;
+    --seva-cream-dark: #FFE8C4;
+
+    --seva-blue: #EAF5FC;
+    --seva-blue-dark: #D7EBF8;
+
+    --seva-green: #249B63;
+    --seva-green-light: #EAF7F0;
+
+    --seva-yellow: #F4A62A;
+    --seva-yellow-light: #FFF5DF;
+
+    --seva-text: #17324D;
+    --seva-muted: #64748B;
+
+    --seva-border: #DCE5ED;
+}
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.receipt-page {
+
+    min-height:
+        calc(100vh - 150px);
+
+    padding:
+        25px 15px 45px;
+
+    background:
+
+        radial-gradient(
+            circle at 5% 5%,
+            rgba(234,245,252,.95),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 95% 10%,
+            rgba(255,244,223,.90),
+            transparent 30%
+        );
+}
+
+
+/* =====================================================
+   ACTION BAR
+===================================================== */
+
+.receipt-actions {
+
+    max-width:
+        760px;
+
+    margin:
+        0 auto 18px;
+}
+
+
+/* Back button */
+
+.receipt-back-btn {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    padding:
+        9px 15px;
+
+    border:
+        1px solid #C8D8E5;
+
+    border-radius:
+        9px;
+
+    background:
+        #ffffff;
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
+
+    text-decoration:
+        none;
+
+    transition:
+        .2s ease;
+}
+
+
+.receipt-back-btn:hover {
+
+    background:
+        var(--seva-blue);
+
+    border-color:
+        #AFC9DC;
+
+    color:
+        var(--seva-navy);
+
+    transform:
+        translateX(-2px);
+}
+
+
+/* Print button */
+
+.receipt-print-btn {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    padding:
+        10px 17px;
+
+    border:
+        none;
+
+    border-radius:
+        9px;
+
+    background:
+        var(--seva-coral);
+
+    color:
+        #ffffff;
+
+    font-size:
+        13px;
+
+    font-weight:
+        750;
+
+    box-shadow:
+        0 6px 15px
+        rgba(243,107,79,.22);
+
+    transition:
+        .22s ease;
+}
+
+
+.receipt-print-btn:hover {
+
+    background:
+        var(--seva-coral-dark);
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 9px 20px
+        rgba(243,107,79,.28);
+}
+
+
+/* =====================================================
+   RECEIPT CARD
+===================================================== */
+
+.receipt-card {
+
+    max-width:
+        760px;
+
+    margin:
+        auto;
+
+    border:
+        1px solid var(--seva-border);
+
+    border-radius:
+        20px;
+
+    background:
+        #ffffff;
+
+    overflow:
+        hidden;
+
+    box-shadow:
+        0 15px 40px
+        rgba(7,61,112,.11);
+}
+
+
+/* =====================================================
+   RECEIPT TOP STRIP
+===================================================== */
+
+.receipt-top-strip {
+
+    height:
+        7px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--seva-navy),
+            var(--seva-navy-light),
+            var(--seva-coral)
+        );
+}
+
+
+/* =====================================================
+   RECEIPT BODY
+===================================================== */
+
+.receipt-body {
+
+    padding:
+        32px;
+}
+
+
+/* =====================================================
+   RECEIPT HEADER
+===================================================== */
+
+.receipt-header {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-start;
+
+    gap:
+        20px;
+
+    padding-bottom:
+        24px;
+
+    margin-bottom:
+        25px;
+
+    border-bottom:
+        1px solid var(--seva-border);
+}
+
+
+/* Brand */
+
+.receipt-brand {
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        14px;
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        1.2px;
+
+    text-transform:
+        uppercase;
+}
+
+
+.receipt-brand i {
+
+    color:
+        var(--seva-coral);
+
+    margin-right:
+        6px;
+}
+
+
+.receipt-title {
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        25px;
+
+    font-weight:
+        800;
+
+    margin:
+        7px 0 4px;
+}
+
+
+.receipt-number {
+
+    color:
+        var(--seva-muted);
+
+    font-size:
+        13px;
+}
+
+
+.receipt-number strong {
+
+    color:
+        var(--seva-navy);
+}
+
+
+/* =====================================================
+   STATUS BADGES
+===================================================== */
+
+.receipt-status {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    padding:
+        8px 13px;
+
+    border-radius:
+        50px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+
+    white-space:
+        nowrap;
+}
+
+
+/* Paid */
+
+.status-paid {
+
+    background:
+        var(--seva-green-light);
+
+    color:
+        #167548;
+
+    border:
+        1px solid #BFE6CF;
+}
+
+
+/* Waived */
+
+.status-waived {
+
+    background:
+        #F1F5F9;
+
+    color:
+        #64748B;
+
+    border:
+        1px solid #D8E0E8;
+}
+
+
+/* Verification pending */
+
+.status-pending {
+
+    background:
+        var(--seva-blue);
+
+    color:
+        #126A9A;
+
+    border:
+        1px solid var(--seva-blue-dark);
+}
+
+
+/* Other */
+
+.status-warning {
+
+    background:
+        var(--seva-yellow-light);
+
+    color:
+        #A16207;
+
+    border:
+        1px solid #F5D99B;
+}
+
+
+/* =====================================================
+   INFORMATION AREA
+===================================================== */
+
+.receipt-details {
+
+    margin:
+        0 0 25px;
+}
+
+
+/* Each row */
+
+.receipt-row {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    min-height:
+        49px;
+
+    border-bottom:
+        1px solid #EDF1F4;
+
+    transition:
+        background .2s ease;
+}
+
+
+.receipt-row:last-child {
+
+    border-bottom:
+        none;
+}
+
+
+.receipt-row:hover {
+
+    background:
+        linear-gradient(
+            90deg,
+            #F7FBFE,
+            #FFF9EF
+        );
+}
+
+
+/* Label */
+
+.receipt-label {
+
+    width:
+        38%;
+
+    color:
+        var(--seva-muted);
+
+    font-size:
+        13px;
+
+    font-weight:
+        650;
+
+    padding:
+        10px 8px;
+}
+
+
+/* Value */
+
+.receipt-value {
+
+    width:
+        62%;
+
+    color:
+        var(--seva-text);
+
+    font-size:
+        13px;
+
+    font-weight:
+        650;
+
+    padding:
+        10px 8px;
+}
+
+
+.receipt-value i {
+
+    color:
+        var(--seva-coral);
+
+    width:
+        18px;
+}
+
+
+/* Amount */
+
+.receipt-amount {
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        16px;
+
+    font-weight:
+        850;
+}
+
+
+/* =====================================================
+   PAYMENT REFERENCE
+===================================================== */
+
+.payment-reference {
+
+    display:
+        inline-block;
+
+    padding:
+        5px 9px;
+
+    border-radius:
+        6px;
+
+    background:
+        var(--seva-blue);
+
+    border:
+        1px solid var(--seva-blue-dark);
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+
+    word-break:
+        break-word;
+}
+
+
+/* =====================================================
+   STATUS MESSAGE
+===================================================== */
+
+.receipt-message {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    gap:
+        12px;
+
+    margin-top:
+        22px;
+
+    padding:
+        15px 17px;
+
+    border-radius:
+        11px;
+
+    font-size:
+        13px;
+
+    line-height:
+        1.6;
+}
+
+
+.receipt-message i {
+
+    font-size:
+        17px;
+
+    margin-top:
+        2px;
+}
+
+
+/* Paid */
+
+.message-success {
+
+    background:
+        var(--seva-green-light);
+
+    border:
+        1px solid #C5E8D4;
+
+    color:
+        #176B43;
+}
+
+
+.message-success i {
+
+    color:
+        var(--seva-green);
+}
+
+
+/* Waived */
+
+.message-secondary {
+
+    background:
+        #F1F5F9;
+
+    border:
+        1px solid #D9E1E8;
+
+    color:
+        #475569;
+}
+
+
+/* Pending */
+
+.message-info {
+
+    background:
+        var(--seva-blue);
+
+    border:
+        1px solid var(--seva-blue-dark);
+
+    color:
+        #155E75;
+}
+
+
+/* Warning */
+
+.message-warning {
+
+    background:
+        var(--seva-yellow-light);
+
+    border:
+        1px solid #F3D89C;
+
+    color:
+        #92400E;
+}
+
+
+/* =====================================================
+   RECEIPT FOOTER
+===================================================== */
+
+.receipt-footer {
+
+    margin-top:
+        25px;
+
+    padding-top:
+        18px;
+
+    border-top:
+        1px dashed #CBD5E1;
+
+    text-align:
+        center;
+
+    color:
+        var(--seva-muted);
+
+    font-size:
+        11px;
+
+    line-height:
+        1.6;
+}
+
+
+.receipt-footer strong {
+
+    color:
+        var(--seva-navy);
+}
+
+
+/* =====================================================
+   PRINT
+===================================================== */
+
+@media print {
+
+    body {
+
+        background:
+            white !important;
+    }
+
+
+    .navbar-custom,
+    .portal-footer,
+    .receipt-actions {
+
+        display:
+            none !important;
+    }
+
+
+    .content-container {
+
+        padding:
+            0 !important;
+    }
+
+
+    .receipt-page {
+
+        padding:
+            0 !important;
+
+        min-height:
+            auto !important;
+
+        background:
+            white !important;
+    }
+
+
+    .receipt-card {
+
+        max-width:
+            100% !important;
+
+        border:
+            0 !important;
+
+        border-radius:
+            0 !important;
+
+        box-shadow:
+            none !important;
+    }
+
+
+    .receipt-top-strip {
+
+        display:
+            block !important;
+
+        -webkit-print-color-adjust:
+            exact;
+
+        print-color-adjust:
+            exact;
+    }
+
+
+    .receipt-body {
+
+        padding:
+            25px !important;
+    }
+
+
+    .receipt-row:hover {
+
+        background:
+            transparent !important;
+    }
+
+
+    .receipt-status,
+    .receipt-message,
+    .payment-reference {
+
+        -webkit-print-color-adjust:
+            exact;
+
+        print-color-adjust:
+            exact;
+    }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:600px) {
+
+    .receipt-page {
+
+        padding:
+            15px 10px 30px;
+    }
+
+
+    .receipt-actions {
+
+        flex-direction:
+            column;
+
+        align-items:
+            stretch !important;
+    }
+
+
+    .receipt-actions a,
+    .receipt-actions button {
+
+        width:
+            100%;
+
+        justify-content:
+            center;
+    }
+
+
+    .receipt-body {
+
+        padding:
+            22px 17px;
+    }
+
+
+    .receipt-header {
+
+        flex-direction:
+            column;
+
+        gap:
+            15px;
+    }
+
+
+    .receipt-title {
+
+        font-size:
+            21px;
+    }
+
+
+    .receipt-status {
+
+        align-self:
+            flex-start;
+    }
+
+
+    .receipt-row {
+
+        display:
+            block;
+
+        padding:
+            8px 0;
+    }
+
+
+    .receipt-label,
+    .receipt-value {
+
+        width:
+            100%;
+
+        display:
+            block;
+
+        padding:
+            3px 0;
+    }
+
+
+    .receipt-label {
+
+        font-size:
+            11px;
+
+        text-transform:
+            uppercase;
+
+        letter-spacing:
+            .4px;
+    }
+
+
+    .receipt-value {
+
+        font-size:
+            13px;
+    }
+
+}
+
+</style>
+
+
+<div class="receipt-page">
+
+    <!-- =================================================
+         ACTIONS
+    ================================================= -->
+
+    <div class="d-flex justify-content-between align-items-center gap-3 receipt-actions">
+
+
         {% if user.is_superuser %}
-            <a href="{% url 'manage_applications' %}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Back to applications</a>
+
+            <a
+                href="{% url 'manage_applications' %}"
+                class="receipt-back-btn">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Back to Applications
+
+            </a>
+
         {% else %}
-            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Dashboard</a>
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="receipt-back-btn">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Dashboard
+
+            </a>
+
         {% endif %}
-        <button class="btn btn-primary" type="button" onclick="window.print()"><i class="fa-solid fa-print me-1"></i> Print / Save PDF</button>
+
+
+        <button
+            class="receipt-print-btn"
+            type="button"
+            onclick="window.print()">
+
+            <i class="fa-solid fa-print"></i>
+
+            Print / Save PDF
+
+        </button>
+
     </div>
 
-    <article class="card mx-auto" style="max-width:760px">
-        <div class="card-body p-4 p-md-5">
-            <div class="d-flex justify-content-between align-items-start gap-3 border-bottom pb-4 mb-4">
+
+    <!-- =================================================
+         RECEIPT
+    ================================================= -->
+
+    <article class="receipt-card">
+
+
+        <!-- Top Color Strip -->
+
+        <div class="receipt-top-strip"></div>
+
+
+        <div class="receipt-body">
+
+
+            <!-- =================================================
+                 HEADER
+            ================================================= -->
+
+            <div class="receipt-header">
+
+
                 <div>
-                    <div class="small text-uppercase fw-semibold text-primary" style="font-size: 1rem;">SEVA ONE</div>
-                    <h1 class="h3 fw-bold mt-2 mb-1">Application payment receipt</h1>
-                    <div class="text-muted">Receipt {{ application.receipt_number }}</div>
+
+
+                    <div class="receipt-brand">
+
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+
+                        SEVA ONE
+
+                    </div>
+
+
+                    <h1 class="receipt-title">
+
+                        Application Payment Receipt
+
+                    </h1>
+
+
+                    <div class="receipt-number">
+
+                        Receipt No:
+                        <strong>
+                            {{ application.receipt_number }}
+                        </strong>
+
+                    </div>
+
+
                 </div>
-                <span class="badge fs-6 {% if application.payment_status == 'paid' %}text-bg-success{% elif application.payment_status == 'waived' %}text-bg-secondary{% elif application.payment_status == 'verification_pending' %}text-bg-info{% else %}text-bg-warning{% endif %}">{{ application.get_payment_status_display }}</span>
+
+
+                <!-- PAYMENT STATUS -->
+
+                {% if application.payment_status == 'paid' %}
+
+                    <span class="receipt-status status-paid">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        {{ application.get_payment_status_display }}
+
+                    </span>
+
+
+                {% elif application.payment_status == 'waived' %}
+
+                    <span class="receipt-status status-waived">
+
+                        <i class="fa-solid fa-circle-minus"></i>
+
+                        {{ application.get_payment_status_display }}
+
+                    </span>
+
+
+                {% elif application.payment_status == 'verification_pending' %}
+
+                    <span class="receipt-status status-pending">
+
+                        <i class="fa-solid fa-clock"></i>
+
+                        {{ application.get_payment_status_display }}
+
+                    </span>
+
+
+                {% else %}
+
+                    <span class="receipt-status status-warning">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        {{ application.get_payment_status_display }}
+
+                    </span>
+
+                {% endif %}
+
+
             </div>
 
-            <dl class="row mb-4">
-                <dt class="col-sm-4 text-muted">Applicant</dt><dd class="col-sm-8">{{ application.applicant_name }}</dd>
-                <dt class="col-sm-4 text-muted">Email</dt><dd class="col-sm-8">{{ application.applicant_email|default:"Not provided" }}</dd>
-                <dt class="col-sm-4 text-muted">Service</dt><dd class="col-sm-8">{{ application.service_name }}</dd>
-                <dt class="col-sm-4 text-muted">Application date</dt><dd class="col-sm-8">{{ application.created_at|date:"M j, Y, g:i a" }}</dd>
-                <dt class="col-sm-4 text-muted">Receipt amount</dt><dd class="col-sm-8 fw-bold">&#8377;{{ application.amount|floatformat:2 }} INR</dd>
-                <dt class="col-sm-4 text-muted">Payment reference</dt><dd class="col-sm-8">{{ application.transaction_ref|default:"Not submitted" }}</dd>
-                <dt class="col-sm-4 text-muted">Work status</dt><dd class="col-sm-8">{{ application.get_work_status_display }}</dd>
-            </dl>
+
+            <!-- =================================================
+                 APPLICATION DETAILS
+            ================================================= -->
+
+            <div class="receipt-details">
+
+
+                <!-- Applicant -->
+
+                <div class="receipt-row">
+
+                    <div class="receipt-label">
+
+                        Applicant
+
+                    </div>
+
+                    <div class="receipt-value">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        {{ application.applicant_name }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Email -->
+
+                <div class="receipt-row">
+
+                    <div class="receipt-label">
+
+                        Email
+
+                    </div>
+
+                    <div class="receipt-value">
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                        {{ application.applicant_email|default:"Not provided" }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Service -->
+
+                <div class="receipt-row">
+
+                    <div class="receipt-label">
+
+                        Service
+
+                    </div>
+
+                    <div class="receipt-value">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        {{ application.service_name }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Application Date -->
+
+                <div class="receipt-row">
+
+                    <div class="receipt-label">
+
+                        Application Date
+
+                    </div>
+
+                    <div class="receipt-value">
+
+                        <i class="fa-solid fa-calendar-days"></i>
+
+                        {{ application.created_at|date:"M j, Y, g:i a" }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Amount -->
+
+                <div class="receipt-row">
+
+                    <div class="receipt-label">
+
+                        Receipt Amount
+
+                    </div>
+
+                    <div class="receipt-value receipt-amount">
+
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+
+                        &#8377;{{ application.amount|floatformat:2 }} INR
+
+                    </div>
+
+                </div>
+
+
+                <!-- Payment Reference -->
+
+                <div class="receipt-row">
+
+                    <div class="receipt-label">
+
+                        Payment Reference
+
+                    </div>
+
+                    <div class="receipt-value">
+
+                        {% if application.transaction_ref %}
+
+                            <span class="payment-reference">
+
+                                <i class="fa-solid fa-receipt"></i>
+
+                                {{ application.transaction_ref }}
+
+                            </span>
+
+                        {% else %}
+
+                            <i class="fa-solid fa-minus"></i>
+
+                            Not submitted
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Work Status -->
+
+                <div class="receipt-row">
+
+                    <div class="receipt-label">
+
+                        Work Status
+
+                    </div>
+
+                    <div class="receipt-value">
+
+                        <i class="fa-solid fa-briefcase"></i>
+
+                        {{ application.get_work_status_display }}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 PAYMENT STATUS MESSAGE
+            ================================================= -->
+
 
             {% if application.payment_status == 'paid' %}
-                <div class="alert alert-success mb-0">Payment verified by the service administrator.</div>
+
+                <div class="receipt-message message-success">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <div>
+
+                        <strong>Payment Verified</strong><br>
+
+                        Payment verified by the service administrator.
+
+                    </div>
+
+                </div>
+
+
             {% elif application.payment_status == 'waived' %}
-                <div class="alert alert-secondary mb-0">No payment was due for this service.</div>
+
+                <div class="receipt-message message-secondary">
+
+                    <i class="fa-solid fa-circle-minus"></i>
+
+                    <div>
+
+                        <strong>Payment Waived</strong><br>
+
+                        No payment was due for this service.
+
+                    </div>
+
+                </div>
+
+
             {% elif application.payment_status == 'verification_pending' %}
-                <div class="alert alert-info mb-0">Payment details have been received. Payment is not confirmed until the administrator verifies it.</div>
+
+                <div class="receipt-message message-info">
+
+                    <i class="fa-solid fa-clock"></i>
+
+                    <div>
+
+                        <strong>Verification Pending</strong><br>
+
+                        Payment details have been received.
+                        Payment is not confirmed until the
+                        administrator verifies it.
+
+                    </div>
+
+                </div>
+
+
             {% else %}
-                <div class="alert alert-warning mb-0">This receipt records the application and amount due. Payment has not yet been submitted or verified.</div>
+
+                <div class="receipt-message message-warning">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <div>
+
+                        <strong>Payment Pending</strong><br>
+
+                        This receipt records the application
+                        and amount due. Payment has not yet
+                        been submitted or verified.
+
+                    </div>
+
+                </div>
+
             {% endif %}
+
+
+            <!-- =================================================
+                 FOOTER
+            ================================================= -->
+
+            <div class="receipt-footer">
+
+                <strong>SEVA ONE</strong>
+
+                <br>
+
+                Digital Services for Citizens
+
+                <br>
+
+                Please retain this receipt for your records.
+
+            </div>
+
+
         </div>
+
     </article>
+
 </div>
-<style>
-    @media print {
-        .navbar-custom, .portal-footer, .receipt-actions { display: none !important; }
-        .content-container { padding: 0 !important; }
-        .card { border: 0 !important; box-shadow: none !important; }
-    }
-</style>
+
 {% endblock %}

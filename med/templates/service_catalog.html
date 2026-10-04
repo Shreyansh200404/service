@@ -1,74 +1,971 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid px-0">
-    <section class="p-4 p-lg-5 mb-4 rounded-4 text-white" style="background:linear-gradient(120deg,#123f86,#0e7490)">
-        <span class="small text-uppercase fw-bold opacity-75">One portal · Many services</span>
-        <h1 class="display-6 fw-bold mt-2 mb-2">Find the service you need</h1>
-        <p class="mb-0 opacity-75">Explore available citizen services, view the details, and apply through the form provided.</p>
+
+<style>
+    :root {
+        --navy: #073D70;
+        --navy-dark: #123F78;
+        --navy-light: #174EA6;
+
+        --coral: #E86B4C;
+        --coral-dark: #D95638;
+        --coral-soft: #FFF0EB;
+
+        --cream: #FFF4DF;
+        --cream-dark: #FFE8C4;
+
+        --blue-light: #E9F5FC;
+        --blue-border: #D7EBF8;
+
+        --green: #249B63;
+        --green-light: #EAF7F0;
+
+        --text: #172033;
+        --muted: #64748B;
+        --border: #DCE5ED;
+    }
+
+    .services-page {
+        padding-bottom: 45px;
+    }
+
+    /* =========================================
+       HERO
+    ========================================= */
+
+    .services-hero {
+        position: relative;
+        overflow: hidden;
+
+        padding: 40px 42px;
+        margin-bottom: 30px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--navy) 0%,
+                var(--navy-dark) 65%,
+                #1D5A94 100%
+            );
+
+        color: #fff;
+
+        box-shadow:
+            0 12px 30px rgba(7, 61, 112, .13);
+    }
+
+    .services-hero::before {
+        content: "";
+
+        position: absolute;
+
+        width: 260px;
+        height: 260px;
+
+        right: -80px;
+        top: -130px;
+
+        border-radius: 50%;
+
+        background: rgba(232, 107, 76, .18);
+    }
+
+    .services-hero::after {
+        content: "";
+
+        position: absolute;
+
+        width: 140px;
+        height: 140px;
+
+        right: 170px;
+        bottom: -95px;
+
+        border-radius: 50%;
+
+        background: rgba(255, 244, 223, .08);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+
+        max-width: 760px;
+    }
+
+    .hero-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        color: #FFD8CE;
+
+        font-size: 11px;
+        font-weight: 750;
+
+        letter-spacing: 1.1px;
+
+        text-transform: uppercase;
+
+        margin-bottom: 7px;
+    }
+
+    .services-hero h1 {
+        color: #fff;
+
+        font-size: 31px;
+        font-weight: 750;
+
+        margin: 0 0 8px;
+    }
+
+    .services-hero p {
+        max-width: 650px;
+
+        color: rgba(255,255,255,.78);
+
+        font-size: 13px;
+        line-height: 1.65;
+
+        margin: 0;
+    }
+
+    /* =========================================
+       SEARCH HEADER
+    ========================================= */
+
+    .browse-header {
+        display: flex;
+        flex-wrap: wrap;
+
+        justify-content: space-between;
+        align-items: flex-end;
+
+        gap: 18px;
+
+        margin-bottom: 28px;
+    }
+
+    .browse-title {
+        color: var(--navy);
+
+        font-size: 21px;
+        font-weight: 750;
+
+        margin: 0 0 3px;
+    }
+
+    .browse-description {
+        color: var(--muted);
+
+        font-size: 12px;
+
+        margin: 0;
+    }
+
+    .service-search {
+        width: 100%;
+        max-width: 340px;
+    }
+
+    .service-search .input-group-text {
+        background: #fff;
+
+        border: 1px solid var(--border);
+        border-right: 0;
+
+        color: var(--muted);
+
+        border-radius: 9px 0 0 9px;
+    }
+
+    .service-search .form-control {
+        min-height: 43px;
+
+        border: 1px solid var(--border);
+        border-left: 0;
+
+        border-radius: 0 9px 9px 0;
+
+        color: var(--text);
+
+        font-size: 12px;
+
+        box-shadow: none;
+    }
+
+    .service-search:focus-within .input-group-text,
+    .service-search:focus-within .form-control {
+        border-color: var(--navy-light);
+    }
+
+    .service-search:focus-within .input-group-text {
+        color: var(--navy);
+    }
+
+    /* =========================================
+       CATEGORY
+    ========================================= */
+
+    .service-category {
+        padding: 22px;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 17px;
+
+        box-shadow:
+            0 7px 22px rgba(7, 61, 112, .06);
+    }
+
+    .category-heading {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        margin-bottom: 19px;
+    }
+
+    .category-icon {
+        width: 45px;
+        height: 45px;
+
+        min-width: 45px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        background: var(--blue-light);
+
+        border: 1px solid var(--blue-border);
+
+        color: var(--navy);
+
+        font-size: 17px;
+    }
+
+    .category-title {
+        color: var(--navy);
+
+        font-size: 17px;
+        font-weight: 750;
+
+        margin: 0 0 3px;
+    }
+
+    .category-description {
+        color: var(--muted);
+
+        font-size: 11px;
+
+        margin: 0;
+    }
+
+    /* =========================================
+       SERVICE CARD
+    ========================================= */
+
+    .service-card article {
+        height: 100%;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 13px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 4px 13px rgba(7, 61, 112, .05);
+
+        transition:
+            transform .2s ease,
+            box-shadow .2s ease,
+            border-color .2s ease;
+    }
+
+    .service-card article:hover {
+        transform: translateY(-3px);
+
+        border-color: var(--blue-border);
+
+        box-shadow:
+            0 10px 24px rgba(7, 61, 112, .10);
+    }
+
+    .service-card .card-body {
+        padding: 21px;
+    }
+
+    .service-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+
+        color: var(--coral-dark);
+
+        font-size: 9px;
+        font-weight: 750;
+
+        letter-spacing: .8px;
+
+        text-transform: uppercase;
+
+        margin-bottom: 7px;
+    }
+
+    .service-name {
+        color: var(--navy);
+
+        font-size: 16px;
+        font-weight: 750;
+
+        line-height: 1.35;
+
+        margin-bottom: 8px;
+    }
+
+    .service-description {
+        color: var(--muted);
+
+        font-size: 11px;
+        line-height: 1.65;
+
+        margin-bottom: 17px;
+    }
+
+    /* =========================================
+       FEE
+    ========================================= */
+
+    .service-fee {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 10px;
+
+        padding: 11px 0;
+
+        border-top: 1px solid var(--border);
+
+        margin-bottom: 14px;
+    }
+
+    .fee-label {
+        color: var(--muted);
+
+        font-size: 10px;
+    }
+
+    .fee-value {
+        color: var(--navy);
+
+        font-size: 14px;
+        font-weight: 750;
+    }
+
+    .free-fee {
+        color: var(--green);
+    }
+
+    /* =========================================
+       APPLY BUTTON
+    ========================================= */
+
+    .apply-button {
+        width: 100%;
+
+        min-height: 42px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        padding: 9px 14px;
+
+        border-radius: 8px;
+
+        background: var(--coral);
+
+        border: 1px solid var(--coral);
+
+        color: #fff;
+
+        font-size: 11px;
+        font-weight: 650;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 5px 13px rgba(232, 107, 76, .14);
+
+        transition: .2s ease;
+    }
+
+    .apply-button:hover {
+        background: var(--coral-dark);
+
+        border-color: var(--coral-dark);
+
+        color: #fff;
+
+        transform: translateY(-1px);
+    }
+
+    /* =========================================
+       EMPTY CATEGORY
+    ========================================= */
+
+    .empty-category {
+        padding: 25px;
+
+        color: var(--muted);
+
+        background: #FAFCFE;
+
+        border: 1px dashed var(--border);
+
+        border-radius: 10px;
+
+        font-size: 12px;
+    }
+
+    /* =========================================
+       EMPTY ALL SERVICES
+    ========================================= */
+
+    .empty-services {
+        padding: 55px 25px;
+
+        text-align: center;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 17px;
+
+        box-shadow:
+            0 7px 22px rgba(7, 61, 112, .06);
+    }
+
+    .empty-services-icon {
+        width: 60px;
+        height: 60px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 15px;
+
+        border-radius: 15px;
+
+        background: var(--blue-light);
+
+        border: 1px solid var(--blue-border);
+
+        color: var(--navy);
+
+        font-size: 22px;
+    }
+
+    .empty-services h2 {
+        color: var(--navy);
+
+        font-size: 18px;
+        font-weight: 750;
+    }
+
+    .empty-services p {
+        color: var(--muted);
+
+        font-size: 12px;
+    }
+
+    /* =========================================
+       NO SEARCH RESULTS
+    ========================================= */
+
+    .no-search-results {
+        padding: 14px 18px;
+
+        background: var(--cream);
+
+        border: 1px solid var(--cream-dark);
+
+        border-radius: 10px;
+
+        color: #735A2A;
+
+        font-size: 12px;
+    }
+
+    /* =========================================
+       FOOTNOTE
+    ========================================= */
+
+    .service-note {
+        color: var(--muted);
+
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+
+    @media (max-width: 768px) {
+
+        .services-hero {
+            padding: 30px 25px;
+        }
+
+        .services-hero h1 {
+            font-size: 25px;
+        }
+
+        .service-category {
+            padding: 17px;
+        }
+
+        .browse-header {
+            align-items: stretch;
+        }
+
+        .service-search {
+            max-width: 100%;
+        }
+    }
+
+    @media (max-width: 500px) {
+
+        .services-hero {
+            padding: 27px 20px;
+        }
+
+        .services-hero h1 {
+            font-size: 23px;
+        }
+
+        .category-heading {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+
+<div class="container-fluid px-0 services-page">
+
+    <!-- =========================================
+         HERO
+    ========================================= -->
+
+    <section class="services-hero">
+
+        <div class="hero-content">
+
+            <div class="hero-label">
+
+                <i class="fa-solid fa-landmark"></i>
+
+                One Portal · Many Services
+
+            </div>
+
+
+            <h1>
+                Find the Service You Need
+            </h1>
+
+
+            <p>
+                Explore available citizen services, view the details,
+                and apply through the form provided.
+            </p>
+
+        </div>
+
     </section>
 
-    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
-        <div><h2 class="h4 fw-bold mb-1">Browse by category</h2><p class="text-muted mb-0">Service fees are shown before you apply.</p></div>
-        <div class="input-group" style="max-width:340px"><span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span><input id="serviceSearch" class="form-control" placeholder="Search a service" aria-label="Search a service"></div>
+
+    <!-- =========================================
+         BROWSE HEADER
+    ========================================= -->
+
+    <div class="browse-header">
+
+        <div>
+
+            <h2 class="browse-title">
+                Browse by Category
+            </h2>
+
+            <p class="browse-description">
+                Service fees are shown before you apply.
+            </p>
+
+        </div>
+
+
+        <div class="input-group service-search">
+
+            <span class="input-group-text">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+            </span>
+
+
+            <input
+                id="serviceSearch"
+                class="form-control"
+                placeholder="Search a service"
+                aria-label="Search a service">
+
+        </div>
+
     </div>
 
+
+    <!-- =========================================
+         SERVICE CATEGORIES
+    ========================================= -->
+
     {% for main in main_services %}
-        <section class="mb-5 service-category">
-            <div class="d-flex align-items-center gap-3 mb-3">
-                <span class="rounded-3 p-3 bg-primary-subtle text-primary"><i class="fa-solid fa-folder-open fa-lg"></i></span>
-                <div><h2 class="h5 fw-bold mb-1">{{ main.name }}</h2>{% if main.description %}<p class="text-muted small mb-0">{{ main.description }}</p>{% endif %}</div>
-            </div>
-            <div class="row g-3">
-                {% for service in main.services.all %}
-                    {% if service.is_active %}
-                    <div class="col-md-6 col-xl-4 service-card" data-search="{{ main.name|lower }} {{ service.name|lower }} {{ service.description|lower }}">
-                        <article class="card h-100 shadow-sm">
-                            <div class="card-body p-4 d-flex flex-column">
-                                <span class="small text-uppercase fw-semibold text-primary mb-2">Application service</span>
-                                <h3 class="h5 fw-bold">{{ service.name }}</h3>
-                                <p class="text-muted flex-grow-1">{% if service.description %}{{ service.description }}{% else %}Apply online using the application form for this service.{% endif %}</p>
-                                <div class="d-flex justify-content-between align-items-center border-top pt-3 mb-3">
-                                    <span class="small text-muted">Service fee</span>
-                                    <strong>{% if service.amount %}&#8377;{{ service.amount|floatformat:2 }}{% else %}Free{% endif %}</strong>
-                                </div>
-                                {% if user.is_authenticated %}
-                                    <form method="post" action="{% url 'apply_for_service' service.pk %}">
-                                        {% csrf_token %}
-                                        <button class="btn btn-primary w-100" type="submit">Apply now <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i></button>
-                                    </form>
-                                {% else %}
-                                    <a class="btn btn-primary" href="{% url 'login' %}">Sign in to apply <i class="fa-solid fa-arrow-right ms-2"></i></a>
-                                {% endif %}
-                            </div>
-                        </article>
-                    </div>
+
+        <section class="mb-4 service-category">
+
+
+            <!-- CATEGORY HEADER -->
+
+            <div class="category-heading">
+
+                <span class="category-icon">
+
+                    <i class="fa-solid fa-folder-open"></i>
+
+                </span>
+
+
+                <div>
+
+                    <h2 class="category-title">
+                        {{ main.name }}
+                    </h2>
+
+
+                    {% if main.description %}
+
+                        <p class="category-description">
+                            {{ main.description }}
+                        </p>
+
                     {% endif %}
-                {% empty %}
-                    <div class="col-12"><p class="text-muted">No services in this category yet.</p></div>
-                {% endfor %}
+
+                </div>
+
             </div>
+
+
+            <!-- SERVICES -->
+
+            <div class="row g-3">
+
+                {% for service in main.services.all %}
+
+                    {% if service.is_active %}
+
+                        <div
+                            class="col-md-6 col-xl-4 service-card"
+                            data-search="{{ main.name|lower }} {{ service.name|lower }} {{ service.description|lower }}">
+
+                            <article class="card h-100">
+
+                                <div class="card-body d-flex flex-column">
+
+
+                                    <!-- SERVICE LABEL -->
+
+                                    <span class="service-label">
+
+                                        <i class="fa-solid fa-file-lines"></i>
+
+                                        Application Service
+
+                                    </span>
+
+
+                                    <!-- SERVICE NAME -->
+
+                                    <h3 class="service-name">
+
+                                        {{ service.name }}
+
+                                    </h3>
+
+
+                                    <!-- DESCRIPTION -->
+
+                                    <p class="service-description flex-grow-1">
+
+                                        {% if service.description %}
+
+                                            {{ service.description }}
+
+                                        {% else %}
+
+                                            Apply online using the application
+                                            form for this service.
+
+                                        {% endif %}
+
+                                    </p>
+
+
+                                    <!-- FEE -->
+
+                                    <div class="service-fee">
+
+                                        <span class="fee-label">
+
+                                            Service fee
+
+                                        </span>
+
+
+                                        {% if service.amount %}
+
+                                            <strong class="fee-value">
+
+                                                &#8377;{{ service.amount|floatformat:2 }}
+
+                                            </strong>
+
+                                        {% else %}
+
+                                            <strong class="fee-value free-fee">
+
+                                                Free
+
+                                            </strong>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <!-- APPLY -->
+
+                                    {% if user.is_authenticated %}
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'apply_for_service' service.pk %}">
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                class="apply-button"
+                                                type="submit">
+
+                                                Apply Now
+
+                                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    {% else %}
+
+                                        <a
+                                            class="apply-button"
+                                            href="{% url 'login' %}">
+
+                                            Sign In to Apply
+
+                                            <i class="fa-solid fa-arrow-right"></i>
+
+                                        </a>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </article>
+
+                        </div>
+
+                    {% endif %}
+
+                {% empty %}
+
+                    <div class="col-12">
+
+                        <div class="empty-category">
+
+                            <i class="fa-solid fa-folder-open me-2"></i>
+
+                            No services in this category yet.
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
         </section>
+
     {% empty %}
-        <div class="card text-center p-5"><i class="fa-solid fa-folder-open fa-2x text-primary mb-3"></i><h2 class="h5">No services listed yet</h2><p class="text-muted mb-0">Please check back later for available applications.</p></div>
+
+        <!-- =========================================
+             NO SERVICES
+        ========================================= -->
+
+        <div class="empty-services">
+
+            <div class="empty-services-icon">
+
+                <i class="fa-solid fa-folder-open"></i>
+
+            </div>
+
+
+            <h2>
+                No Services Listed Yet
+            </h2>
+
+
+            <p class="mb-0">
+
+                Please check back later for available applications.
+
+            </p>
+
+        </div>
+
     {% endfor %}
 
-    <div id="noSearchResults" class="alert alert-light border text-center d-none">No matching services found.</div>
-    <p class="small text-muted text-center mt-4"><i class="fa-solid fa-circle-info me-1"></i>Applications are submitted through the Google Form linked to each service.</p>
+
+    <!-- =========================================
+         SEARCH RESULT MESSAGE
+    ========================================= -->
+
+    <div
+        id="noSearchResults"
+        class="no-search-results text-center d-none">
+
+        <i class="fa-solid fa-magnifying-glass me-1"></i>
+
+        No matching services found.
+
+    </div>
+
+
+    <!-- =========================================
+         FOOTNOTE
+    ========================================= -->
+
+    <p class="service-note text-center mt-4 mb-0">
+
+        <i class="fa-solid fa-circle-info me-1"></i>
+
+        Applications are submitted through the Google Form
+        linked to each service.
+
+    </p>
+
 </div>
+
+
+<!-- =========================================
+     SEARCH SCRIPT
+========================================= -->
+
 <script>
-    document.getElementById('serviceSearch').addEventListener('input', function () {
-        const term = this.value.trim().toLowerCase();
-        let visible = 0;
-        document.querySelectorAll('.service-card').forEach(function (card) {
-            const matches = card.dataset.search.includes(term);
-            card.classList.toggle('d-none', !matches);
-            if (matches) visible++;
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const searchInput =
+            document.getElementById('serviceSearch');
+
+        const noSearchResults =
+            document.getElementById('noSearchResults');
+
+
+        if (!searchInput) {
+            return;
+        }
+
+
+        searchInput.addEventListener('input', function () {
+
+            const term =
+                this.value.trim().toLowerCase();
+
+            let visible = 0;
+
+
+            document
+                .querySelectorAll('.service-card')
+                .forEach(function (card) {
+
+                    const matches =
+                        card.dataset.search.includes(term);
+
+                    card.classList.toggle(
+                        'd-none',
+                        !matches
+                    );
+
+                    if (matches) {
+                        visible++;
+                    }
+
+                });
+
+
+            document
+                .querySelectorAll('.service-category')
+                .forEach(function (category) {
+
+                    const hasVisibleService =
+                        category.querySelector(
+                            '.service-card:not(.d-none)'
+                        );
+
+                    category.classList.toggle(
+                        'd-none',
+                        !hasVisibleService
+                    );
+
+                });
+
+
+            noSearchResults.classList.toggle(
+                'd-none',
+                visible > 0
+            );
+
         });
-        document.querySelectorAll('.service-category').forEach(function (category) {
-            category.classList.toggle('d-none', !category.querySelector('.service-card:not(.d-none)'));
-        });
-        document.getElementById('noSearchResults').classList.toggle('d-none', visible > 0);
+
     });
 </script>
+
 {% endblock %}

@@ -1,61 +1,1307 @@
 {% extends 'admin_base.html' %}
 
 {% block content %}
-<div class="container-fluid mt-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-        <div>
-            <h1 class="h2">Manage Citizen Services</h1>
-            <p class="text-muted mb-0">Create main categories, then add sub-services with Google Form links.</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a class="btn btn-outline-secondary" href="{% url 'admin_dashboard' %}">Dashboard</a>
-            <a class="btn btn-primary" href="{% url 'add_main_service' %}">Add Main Service</a>
-            <a class="btn btn-success" href="{% url 'add_service' %}">Add Sub-service</a>
-        </div>
-    </div>
 
-    {% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}
+<style>
+    :root {
+        --navy: #073D70;
+        --navy-dark: #123F78;
+        --navy-light: #174EA6;
+
+        --coral: #E86B4C;
+        --coral-dark: #D95638;
+        --coral-soft: #FFF0EB;
+
+        --cream: #FFF4DF;
+        --cream-dark: #FFE8C4;
+
+        --blue-light: #E9F5FC;
+        --blue-border: #D7EBF8;
+
+        --green: #249B63;
+        --green-dark: #19734A;
+        --green-light: #EAF7F0;
+
+        --red: #DC4C4C;
+        --red-light: #FFF0F0;
+
+        --text: #172033;
+        --muted: #64748B;
+        --border: #DCE5ED;
+    }
+
+
+    /* =========================================
+       PAGE
+    ========================================= */
+
+    .services-admin-page {
+        padding: 5px 0 40px;
+    }
+
+
+    /* =========================================
+       PAGE HEADER
+    ========================================= */
+
+    .services-header {
+        position: relative;
+        overflow: hidden;
+
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 20px;
+
+        padding: 27px 30px;
+        margin-bottom: 25px;
+
+        border-radius: 18px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--navy) 0%,
+                var(--navy-dark) 70%,
+                #1D5A94 100%
+            );
+
+        box-shadow:
+            0 10px 28px rgba(7,61,112,.14);
+
+        color: #fff;
+    }
+
+
+    .services-header::after {
+        content: "";
+
+        position: absolute;
+
+        width: 210px;
+        height: 210px;
+
+        right: -75px;
+        top: -105px;
+
+        border-radius: 50%;
+
+        background: rgba(232,107,76,.17);
+    }
+
+
+    .services-header::before {
+        content: "";
+
+        position: absolute;
+
+        width: 130px;
+        height: 130px;
+
+        right: 160px;
+        bottom: -90px;
+
+        border-radius: 50%;
+
+        background: rgba(255,244,223,.08);
+    }
+
+
+    .header-content,
+    .header-actions {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .header-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 5px;
+
+        color: #FFD8CE;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        letter-spacing: 1.2px;
+
+        text-transform: uppercase;
+    }
+
+
+    .services-header h1 {
+        margin: 0 0 5px;
+
+        color: #fff;
+
+        font-size: 28px;
+        font-weight: 750;
+    }
+
+
+    .services-header p {
+        margin: 0;
+
+        color: rgba(255,255,255,.76);
+
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       HEADER BUTTONS
+    ========================================= */
+
+    .header-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+    }
+
+
+    .header-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 6px;
+
+        padding: 9px 14px;
+
+        border-radius: 9px;
+
+        text-decoration: none;
+
+        font-size: 12px;
+        font-weight: 650;
+
+        transition: .2s ease;
+    }
+
+
+    .dashboard-btn {
+        background: rgba(255,255,255,.12);
+
+        color: #fff;
+
+        border: 1px solid rgba(255,255,255,.25);
+    }
+
+
+    .dashboard-btn:hover {
+        background: #fff;
+        color: var(--navy);
+    }
+
+
+    .main-service-btn {
+        background: var(--coral);
+
+        color: #fff;
+
+        border: 1px solid var(--coral);
+    }
+
+
+    .main-service-btn:hover {
+        background: var(--coral-dark);
+
+        border-color: var(--coral-dark);
+
+        color: #fff;
+
+        transform: translateY(-1px);
+    }
+
+
+    .sub-service-btn {
+        background: var(--cream);
+
+        color: var(--navy);
+
+        border: 1px solid var(--cream);
+    }
+
+
+    .sub-service-btn:hover {
+        background: var(--cream-dark);
+
+        color: var(--navy);
+
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================
+       MESSAGES
+    ========================================= */
+
+    .portal-message {
+        background: var(--green-light);
+
+        border: 1px solid #C8E7D6;
+
+        color: var(--green-dark);
+
+        border-radius: 11px;
+
+        padding: 12px 15px;
+
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       CATEGORY CARD
+    ========================================= */
+
+    .category-card {
+        margin-bottom: 22px;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 16px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 7px 22px rgba(7,61,112,.07);
+
+        transition:
+            box-shadow .2s ease,
+            transform .2s ease;
+    }
+
+
+    .category-card:hover {
+        box-shadow:
+            0 12px 30px rgba(7,61,112,.10);
+    }
+
+
+    /* =========================================
+       CATEGORY HEADER
+    ========================================= */
+
+    .category-header {
+        display: flex;
+        flex-wrap: wrap;
+
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 15px;
+
+        padding: 18px 20px;
+
+        background:
+            linear-gradient(
+                90deg,
+                var(--blue-light),
+                #F8FBFD 60%,
+                var(--cream)
+            );
+
+        border-bottom: 1px solid var(--border);
+    }
+
+
+    .category-info {
+        display: flex;
+        align-items: center;
+
+        gap: 13px;
+    }
+
+
+    .category-icon {
+        width: 45px;
+        height: 45px;
+
+        min-width: 45px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        background: var(--navy);
+
+        color: #fff;
+
+        font-size: 17px;
+
+        box-shadow:
+            0 5px 12px rgba(7,61,112,.15);
+    }
+
+
+    .category-name {
+        margin: 0 0 3px;
+
+        color: var(--navy);
+
+        font-size: 17px;
+        font-weight: 750;
+    }
+
+
+    .category-description {
+        margin: 0;
+
+        color: var(--muted);
+
+        font-size: 11px;
+    }
+
+
+    /* =========================================
+       CATEGORY ACTIONS
+    ========================================= */
+
+    .category-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+
+        gap: 8px;
+    }
+
+
+    /* =========================================
+       STATUS
+    ========================================= */
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 6px 10px;
+
+        border-radius: 50px;
+
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+
+    .status-active {
+        background: var(--green-light);
+
+        color: var(--green-dark);
+
+        border: 1px solid #C7E8D6;
+    }
+
+
+    .status-hidden {
+        background: #F1F5F9;
+
+        color: #64748B;
+
+        border: 1px solid #DCE3EA;
+    }
+
+
+    /* =========================================
+       SMALL ACTION BUTTONS
+    ========================================= */
+
+    .btn-add-sub {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 7px 11px;
+
+        border-radius: 8px;
+
+        background: var(--navy);
+
+        border: 1px solid var(--navy);
+
+        color: #fff;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 600;
+
+        transition: .2s ease;
+    }
+
+
+    .btn-add-sub:hover {
+        background: var(--navy-dark);
+
+        color: #fff;
+    }
+
+
+    .btn-delete-category {
+        padding: 7px 11px;
+
+        border-radius: 8px;
+
+        background: #fff;
+
+        border: 1px solid #F2B9B9;
+
+        color: var(--red);
+
+        font-size: 11px;
+        font-weight: 600;
+
+        transition: .2s ease;
+    }
+
+
+    .btn-delete-category:hover {
+        background: var(--red);
+
+        border-color: var(--red);
+
+        color: #fff;
+    }
+
+
+    /* =========================================
+       SERVICES
+    ========================================= */
+
+    .services-list {
+        padding: 5px 20px;
+    }
+
+
+    .service-row {
+        display: flex;
+        flex-wrap: wrap;
+
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 15px;
+
+        padding: 17px 5px;
+
+        border-bottom: 1px solid #E9EEF3;
+
+        transition: .2s ease;
+    }
+
+
+    .service-row:last-child {
+        border-bottom: none;
+    }
+
+
+    .service-row:hover {
+        background: #FAFCFE;
+    }
+
+
+    .service-details {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 12px;
+
+        flex: 1;
+        min-width: 250px;
+    }
+
+
+    .service-icon {
+        width: 40px;
+        height: 40px;
+
+        min-width: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 10px;
+
+        background: var(--coral-soft);
+
+        color: var(--coral);
+
+        font-size: 15px;
+    }
+
+
+    .service-name {
+        color: var(--navy);
+
+        font-size: 14px;
+        font-weight: 700;
+
+        margin-bottom: 3px;
+    }
+
+
+    .service-fee {
+        color: var(--text);
+
+        font-size: 11px;
+        font-weight: 650;
+
+        margin-bottom: 3px;
+    }
+
+
+    .service-description {
+        color: var(--muted);
+
+        font-size: 11px;
+
+        margin-top: 3px;
+
+        max-width: 650px;
+    }
+
+
+    /* =========================================
+       LINKS
+    ========================================= */
+
+    .service-link {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 4px;
+
+        color: var(--navy-light);
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 600;
+
+        margin-right: 10px;
+
+        margin-top: 4px;
+    }
+
+
+    .service-link:hover {
+        color: var(--coral-dark);
+    }
+
+
+    .qr-link {
+        color: var(--green-dark);
+    }
+
+
+    .qr-link:hover {
+        color: var(--navy);
+    }
+
+
+    .qr-missing {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 4px;
+
+        margin-top: 3px;
+
+        color: #B36B00;
+
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+    /* =========================================
+       SERVICE ACTIONS
+    ========================================= */
+
+    .service-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+
+        gap: 7px;
+    }
+
+
+    .btn-edit {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 4px;
+
+        padding: 6px 11px;
+
+        border-radius: 7px;
+
+        background: var(--blue-light);
+
+        border: 1px solid var(--blue-border);
+
+        color: var(--navy);
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+    .btn-edit:hover {
+        background: var(--navy);
+
+        border-color: var(--navy);
+
+        color: #fff;
+    }
+
+
+    .btn-delete {
+        padding: 6px 11px;
+
+        border-radius: 7px;
+
+        background: var(--red-light);
+
+        border: 1px solid #F3C4C4;
+
+        color: var(--red);
+
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+    .btn-delete:hover {
+        background: var(--red);
+
+        border-color: var(--red);
+
+        color: #fff;
+    }
+
+
+    /* =========================================
+       NO SUB SERVICES
+    ========================================= */
+
+    .no-services {
+        padding: 28px 15px;
+
+        text-align: center;
+
+        color: var(--muted);
+
+        font-size: 12px;
+    }
+
+
+    .no-services-icon {
+        width: 45px;
+        height: 45px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 8px;
+
+        border-radius: 11px;
+
+        background: var(--blue-light);
+
+        color: var(--navy);
+    }
+
+
+    /* =========================================
+       NO MAIN SERVICES
+    ========================================= */
+
+    .empty-main-services {
+        padding: 50px 20px;
+
+        text-align: center;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 16px;
+
+        box-shadow:
+            0 7px 22px rgba(7,61,112,.06);
+    }
+
+
+    .empty-main-icon {
+        width: 60px;
+        height: 60px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 15px;
+
+        border-radius: 15px;
+
+        background: var(--cream);
+
+        color: var(--coral);
+
+        font-size: 23px;
+    }
+
+
+    .empty-main-services h3 {
+        color: var(--navy);
+
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+
+    .empty-main-services p {
+        color: var(--muted);
+
+        font-size: 12px;
+    }
+
+
+    /* =========================================
+       MOBILE
+    ========================================= */
+
+    @media (max-width: 768px) {
+
+        .services-header {
+            padding: 23px 20px;
+        }
+
+
+        .services-header h1 {
+            font-size: 23px;
+        }
+
+
+        .header-actions {
+            width: 100%;
+        }
+
+
+        .header-btn {
+            flex: 1;
+        }
+
+
+        .category-header {
+            padding: 16px;
+        }
+
+
+        .category-actions {
+            width: 100%;
+        }
+
+
+        .services-list {
+            padding: 5px 15px;
+        }
+
+
+        .service-actions {
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+    }
+
+
+    @media (max-width: 500px) {
+
+        .header-actions {
+            flex-direction: column;
+        }
+
+
+        .header-btn {
+            width: 100%;
+        }
+
+
+        .category-actions {
+            align-items: stretch;
+        }
+
+
+        .btn-add-sub {
+            flex: 1;
+            justify-content: center;
+        }
+
+    }
+
+</style>
+
+
+<div class="container-fluid px-0 services-admin-page">
+
+
+    <!-- =========================================
+         HEADER
+    ========================================= -->
+
+    <section class="services-header">
+
+        <div class="header-content">
+
+            <div class="header-label">
+
+                <i class="fa-solid fa-layer-group"></i>
+
+                Service Management
+
+            </div>
+
+
+            <h1>
+                Manage Citizen Services
+            </h1>
+
+
+            <p>
+                Create main categories, then add sub-services
+                with Google Form links.
+            </p>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <a class="header-btn dashboard-btn"
+               href="{% url 'admin_dashboard' %}">
+
+                <i class="fa-solid fa-gauge-high"></i>
+
+                Dashboard
+
+            </a>
+
+
+            <a class="header-btn main-service-btn"
+               href="{% url 'add_main_service' %}">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Main Service
+
+            </a>
+
+
+            <a class="header-btn sub-service-btn"
+               href="{% url 'add_service' %}">
+
+                <i class="fa-solid fa-file-circle-plus"></i>
+
+                Add Sub-service
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         MESSAGES
+    ========================================= -->
+
+    {% for message in messages %}
+
+        <div class="portal-message mb-3">
+
+            <i class="fa-solid fa-circle-check me-2"></i>
+
+            {{ message }}
+
+        </div>
+
+    {% endfor %}
+
+
+    <!-- =========================================
+         MAIN SERVICES
+    ========================================= -->
 
     {% for main in main_services %}
-        <section class="card shadow-sm mb-4">
-            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
-                <div>
-                    <h2 class="h5 mb-1">{{ main.name }}</h2>
-                    {% if main.description %}<small class="text-muted">{{ main.description }}</small>{% endif %}
-                </div>
-                <div class="d-flex gap-2 align-items-center">
-                    {% if main.is_active %}<span class="badge text-bg-success">Active</span>{% else %}<span class="badge text-bg-secondary">Hidden</span>{% endif %}
-                    <a class="btn btn-sm btn-outline-primary" href="{% url 'add_service' %}?main_service={{ main.pk }}">Add sub-service</a>
-                    <form method="post" action="{% url 'delete_main_service' main.pk %}" onsubmit="return confirm('Delete this category and all its sub-services?');">
-                        {% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit">Delete category</button>
-                    </form>
-                </div>
-            </div>
-            <div class="card-body">
-                {% for service in main.services.all %}
-                    <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom py-3 gap-2">
-                        <div>
-                            <strong>{{ service.name }}</strong>
-                            <div class="small fw-semibold">{% if service.amount %}Fee: &#8377;{{ service.amount|floatformat:2 }}{% else %}Free{% endif %}</div>
-                            {% if service.payment_qr_image %}<a class="small" href="{% url 'service_payment_qr' service.pk %}" target="_blank" rel="noopener noreferrer">View PhonePe QR</a>{% else %}<div class="small text-warning">Payment QR not uploaded</div>{% endif %}
-                            {% if service.description %}<div class="text-muted small">{{ service.description }}</div>{% endif %}
-                            <a class="small" href="{{ service.google_form_url }}" target="_blank" rel="noopener noreferrer">Open Google Form</a>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            {% if service.is_active %}<span class="badge text-bg-success">Active</span>{% else %}<span class="badge text-bg-secondary">Hidden</span>{% endif %}
-                            <a class="btn btn-sm btn-outline-primary" href="{% url 'edit_service' service.pk %}">Edit</a>
-                            <form method="post" action="{% url 'delete_service' service.pk %}" onsubmit="return confirm('Delete this sub-service?');">
-                                {% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
-                            </form>
-                        </div>
+
+        <section class="category-card">
+
+
+            <!-- CATEGORY HEADER -->
+
+            <div class="category-header">
+
+                <div class="category-info">
+
+                    <div class="category-icon">
+
+                        <i class="fa-solid fa-folder-open"></i>
+
                     </div>
-                {% empty %}
-                    <p class="text-muted mb-0">No sub-services yet.</p>
-                {% endfor %}
+
+
+                    <div>
+
+                        <h2 class="category-name">
+                            {{ main.name }}
+                        </h2>
+
+
+                        {% if main.description %}
+
+                            <p class="category-description">
+                                {{ main.description }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- CATEGORY ACTIONS -->
+
+                <div class="category-actions">
+
+
+                    {% if main.is_active %}
+
+                        <span class="status-badge status-active">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            Active
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-badge status-hidden">
+
+                            <i class="fa-solid fa-eye-slash"></i>
+
+                            Hidden
+
+                        </span>
+
+                    {% endif %}
+
+
+                    <a class="btn-add-sub"
+                       href="{% url 'add_service' %}?main_service={{ main.pk }}">
+
+                        <i class="fa-solid fa-plus"></i>
+
+                        Add sub-service
+
+                    </a>
+
+
+                    <form method="post"
+                          action="{% url 'delete_main_service' main.pk %}"
+                          class="m-0"
+                          onsubmit="return confirm('Delete this category and all its sub-services?');">
+
+                        {% csrf_token %}
+
+                        <button
+                            class="btn-delete-category"
+                            type="submit">
+
+                            <i class="fa-solid fa-trash-can me-1"></i>
+
+                            Delete category
+
+                        </button>
+
+                    </form>
+
+                </div>
+
             </div>
+
+
+            <!-- =========================================
+                 SUB SERVICES
+            ========================================= -->
+
+            <div class="services-list">
+
+                {% for service in main.services.all %}
+
+                    <div class="service-row">
+
+
+                        <!-- SERVICE INFO -->
+
+                        <div class="service-details">
+
+                            <div class="service-icon">
+
+                                <i class="fa-solid fa-file-lines"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <div class="service-name">
+
+                                    {{ service.name }}
+
+                                </div>
+
+
+                                <div class="service-fee">
+
+                                    {% if service.amount %}
+
+                                        <i class="fa-solid fa-indian-rupee-sign me-1"></i>
+
+                                        Fee:
+                                        &#8377;{{ service.amount|floatformat:2 }}
+
+                                    {% else %}
+
+                                        <i class="fa-solid fa-circle-check me-1"></i>
+
+                                        Free Service
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- QR -->
+
+                                {% if service.payment_qr_image %}
+
+                                    <a class="service-link qr-link"
+                                       href="{% url 'service_payment_qr' service.pk %}"
+                                       target="_blank"
+                                       rel="noopener noreferrer">
+
+                                        <i class="fa-solid fa-qrcode"></i>
+
+                                        View PhonePe QR
+
+                                    </a>
+
+                                {% else %}
+
+                                    <div class="qr-missing">
+
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                                        Payment QR not uploaded
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- DESCRIPTION -->
+
+                                {% if service.description %}
+
+                                    <div class="service-description">
+
+                                        {{ service.description }}
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- GOOGLE FORM -->
+
+                                <a class="service-link"
+                                   href="{{ service.google_form_url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+                                    Open Google Form
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =========================================
+                             SERVICE ACTIONS
+                        ========================================= -->
+
+                        <div class="service-actions">
+
+
+                            {% if service.is_active %}
+
+                                <span class="status-badge status-active">
+
+                                    <i class="fa-solid fa-circle-check"></i>
+
+                                    Active
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="status-badge status-hidden">
+
+                                    <i class="fa-solid fa-eye-slash"></i>
+
+                                    Hidden
+
+                                </span>
+
+                            {% endif %}
+
+
+                            <!-- EDIT -->
+
+                            <a class="btn-edit"
+                               href="{% url 'edit_service' service.pk %}">
+
+                                <i class="fa-solid fa-pen"></i>
+
+                                Edit
+
+                            </a>
+
+
+                            <!-- DELETE -->
+
+                            <form method="post"
+                                  action="{% url 'delete_service' service.pk %}"
+                                  class="m-0"
+                                  onsubmit="return confirm('Delete this sub-service?');">
+
+                                {% csrf_token %}
+
+                                <button
+                                    class="btn-delete"
+                                    type="submit">
+
+                                    <i class="fa-solid fa-trash-can me-1"></i>
+
+                                    Delete
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+
+                {% empty %}
+
+                    <div class="no-services">
+
+                        <div class="no-services-icon">
+
+                            <i class="fa-solid fa-folder-open"></i>
+
+                        </div>
+
+                        No sub-services yet.
+
+                        <div class="mt-2">
+
+                            <a class="service-link"
+                               href="{% url 'add_service' %}?main_service={{ main.pk }}">
+
+                                <i class="fa-solid fa-plus"></i>
+
+                                Add the first sub-service
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
         </section>
+
+
     {% empty %}
-        <div class="alert alert-info">No main services yet. Add a main service to get started.</div>
+
+        <!-- =========================================
+             EMPTY MAIN SERVICES
+        ========================================= -->
+
+        <div class="empty-main-services">
+
+            <div class="empty-main-icon">
+
+                <i class="fa-solid fa-layer-group"></i>
+
+            </div>
+
+
+            <h3>
+                No Main Services Yet
+            </h3>
+
+
+            <p>
+                Start by creating a main service category,
+                then add the required citizen sub-services.
+            </p>
+
+
+            <a class="header-btn main-service-btn"
+               href="{% url 'add_main_service' %}">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Main Service
+
+            </a>
+
+        </div>
+
     {% endfor %}
+
 </div>
+
 {% endblock %}

@@ -1,28 +1,505 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="card mx-auto shadow-sm" style="max-width:680px">
-        <div class="card-body p-4 p-md-5">
-            <span class="small text-uppercase fw-bold text-primary">Account access</span>
-            <h1 class="h2 fw-bold mt-2">Request an account</h1>
-            <p class="text-muted">An administrator will review your request and create your login details. Do not enter or send a password here.</p>
-            <form method="post" novalidate>
+
+<style>
+    :root {
+        --navy: #073D70;
+        --navy-dark: #123F78;
+        --navy-light: #174EA6;
+
+        --coral: #E86B4C;
+        --coral-dark: #D95638;
+        --coral-soft: #FFF0EB;
+
+        --cream: #FFF4DF;
+        --cream-dark: #FFE8C4;
+
+        --blue-light: #E9F5FC;
+        --blue-border: #D7EBF8;
+
+        --green: #249B63;
+        --green-light: #EAF7F0;
+
+        --red: #DC4C4C;
+        --red-light: #FFF0F0;
+
+        --text: #172033;
+        --muted: #64748B;
+        --border: #DCE5ED;
+    }
+
+    .request-page {
+        min-height: 68vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 35px 15px 50px;
+    }
+
+    .request-card {
+        width: 100%;
+        max-width: 680px;
+
+        overflow: hidden;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+        border-radius: 20px;
+
+        box-shadow:
+            0 12px 35px rgba(7, 61, 112, .10);
+    }
+
+    /* TOP ACCENT */
+    .request-top {
+        height: 7px;
+
+        background: linear-gradient(
+            90deg,
+            var(--navy) 0%,
+            var(--navy) 55%,
+            var(--coral) 55%,
+            var(--coral) 100%
+        );
+    }
+
+    .request-body {
+        padding: 40px;
+    }
+
+    /* ICON */
+    .request-icon {
+        width: 58px;
+        height: 58px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 18px;
+
+        border-radius: 15px;
+
+        background: var(--blue-light);
+
+        border: 1px solid var(--blue-border);
+
+        color: var(--navy);
+
+        font-size: 21px;
+    }
+
+    /* LABEL */
+    .page-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--coral-dark);
+
+        font-size: 10px;
+        font-weight: 750;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    /* HEADING */
+    .request-title {
+        color: var(--navy);
+
+        font-size: 27px;
+        font-weight: 750;
+
+        margin: 6px 0 8px;
+    }
+
+    .request-description {
+        color: var(--muted);
+
+        font-size: 13px;
+        line-height: 1.7;
+
+        margin-bottom: 25px;
+    }
+
+    /* FORM */
+    .request-form .form-label {
+        display: block;
+
+        color: var(--text);
+
+        font-size: 12px;
+        font-weight: 650;
+
+        margin-bottom: 7px;
+    }
+
+    .request-form input,
+    .request-form textarea,
+    .request-form select {
+        width: 100%;
+
+        min-height: 44px;
+
+        padding: 9px 12px;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 9px;
+
+        color: var(--text);
+
+        font-size: 13px;
+
+        outline: none;
+
+        transition: .2s ease;
+    }
+
+    .request-form textarea {
+        min-height: 105px;
+        resize: vertical;
+    }
+
+    .request-form input:focus,
+    .request-form textarea:focus,
+    .request-form select:focus {
+        border-color: var(--navy-light);
+
+        box-shadow:
+            0 0 0 3px rgba(23, 78, 166, .10);
+    }
+
+    .request-form input::placeholder,
+    .request-form textarea::placeholder {
+        color: #94A3B8;
+    }
+
+    /* FIELD ERROR */
+    .field-error {
+        margin-top: 5px;
+
+        color: var(--red);
+
+        font-size: 11px;
+    }
+
+    /* FORM ERROR */
+    .form-error {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 8px;
+
+        padding: 11px 13px;
+
+        margin-bottom: 18px;
+
+        background: var(--red-light);
+
+        border: 1px solid #F3C4C4;
+
+        border-radius: 9px;
+
+        color: var(--red);
+
+        font-size: 12px;
+    }
+
+    /* SECURITY NOTE */
+    .security-note {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 9px;
+
+        padding: 12px 13px;
+
+        margin-bottom: 22px;
+
+        background: var(--cream);
+
+        border: 1px solid var(--cream-dark);
+
+        border-radius: 9px;
+
+        color: #735A2A;
+
+        font-size: 10px;
+        line-height: 1.55;
+    }
+
+    .security-note i {
+        color: var(--coral);
+
+        margin-top: 2px;
+    }
+
+    /* BUTTONS */
+    .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 9px;
+    }
+
+    .send-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        min-height: 42px;
+
+        padding: 9px 17px;
+
+        border-radius: 8px;
+
+        background: var(--coral);
+
+        border: 1px solid var(--coral);
+
+        color: #fff;
+
+        font-size: 12px;
+        font-weight: 650;
+
+        box-shadow:
+            0 5px 13px rgba(232, 107, 76, .16);
+
+        transition: .2s ease;
+    }
+
+    .send-button:hover {
+        background: var(--coral-dark);
+
+        border-color: var(--coral-dark);
+
+        color: #fff;
+
+        transform: translateY(-1px);
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        min-height: 42px;
+
+        padding: 9px 17px;
+
+        border-radius: 8px;
+
+        background: var(--blue-light);
+
+        border: 1px solid var(--blue-border);
+
+        color: var(--navy);
+
+        font-size: 12px;
+        font-weight: 650;
+
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+    .back-button:hover {
+        background: var(--navy);
+
+        border-color: var(--navy);
+
+        color: #fff;
+    }
+
+    @media (max-width: 576px) {
+
+        .request-page {
+            padding: 25px 12px 40px;
+        }
+
+        .request-body {
+            padding: 32px 22px;
+        }
+
+        .request-title {
+            font-size: 23px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .send-button,
+        .back-button {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<div class="container request-page">
+
+    <section class="request-card mx-auto">
+
+        <div class="request-top"></div>
+
+        <div class="request-body">
+
+            <!-- ICON -->
+
+            <div class="request-icon">
+
+                <i class="fa-solid fa-user-plus"></i>
+
+            </div>
+
+
+            <!-- LABEL -->
+
+            <div class="page-label">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                Account Access
+
+            </div>
+
+
+            <!-- HEADING -->
+
+            <h1 class="request-title">
+
+                Request an Account
+
+            </h1>
+
+
+            <p class="request-description">
+
+                An administrator will review your request and create
+                your login details. Do not enter or send a password here.
+
+            </p>
+
+
+            <!-- SECURITY NOTE -->
+
+            <div class="security-note">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <span>
+                    Your request will be reviewed by a portal administrator.
+                    For your security, never include your password in this form.
+                </span>
+
+            </div>
+
+
+            <!-- FORM -->
+
+            <form
+                method="post"
+                class="request-form"
+                novalidate>
+
                 {% csrf_token %}
+
+
                 {% for field in form %}
+
                     <div class="mb-3">
-                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                        <label
+                            class="form-label"
+                            for="{{ field.id_for_label }}">
+
+                            {{ field.label }}
+
+                        </label>
+
+
                         {{ field }}
-                        {% for error in field.errors %}<div class="small text-danger">{{ error }}</div>{% endfor %}
+
+
+                        {% for error in field.errors %}
+
+                            <div class="field-error">
+
+                                <i class="fa-solid fa-circle-exclamation me-1"></i>
+
+                                {{ error }}
+
+                            </div>
+
+                        {% endfor %}
+
                     </div>
+
                 {% endfor %}
-                {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
-                <div class="d-flex flex-wrap gap-2">
-                    <button class="btn btn-primary" type="submit">Send request</button>
-                    <a class="btn btn-outline-secondary" href="{% url 'login' %}">Back to sign in</a>
+
+
+                <!-- NON-FIELD ERRORS -->
+
+                {% for error in form.non_field_errors %}
+
+                    <div class="form-error">
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                        <span>{{ error }}</span>
+
+                    </div>
+
+                {% endfor %}
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <button
+                        class="send-button"
+                        type="submit">
+
+                        <i class="fa-solid fa-paper-plane"></i>
+
+                        Send Request
+
+                    </button>
+
+
+                    <a
+                        class="back-button"
+                        href="{% url 'login' %}">
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Back to Sign In
+
+                    </a>
+
                 </div>
+
             </form>
+
         </div>
-    </div>
+
+    </section>
+
 </div>
+
 {% endblock %}

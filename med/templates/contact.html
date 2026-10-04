@@ -1,29 +1,1295 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid px-0">
-    <section class="p-4 p-lg-5 mb-4 rounded-4 text-white" style="background:linear-gradient(120deg,#123f86,#0e7490)">
-        <span class="small text-uppercase fw-bold opacity-75" style="font-size: 0.9rem;">SEVA ONE</span>
-        <h1 class="display-6 fw-bold mt-2 mb-2">Contact our team</h1>
-        <p class="mb-0 opacity-75">Reach our team through the contact channels below.</p>
+
+<style>
+
+/* =====================================================
+   SEVA ONE - CONTACT PAGE
+   Homepage Theme:
+   Navy + Coral + Cream + Light Blue
+===================================================== */
+
+:root {
+
+    --seva-navy: #073D70;
+    --seva-navy-dark: #123F78;
+    --seva-navy-light: #1D5A94;
+
+    --seva-coral: #F36B4F;
+    --seva-coral-dark: #E85A3F;
+    --seva-coral-light: #FF8A70;
+
+    --seva-cream: #FFF4DF;
+    --seva-cream-dark: #FFE8C4;
+
+    --seva-blue: #EAF5FC;
+    --seva-blue-dark: #D7EBF8;
+
+    --seva-green: #249B63;
+    --seva-green-light: #EAF7F0;
+
+    --seva-purple: #8B4DE8;
+    --seva-purple-light: #F1EAFE;
+
+    --seva-cyan: #18A9C7;
+    --seva-cyan-light: #E5F8FC;
+
+    --seva-text: #17324D;
+    --seva-muted: #64748B;
+
+    --seva-border: #DCE5ED;
+}
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.contact-page {
+
+    min-height:
+        calc(100vh - 150px);
+
+    padding:
+        8px 0 45px;
+
+    background:
+
+        radial-gradient(
+            circle at 3% 5%,
+            rgba(234,245,252,.95),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 97% 8%,
+            rgba(255,244,223,.90),
+            transparent 30%
+        );
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.contact-hero {
+
+    position:
+        relative;
+
+    padding:
+        42px 38px;
+
+    margin-bottom:
+        30px;
+
+    border-radius:
+        22px;
+
+    color:
+        #ffffff;
+
+    overflow:
+        hidden;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--seva-navy) 0%,
+            var(--seva-navy-light) 65%,
+            #17638F 100%
+        );
+
+    box-shadow:
+        0 16px 38px
+        rgba(7,61,112,.20);
+}
+
+
+/* Coral line */
+
+.contact-hero::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    left:
+        0;
+
+    top:
+        0;
+
+    width:
+        7px;
+
+    height:
+        100%;
+
+    background:
+        var(--seva-coral);
+}
+
+
+/* Decorative circle */
+
+.contact-hero::after {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        250px;
+
+    height:
+        250px;
+
+    border-radius:
+        50%;
+
+    right:
+        -70px;
+
+    top:
+        -140px;
+
+    background:
+        rgba(255,255,255,.08);
+}
+
+
+.contact-hero-content {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+}
+
+
+/* =====================================================
+   HERO LABEL
+===================================================== */
+
+.hero-label {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        1.5px;
+
+    color:
+        rgba(255,255,255,.88);
+
+    text-transform:
+        uppercase;
+
+    margin-bottom:
+        9px;
+}
+
+
+.hero-label i {
+
+    color:
+        var(--seva-coral);
+}
+
+
+/* =====================================================
+   HERO TITLE
+===================================================== */
+
+.hero-title {
+
+    font-size:
+        38px;
+
+    font-weight:
+        850;
+
+    margin:
+        0 0 8px;
+
+    letter-spacing:
+        -.5px;
+}
+
+
+.hero-description {
+
+    margin:
+        0;
+
+    max-width:
+        690px;
+
+    color:
+        rgba(255,255,255,.87);
+
+    font-size:
+        15px;
+
+    line-height:
+        1.7;
+}
+
+
+/* =====================================================
+   CONTACT CARDS
+===================================================== */
+
+.contact-card {
+
+    position:
+        relative;
+
+    height:
+        100%;
+
+    border:
+        1px solid var(--seva-border);
+
+    border-radius:
+        19px;
+
+    background:
+        rgba(255,255,255,.97);
+
+    box-shadow:
+        0 11px 28px
+        rgba(7,61,112,.09);
+
+    overflow:
+        hidden;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+
+.contact-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 20px 40px
+        rgba(7,61,112,.14);
+}
+
+
+/* Top accent */
+
+.contact-card::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    left:
+        0;
+
+    top:
+        0;
+
+    width:
+        100%;
+
+    height:
+        5px;
+}
+
+
+/* Phone */
+
+.phone-card::before {
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--seva-navy),
+            var(--seva-navy-light)
+        );
+}
+
+
+/* Social */
+
+.social-card::before {
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--seva-coral),
+            #F28A35
+        );
+}
+
+
+/* =====================================================
+   CARD BODY
+===================================================== */
+
+.contact-card-body {
+
+    padding:
+        30px;
+}
+
+
+/* =====================================================
+   CARD HEADER
+===================================================== */
+
+.contact-card-heading {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        13px;
+
+    margin-bottom:
+        23px;
+}
+
+
+/* =====================================================
+   ICON
+===================================================== */
+
+.contact-icon {
+
+    width:
+        54px;
+
+    height:
+        54px;
+
+    min-width:
+        54px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        14px;
+
+    font-size:
+        21px;
+
+    box-shadow:
+        0 6px 14px
+        rgba(7,61,112,.08);
+}
+
+
+/* Phone icon */
+
+.phone-icon {
+
+    background:
+        var(--seva-blue);
+
+    color:
+        var(--seva-navy);
+
+    border:
+        1px solid var(--seva-blue-dark);
+}
+
+
+/* Social icon */
+
+.social-icon {
+
+    background:
+        var(--seva-cream);
+
+    color:
+        var(--seva-coral);
+
+    border:
+        1px solid var(--seva-cream-dark);
+}
+
+
+/* =====================================================
+   TITLES
+===================================================== */
+
+.contact-card-title {
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        20px;
+
+    font-weight:
+        800;
+
+    margin:
+        0;
+}
+
+
+.contact-card-subtitle {
+
+    color:
+        var(--seva-muted);
+
+    font-size:
+        12px;
+
+    margin:
+        3px 0 0;
+}
+
+
+/* =====================================================
+   CONTACT ITEM
+===================================================== */
+
+.contact-item {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        13px;
+
+    padding:
+        14px;
+
+    margin-bottom:
+        12px;
+
+    border-radius:
+        12px;
+
+    text-decoration:
+        none;
+
+    background:
+        #F8FAFC;
+
+    border:
+        1px solid #E7EDF2;
+
+    transition:
+        all .22s ease;
+}
+
+
+.contact-item:last-child {
+
+    margin-bottom:
+        0;
+}
+
+
+.contact-item:hover {
+
+    transform:
+        translateX(4px);
+
+    background:
+        linear-gradient(
+            90deg,
+            #F1F8FC,
+            #FFF8EF
+        );
+
+    border-color:
+        #C8DCE9;
+
+    box-shadow:
+        0 6px 15px
+        rgba(7,61,112,.07);
+}
+
+
+/* =====================================================
+   ITEM ICON
+===================================================== */
+
+.contact-item-icon {
+
+    width:
+        42px;
+
+    height:
+        42px;
+
+    min-width:
+        42px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        10px;
+
+    font-size:
+        16px;
+}
+
+
+/* Phone */
+
+.phone-item-icon {
+
+    background:
+        var(--seva-blue);
+
+    color:
+        var(--seva-navy);
+}
+
+
+/* Email */
+
+.email-item-icon {
+
+    background:
+        var(--seva-cyan-light);
+
+    color:
+        #087F9A;
+}
+
+
+/* WhatsApp */
+
+.whatsapp-item-icon {
+
+    background:
+        var(--seva-green-light);
+
+    color:
+        var(--seva-green);
+}
+
+
+/* Instagram */
+
+.instagram-item-icon {
+
+    background:
+        var(--seva-cream);
+
+    color:
+        var(--seva-coral);
+}
+
+
+/* =====================================================
+   ITEM CONTENT
+===================================================== */
+
+.contact-item-content {
+
+    min-width:
+        0;
+}
+
+
+.contact-item-label {
+
+    color:
+        var(--seva-muted);
+
+    font-size:
+        11px;
+
+    font-weight:
+        700;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        .5px;
+
+    margin-bottom:
+        2px;
+}
+
+
+.contact-item-value {
+
+    color:
+        var(--seva-text);
+
+    font-size:
+        14px;
+
+    font-weight:
+        700;
+
+    word-break:
+        break-word;
+}
+
+
+.contact-item:hover .contact-item-value {
+
+    color:
+        var(--seva-navy);
+}
+
+
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+
+.empty-contact {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+    padding:
+        15px;
+
+    border-radius:
+        12px;
+
+    background:
+        #F8FAFC;
+
+    border:
+        1px dashed #CBD5E1;
+}
+
+
+.empty-contact-icon {
+
+    width:
+        42px;
+
+    height:
+        42px;
+
+    min-width:
+        42px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        10px;
+
+    background:
+        var(--seva-blue);
+
+    color:
+        var(--seva-muted);
+}
+
+
+.empty-contact-text {
+
+    color:
+        var(--seva-muted);
+
+    font-size:
+        13px;
+
+    margin:
+        0;
+
+    line-height:
+        1.5;
+}
+
+
+/* =====================================================
+   INFORMATION NOTE
+===================================================== */
+
+.contact-note {
+
+    margin-top:
+        25px;
+
+    padding:
+        18px 20px;
+
+    border-radius:
+        15px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--seva-blue),
+            #F4FBFD
+        );
+
+    border:
+        1px solid var(--seva-blue-dark);
+
+    color:
+        #475569;
+
+    font-size:
+        13px;
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    gap:
+        12px;
+
+    box-shadow:
+        0 7px 18px
+        rgba(7,61,112,.05);
+}
+
+
+.contact-note i {
+
+    color:
+        var(--seva-navy);
+
+    font-size:
+        18px;
+
+    margin-top:
+        2px;
+}
+
+
+.contact-note strong {
+
+    color:
+        var(--seva-navy);
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width:768px) {
+
+    .contact-hero {
+
+        padding:
+            30px 23px;
+
+        border-radius:
+            19px;
+    }
+
+
+    .hero-title {
+
+        font-size:
+            29px;
+    }
+
+
+    .hero-description {
+
+        font-size:
+            13px;
+    }
+
+
+    .contact-card-body {
+
+        padding:
+            23px;
+    }
+
+}
+
+
+@media (max-width:480px) {
+
+    .contact-hero {
+
+        padding:
+            27px 19px;
+    }
+
+
+    .hero-title {
+
+        font-size:
+            25px;
+    }
+
+
+    .contact-card-title {
+
+        font-size:
+            18px;
+    }
+
+
+    .contact-item {
+
+        padding:
+            12px;
+    }
+
+}
+
+</style>
+
+
+<div class="contact-page">
+
+
+    <!-- =================================================
+         HERO
+    ================================================= -->
+
+    <section class="contact-hero">
+
+        <div class="contact-hero-content">
+
+
+            <div class="hero-label">
+
+                <i class="fa-solid fa-headset"></i>
+
+                SEVA ONE
+
+            </div>
+
+
+            <h1 class="hero-title">
+
+                Contact Our Team
+
+            </h1>
+
+
+            <p class="hero-description">
+
+                Need assistance with a service or application?
+                Reach our team through the contact channels below.
+                We are here to help you.
+
+            </p>
+
+        </div>
+
     </section>
+
+
+    <!-- =================================================
+         CONTACT CARDS
+    ================================================= -->
+
     <div class="row g-4">
+
+
+        <!-- =================================================
+             PHONE & EMAIL
+        ================================================= -->
+
         <div class="col-md-6">
-            <section class="card h-100"><div class="card-body p-4">
-                <h2 class="h4 fw-bold">Phone and email</h2>
-                {% if contact_details and contact_details.phone_number %}<p class="mb-3"><i class="fa-solid fa-phone text-primary me-2"></i><a href="tel:{{ contact_details.phone_number }}">{{ contact_details.phone_number }}</a></p>{% endif %}
-                {% if contact_details and contact_details.email %}<p class="mb-0"><i class="fa-solid fa-envelope text-primary me-2"></i><a href="mailto:{{ contact_details.email }}">{{ contact_details.email }}</a></p>{% endif %}
-                {% if not contact_details or not contact_details.phone_number and not contact_details.email %}<p class="text-muted mb-0">Phone and email details are being configured.</p>{% endif %}
-            </div></section>
+
+            <section class="contact-card phone-card">
+
+
+                <div class="contact-card-body">
+
+
+                    <div class="contact-card-heading">
+
+
+                        <div class="contact-icon phone-icon">
+
+                            <i class="fa-solid fa-address-book"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2 class="contact-card-title">
+
+                                Phone & Email
+
+                            </h2>
+
+
+                            <p class="contact-card-subtitle">
+
+                                Get in touch with our support team
+
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    {% if contact_details and contact_details.phone_number %}
+
+                    <a
+                        href="tel:{{ contact_details.phone_number }}"
+                        class="contact-item">
+
+
+                        <div class="contact-item-icon phone-item-icon">
+
+                            <i class="fa-solid fa-phone"></i>
+
+                        </div>
+
+
+                        <div class="contact-item-content">
+
+                            <div class="contact-item-label">
+
+                                Phone
+
+                            </div>
+
+
+                            <div class="contact-item-value">
+
+                                {{ contact_details.phone_number }}
+
+                            </div>
+
+                        </div>
+
+
+                    </a>
+
+                    {% endif %}
+
+
+                    <!-- EMAIL -->
+
+                    {% if contact_details and contact_details.email %}
+
+                    <a
+                        href="mailto:{{ contact_details.email }}"
+                        class="contact-item">
+
+
+                        <div class="contact-item-icon email-item-icon">
+
+                            <i class="fa-solid fa-envelope"></i>
+
+                        </div>
+
+
+                        <div class="contact-item-content">
+
+                            <div class="contact-item-label">
+
+                                Email
+
+                            </div>
+
+
+                            <div class="contact-item-value">
+
+                                {{ contact_details.email }}
+
+                            </div>
+
+                        </div>
+
+
+                    </a>
+
+                    {% endif %}
+
+
+                    <!-- EMPTY -->
+
+                    {% if not contact_details or not contact_details.phone_number and not contact_details.email %}
+
+                    <div class="empty-contact">
+
+
+                        <div class="empty-contact-icon">
+
+                            <i class="fa-solid fa-clock"></i>
+
+                        </div>
+
+
+                        <p class="empty-contact-text">
+
+                            Phone and email details are being configured.
+
+                        </p>
+
+
+                    </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </section>
+
         </div>
+
+
+        <!-- =================================================
+             SOCIAL CHANNELS
+        ================================================= -->
+
         <div class="col-md-6">
-            <section class="card h-100"><div class="card-body p-4">
-                <h2 class="h4 fw-bold">Social channels</h2>
-                {% if contact_details and contact_details.whatsapp_number %}<p class="mb-3"><i class="fa-brands fa-whatsapp text-success me-2"></i><a href="{{ contact_details.whatsapp_url }}" target="_blank" rel="noopener noreferrer">WhatsApp {{ contact_details.whatsapp_number }}</a></p>{% endif %}
-                {% if contact_details and contact_details.instagram_id %}<p class="mb-0"><i class="fa-brands fa-instagram text-primary me-2"></i><a href="{{ contact_details.instagram_url }}" target="_blank" rel="noopener noreferrer">{{ contact_details.instagram_id }}</a></p>{% endif %}
-                {% if not contact_details or not contact_details.whatsapp_number and not contact_details.instagram_id %}<p class="text-muted mb-0">Social contact details are being configured.</p>{% endif %}
-            </div></section>
+
+            <section class="contact-card social-card">
+
+
+                <div class="contact-card-body">
+
+
+                    <div class="contact-card-heading">
+
+
+                        <div class="contact-icon social-icon">
+
+                            <i class="fa-solid fa-share-nodes"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2 class="contact-card-title">
+
+                                Social Channels
+
+                            </h2>
+
+
+                            <p class="contact-card-subtitle">
+
+                                Connect with SEVA ONE online
+
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- WHATSAPP -->
+
+                    {% if contact_details and contact_details.whatsapp_number %}
+
+                    <a
+                        href="{{ contact_details.whatsapp_url }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="contact-item">
+
+
+                        <div class="contact-item-icon whatsapp-item-icon">
+
+                            <i class="fa-brands fa-whatsapp"></i>
+
+                        </div>
+
+
+                        <div class="contact-item-content">
+
+                            <div class="contact-item-label">
+
+                                WhatsApp
+
+                            </div>
+
+
+                            <div class="contact-item-value">
+
+                                {{ contact_details.whatsapp_number }}
+
+                            </div>
+
+                        </div>
+
+
+                    </a>
+
+                    {% endif %}
+
+
+                    <!-- INSTAGRAM -->
+
+                    {% if contact_details and contact_details.instagram_id %}
+
+                    <a
+                        href="{{ contact_details.instagram_url }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="contact-item">
+
+
+                        <div class="contact-item-icon instagram-item-icon">
+
+                            <i class="fa-brands fa-instagram"></i>
+
+                        </div>
+
+
+                        <div class="contact-item-content">
+
+                            <div class="contact-item-label">
+
+                                Instagram
+
+                            </div>
+
+
+                            <div class="contact-item-value">
+
+                                {{ contact_details.instagram_id }}
+
+                            </div>
+
+                        </div>
+
+
+                    </a>
+
+                    {% endif %}
+
+
+                    <!-- EMPTY -->
+
+                    {% if not contact_details or not contact_details.whatsapp_number and not contact_details.instagram_id %}
+
+                    <div class="empty-contact">
+
+
+                        <div class="empty-contact-icon">
+
+                            <i class="fa-solid fa-share-nodes"></i>
+
+                        </div>
+
+
+                        <p class="empty-contact-text">
+
+                            Social contact details are being configured.
+
+                        </p>
+
+
+                    </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </section>
+
         </div>
+
+
     </div>
+
+
+    <!-- =================================================
+         INFORMATION NOTE
+    ================================================= -->
+
+    <div class="contact-note">
+
+
+        <i class="fa-solid fa-circle-info"></i>
+
+
+        <div>
+
+            <strong>
+                Need help with an application?
+            </strong>
+
+            <br>
+
+            You can use the Services section to find the required
+            citizen service and submit your application online.
+
+        </div>
+
+
+    </div>
+
+
 </div>
+
 {% endblock %}

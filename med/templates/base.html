@@ -1,228 +1,1023 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
 
-    <title>SEVA ONE</title>
+<head>
 
     <meta charset="UTF-8">
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>SEVA ONE</title>
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     {% include 'theme_toggle.html' %}
 
     <style>
 
-        :root{
-            --portal-ink:#14213d;
-            --portal-blue:#174ea6;
-            --portal-cyan:#0e7490;
-            --portal-bg:#f3f6fa;
-            --portal-muted:#64748b;
+        /* =====================================================
+           SEVA ONE COLOR SYSTEM
+        ===================================================== */
+
+        :root {
+
+            --seva-navy: #073D70;
+            --seva-navy-dark: #123F78;
+            --seva-navy-light: #1D5A94;
+
+            --seva-coral: #F36B4F;
+            --seva-coral-dark: #E85A3F;
+            --seva-coral-light: #FF8A70;
+
+            --seva-cream: #FFF4DF;
+            --seva-cream-dark: #FFE8C4;
+
+            --seva-blue-bg: #E9F5FC;
+            --seva-blue-soft: #DFEEF9;
+
+            --seva-page: #F7F8FA;
+
+            --seva-white: #FFFFFF;
+
+            --seva-text: #17324D;
+            --seva-muted: #64748B;
+
+            --seva-green: #249B63;
+            --seva-purple: #8B4DE8;
+            --seva-cyan: #18A9C7;
+            --seva-yellow: #E7A900;
+
+            --seva-border: #DCE5ED;
+
+            --seva-shadow:
+                0 10px 28px rgba(7,61,112,.10);
         }
 
-        body{
-            margin:0;
-            padding:0;
-            background:var(--portal-bg);
-            color:var(--portal-ink);
-            font-family:Inter, "Segoe UI", Arial, sans-serif;
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
         }
 
-        /* Navbar */
 
-        .navbar-custom{
-            background:#fff;
-            padding:14px clamp(18px, 5vw, 72px);
-            border-bottom:1px solid #e2e8f0;
-            box-shadow:0 4px 18px rgba(15,23,42,.05);
-            gap:20px;
+        html {
+            scroll-behavior: smooth;
         }
 
-        .logo-section{
-            display:flex;
-            align-items:center;
-            gap:12px;
+
+        body {
+
+            margin: 0;
+
+            padding: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            color: var(--seva-text);
+
+            background:
+                radial-gradient(
+                    circle at 0% 0%,
+                    rgba(223,238,249,.75),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 100% 100%,
+                    rgba(255,232,196,.55),
+                    transparent 30%
+                ),
+                var(--seva-page);
         }
 
-        .logo-icon{
-            width:150px;
-            height:52px;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            border-radius:14px;
-            overflow:hidden;
-            background:transparent;
-            box-shadow:none;
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar-custom {
+
+            position: relative;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #FFFFFF,
+                    #FDFEFE
+                );
+
+            padding:
+                14px clamp(18px,4vw,55px);
+
+            border-bottom:
+                1px solid var(--seva-border);
+
+            box-shadow:
+                0 5px 18px rgba(7,61,112,.08);
+
+            gap: 20px;
+
+            overflow: hidden;
         }
 
-        .logo-icon img{
-            width:100%;
-            height:100%;
-            object-fit:contain;
-            display:block;
+
+        /* Top identity line */
+
+        .navbar-custom::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--seva-coral) 0%,
+                    var(--seva-coral) 20%,
+                    var(--seva-navy) 20%,
+                    var(--seva-navy) 80%,
+                    var(--seva-coral) 80%,
+                    var(--seva-coral) 100%
+                );
         }
 
-        .navbar-title{
-            color:var(--portal-ink);
-            font-size:20px;
-            font-weight:750;
-            margin:0;
+
+        /* =====================================================
+           LOGO
+        ===================================================== */
+
+        .logo-section {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
         }
 
-        .navbar-subtitle{
-            color:var(--portal-muted);
-            font-size:12px;
-            margin:0;
+
+        .logo-icon {
+
+            width: 150px;
+
+            height: 55px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background: #FFFFFF;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            padding: 3px;
         }
 
-        /* Buttons */
 
-        .nav-buttons{
-            display:flex;
-            gap:12px;
-            align-items:center;
-            flex-wrap:wrap;
+        .logo-icon img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: contain;
+
+            display: block;
         }
 
-        .btn-custom{
-            border:none;
-            padding:9px 14px;
-            border-radius:9px;
-            font-weight:600;
-            transition:0.3s;
-            text-decoration:none;
+
+        /* =====================================================
+           BRAND
+        ===================================================== */
+
+        .navbar-title {
+
+            color: var(--seva-navy);
+
+            font-size: 24px;
+
+            font-weight: 850;
+
+            margin: 0;
+
+            letter-spacing: .04em;
         }
 
-        .btn-back{
-            background:#edf4ff;
-            color:var(--portal-blue);
+
+        .navbar-subtitle {
+
+            color: var(--seva-muted);
+
+            font-size: 12px;
+
+            margin: 3px 0 0;
+
+            letter-spacing: .04em;
         }
 
-        .btn-back:hover{
-            background:#dbeafe;
-            color:var(--portal-blue);
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        .nav-buttons {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: flex-end;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+            margin-left: auto;
         }
 
-        .btn-logout{
-            background:#ef4444;
-            color:white;
+
+        .btn-custom {
+
+            border: none;
+
+            padding: 9px 15px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            text-decoration: none;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            transition: .2s ease;
+
+            white-space: nowrap;
         }
 
-        .btn-logout:hover{
-            background:#dc2626;
+
+        .btn-custom:hover {
+
+            transform: translateY(-1px);
         }
 
-        /* Page Content */
 
-        .content-container{
-            min-height:calc(100vh - 110px);
-            padding:clamp(20px, 4vw, 48px);
+        /* =====================================================
+           NAV - SERVICES
+        ===================================================== */
+
+        .btn-services {
+
+            background: var(--seva-blue-bg);
+
+            color: var(--seva-navy);
+
+            border:
+                1px solid #C9E0F1;
         }
 
-        .portal-footer{
-            color:var(--portal-muted);
-            font-size:13px;
-            text-align:center;
-            padding:20px;
+
+        .btn-services:hover {
+
+            background: var(--seva-navy);
+
+            color: white;
         }
 
-        .card{
-            border:1px solid #e7edf4;
-            border-radius:16px;
+
+        /* =====================================================
+           NAV - CONTACT
+        ===================================================== */
+
+        .btn-contact {
+
+            background: #E9F7F1;
+
+            color: #17794C;
+
+            border:
+                1px solid #C7EBD9;
         }
 
-        .btn-primary{
-            background:var(--portal-blue);
-            border-color:var(--portal-blue);
+
+        .btn-contact:hover {
+
+            background: var(--seva-green);
+
+            color: white;
         }
 
-        .btn-primary:hover{
-            background:#123f86;
-            border-color:#123f86;
+
+        /* =====================================================
+           NAV - DASHBOARD
+        ===================================================== */
+
+        .btn-dashboard {
+
+            background: #FFF0EA;
+
+            color: var(--seva-coral-dark);
+
+            border:
+                1px solid #FFD5C9;
         }
 
-        /* Responsive */
 
-        @media(max-width:768px){
+        .btn-dashboard:hover {
 
-            .navbar-custom{
-                flex-direction:column;
-                gap:12px;
-                text-align:center;
-                padding:16px;
+            background: var(--seva-coral);
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           LOGIN
+        ===================================================== */
+
+        .btn-login {
+
+            background:
+                var(--seva-navy);
+
+            color: white;
+
+            border: none;
+
+            box-shadow:
+                0 5px 12px rgba(7,61,112,.20);
+        }
+
+
+        .btn-login:hover {
+
+            background:
+                var(--seva-navy-dark);
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        .btn-logout {
+
+            background:
+                var(--seva-coral);
+
+            color: white;
+
+            box-shadow:
+                0 5px 12px rgba(243,107,79,.18);
+        }
+
+
+        .btn-logout:hover {
+
+            background:
+                var(--seva-coral-dark);
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           THEME TOGGLE
+        ===================================================== */
+
+        .theme-toggle {
+
+            width: 38px;
+
+            height: 38px;
+
+            border: 1px solid #D7E2EC;
+
+            border-radius: 50%;
+
+            background: #F4F8FB;
+
+            color: var(--seva-navy);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+
+        .theme-toggle:hover {
+
+            background:
+                var(--seva-navy);
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           CONTENT
+        ===================================================== */
+
+        .content-container {
+
+            min-height:
+                calc(100vh - 125px);
+
+            padding:
+                clamp(20px,4vw,45px);
+
+            background: transparent;
+        }
+
+
+        /* =====================================================
+           COMMON CARD
+        ===================================================== */
+
+        .card {
+
+            border:
+                1px solid var(--seva-border);
+
+            border-radius:
+                16px;
+
+            background:
+                rgba(255,255,255,.96);
+
+            box-shadow:
+                var(--seva-shadow);
+
+            overflow:
+                hidden;
+        }
+
+
+        /* =====================================================
+           CARD HOVER
+        ===================================================== */
+
+        .card-hover {
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+        }
+
+
+        .card-hover:hover {
+
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                0 18px 35px rgba(7,61,112,.14);
+        }
+
+
+        /* =====================================================
+           PRIMARY BUTTON
+        ===================================================== */
+
+        .btn-primary {
+
+            background:
+                var(--seva-navy);
+
+            border-color:
+                var(--seva-navy);
+
+            color: white;
+        }
+
+
+        .btn-primary:hover {
+
+            background:
+                var(--seva-navy-dark);
+
+            border-color:
+                var(--seva-navy-dark);
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           CORAL BUTTON
+        ===================================================== */
+
+        .btn-coral {
+
+            background:
+                var(--seva-coral);
+
+            color: white;
+
+            border: none;
+        }
+
+
+        .btn-coral:hover {
+
+            background:
+                var(--seva-coral-dark);
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           SUCCESS
+        ===================================================== */
+
+        .btn-success {
+
+            background:
+                var(--seva-green);
+
+            border-color:
+                var(--seva-green);
+        }
+
+
+        /* =====================================================
+           INFO
+        ===================================================== */
+
+        .btn-info {
+
+            background:
+                var(--seva-cyan);
+
+            border-color:
+                var(--seva-cyan);
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           WARNING
+        ===================================================== */
+
+        .btn-warning {
+
+            background:
+                var(--seva-yellow);
+
+            border-color:
+                var(--seva-yellow);
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           FORM CONTROLS
+        ===================================================== */
+
+        .form-control,
+        .form-select {
+
+            border:
+                1px solid #D4E0EA;
+
+            border-radius:
+                8px;
+
+            padding:
+                10px 12px;
+
+            color:
+                var(--seva-text);
+
+            background:
+                white;
+        }
+
+
+        .form-control:focus,
+        .form-select:focus {
+
+            border-color:
+                var(--seva-navy);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(7,61,112,.10);
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table thead {
+
+            background:
+                var(--seva-navy);
+
+            color: white;
+        }
+
+
+        .table thead th {
+
+            border: none;
+
+            padding: 13px;
+
+            font-size: 12px;
+        }
+
+
+        .table tbody tr:hover {
+
+            background:
+                #F4FAFD;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .portal-footer {
+
+            color:
+                var(--seva-muted);
+
+            font-size:
+                12px;
+
+            text-align:
+                center;
+
+            padding:
+                18px;
+
+            background:
+                white;
+
+            border-top:
+                1px solid var(--seva-border);
+        }
+
+
+        .portal-footer::before {
+
+            content:
+                "✦ ";
+
+            color:
+                var(--seva-coral);
+        }
+
+
+        .portal-footer::after {
+
+            content:
+                " ✦";
+
+            color:
+                var(--seva-navy);
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media(max-width:1100px) {
+
+            .navbar-custom {
+
+                flex-direction:
+                    column;
+
+                text-align:
+                    center;
             }
 
-            .nav-buttons{
-                width:100%;
-                justify-content:center;
+
+            .logo-section {
+
+                justify-content:
+                    center;
             }
 
+
+            .nav-buttons {
+
+                width:
+                    100%;
+
+                justify-content:
+                    center;
+
+                margin-left:
+                    0;
+            }
+        }
+
+
+        @media(max-width:768px) {
+
+            .navbar-custom {
+
+                padding:
+                    16px 12px;
+            }
+
+
+            .logo-section {
+
+                flex-direction:
+                    column;
+            }
+
+
+            .navbar-title {
+
+                font-size:
+                    21px;
+            }
+
+
+            .navbar-subtitle {
+
+                font-size:
+                    10px;
+            }
+
+
+            .content-container {
+
+                padding:
+                    18px 12px;
+            }
+
+
+            .nav-buttons {
+
+                gap:
+                    6px;
+            }
+
+
+            .btn-custom {
+
+                padding:
+                    8px 10px;
+
+                font-size:
+                    11px;
+            }
+        }
+
+
+        @media(max-width:480px) {
+
+            .nav-buttons {
+
+                display:
+                    grid;
+
+                grid-template-columns:
+                    repeat(2,1fr);
+
+                width:
+                    100%;
+            }
+
+
+            .btn-custom {
+
+                width:
+                    100%;
+            }
+
+
+            .theme-toggle {
+
+                width:
+                    100%;
+
+                border-radius:
+                    8px;
+
+                grid-column:
+                    span 2;
+            }
         }
 
     </style>
 
 </head>
 
+
 <body>
 
-<!-- Navbar -->
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
 
 <div class="navbar-custom d-flex justify-content-between align-items-center">
 
-    <!-- Left Section -->
+
+    <!-- LOGO -->
 
     <div class="logo-section">
 
         <div class="logo-icon">
-            <img src="{% static 'seva-one-logo.jpg' %}" alt="SEVA ONE logo">
+
+            <img
+                src="{% static 'seva-one-logo.jpg' %}"
+                alt="SEVA ONE logo">
+
         </div>
+
 
         <div>
 
-            <h1 class="navbar-title" style="font-size: 24px;">
+            <h1 class="navbar-title">
+
                 SEVA ONE
+
             </h1>
 
+
             <p class="navbar-subtitle">
+
                 Browse services and apply online
+
             </p>
 
         </div>
 
     </div>
 
-    <!-- Right Buttons -->
 
-    <nav class="nav-buttons" aria-label="Main navigation">
-        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color theme" title="Switch color theme" aria-pressed="false"></button>
-        <!-- <a href="/" class="btn btn-custom btn-back"><i class="fa-solid fa-house"></i> Home</a> -->
-        <a href="{% url 'service_catalog' %}" class="btn btn-custom btn-back"><i class="fa-solid fa-list"></i> Services</a>
-        <a href="{% url 'contact' %}" class="btn btn-custom btn-back"><i class="fa-solid fa-address-card"></i> Contact</a>
+    <!-- NAVIGATION -->
+
+    <nav
+        class="nav-buttons"
+        aria-label="Main navigation">
+
+
+        <button
+            class="theme-toggle"
+            type="button"
+            data-theme-toggle
+            aria-label="Switch color theme"
+            title="Switch color theme"
+            aria-pressed="false">
+
+            <i class="fa-solid fa-circle-half-stroke"></i>
+
+        </button>
+
+
+        <a
+            href="{% url 'service_catalog' %}"
+            class="btn-custom btn-services">
+
+            <i class="fa-solid fa-list"></i>
+
+            Services
+
+        </a>
+
+
+        <a
+            href="{% url 'contact' %}"
+            class="btn-custom btn-contact">
+
+            <i class="fa-solid fa-address-card"></i>
+
+            Contact
+
+        </a>
+
+
         {% if user.is_authenticated %}
+
             {% if user.is_superuser %}
-                <a href="{% url 'admin_dashboard' %}" class="btn btn-custom btn-back"><i class="fa-solid fa-table-columns"></i> Admin dashboard</a>
+
+                <a
+                    href="{% url 'admin_dashboard' %}"
+                    class="btn-custom btn-dashboard">
+
+                    <i class="fa-solid fa-table-columns"></i>
+
+                    Admin Dashboard
+
+                </a>
+
             {% else %}
-                <a href="{% url 'dashboard' %}" class="btn btn-custom btn-back"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="btn-custom btn-dashboard">
+
+                    <i class="fa-solid fa-table-columns"></i>
+
+                    Dashboard
+
+                </a>
+
             {% endif %}
-            <a href="{% url 'logout' %}" class="btn btn-custom btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+
+
+            <a
+                href="{% url 'logout' %}"
+                class="btn-custom btn-logout">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Logout
+
+            </a>
+
+
         {% else %}
-            <a href="{% url 'login' %}" class="btn btn-primary btn-custom text-white"><i class="fa-solid fa-right-to-bracket"></i> Sign in</a>
+
+            <a
+                href="{% url 'login' %}"
+                class="btn-custom btn-login">
+
+                <i class="fa-solid fa-right-to-bracket"></i>
+
+                Sign In
+
+            </a>
+
         {% endif %}
+
     </nav>
 
 </div>
 
-<footer class="portal-footer">SEVA ONE · Find a service and apply online</footer>
 
-<!-- Page Content -->
+<!-- =====================================================
+     PAGE CONTENT
+===================================================== -->
 
 <div class="content-container">
 
@@ -232,7 +1027,26 @@
 
 </div>
 
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="portal-footer">
+
+    SEVA ONE · Digital Services for Citizens
+
+</footer>
+
+
 {% include 'password_toggle_script.html' %}
 
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
 </body>
+
 </html>
