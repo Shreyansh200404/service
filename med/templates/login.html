@@ -1,0 +1,276 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Sign in | SEVA ONE</title>
+
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    {% include 'theme_toggle.html' %}
+
+    <style>
+
+        body{
+            margin:0;
+            padding:0;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(to right,#2563eb,#06b6d4);
+            font-family:Arial, sans-serif;
+            overflow:hidden;
+            position:relative;
+        }
+
+        /* Background Circles */
+
+        .circle{
+            position:absolute;
+            border-radius:50%;
+            background:rgba(255,255,255,0.08);
+        }
+
+        .circle1{
+            width:300px;
+            height:300px;
+            top:-100px;
+            left:-100px;
+        }
+
+        .circle2{
+            width:220px;
+            height:220px;
+            bottom:-80px;
+            right:-60px;
+        }
+
+        .circle3{
+            width:150px;
+            height:150px;
+            top:20%;
+            right:15%;
+        }
+
+        /* Login Card */
+
+        .login-card{
+            width:100%;
+            max-width:420px;
+            background:white;
+            border-radius:24px;
+            padding:40px;
+            box-shadow:0 15px 35px rgba(0,0,0,0.15);
+            position:relative;
+            z-index:2;
+        }
+
+        /* Logo */
+
+        .logo-box{
+            width:220px;
+            height:120px;
+            background:transparent;
+            border-radius:20px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            margin:auto;
+            overflow:hidden;
+            box-shadow:none;
+        }
+
+        .logo-box img{
+            width:100%;
+            height:100%;
+            object-fit:contain;
+            display:block;
+        }
+
+        /* Title */
+
+        .login-title{
+            text-align:center;
+            margin-top:20px;
+            font-size:32px;
+            font-weight:bold;
+            color:#1e293b;
+        }
+
+        .login-subtitle{
+            text-align:center;
+            color:#64748b;
+            margin-bottom:30px;
+        }
+
+        /* Inputs */
+
+        .form-label{
+            font-weight:600;
+            color:#334155;
+        }
+
+        .input-group{
+            border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .input-group-text{
+            background:white;
+            border:none;
+            color:#2563eb;
+            padding-left:15px;
+        }
+
+        .form-control{
+            border:none;
+            padding:14px;
+        }
+
+        .form-control:focus{
+            box-shadow:none;
+        }
+
+        /* Button */
+
+        .btn-login{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:12px;
+            background:linear-gradient(to right,#2563eb,#06b6d4);
+            color:white;
+            font-size:16px;
+            font-weight:600;
+            transition:0.3s;
+        }
+
+        .btn-login:hover{
+            transform:translateY(-2px);
+            box-shadow:0 8px 18px rgba(37,99,235,0.3);
+        }
+
+        /* Error */
+
+        .error-message{
+            background:#fee2e2;
+            color:#dc2626;
+            padding:12px;
+            border-radius:10px;
+            text-align:center;
+            margin-bottom:20px;
+            font-weight:600;
+        }
+
+        /* Footer */
+
+        .footer-text{
+            text-align:center;
+            margin-top:20px;
+            color:#64748b;
+            font-size:14px;
+        }
+
+        body{background:#f3f6fa;font-family:Inter,"Segoe UI",Arial,sans-serif;overflow:auto}
+        .circle{background:#dbeafe}
+        .login-card{border:1px solid #e2e8f0;box-shadow:0 24px 70px rgba(15,23,42,.12)}
+        .logo-box{background:#e8f0fe;color:#174ea6;box-shadow:none;border-radius:20px}
+        .login-title{color:#14213d}
+        .btn-login{background:#174ea6}
+        .btn-login:hover{background:#123f86}
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- Background Decorations -->
+
+<div class="circle circle1"></div>
+<div class="circle circle2"></div>
+<div class="circle circle3"></div>
+
+<!-- Login Card -->
+
+<div class="login-card">
+
+    <button class="theme-toggle position-absolute top-0 end-0 m-3" type="button" data-theme-toggle aria-label="Switch color theme" title="Switch color theme" aria-pressed="false"></button>
+
+    <!-- Logo -->
+
+    <div class="logo-box">
+
+        <img src="{% static 'seva-one-logo.jpg' %}" alt="SEVA ONE logo">
+
+    </div>
+
+    <!-- Title -->
+
+    <h2 class="login-title">
+        SEVA ONE
+    </h2>
+
+    <p class="login-subtitle">
+        Sign in to manage your portal account
+    </p>
+
+    {% if form.non_field_errors %}
+        <div class="error-message"><i class="fa-solid fa-circle-exclamation"></i> {{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-4">
+            <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                {{ form.username }}
+            </div>
+            {% for error in form.username.errors %}<div class="small text-danger mt-1">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                {{ form.password }}
+            </div>
+            {% for error in form.password.errors %}<div class="small text-danger mt-1">{{ error }}</div>{% endfor %}
+        </div>
+
+        <button type="submit" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+    </form>
+
+    <p class="text-end mt-3 mb-0"><a href="{% url 'request_password_reset' %}">Forgot password?</a></p>
+
+    <p class="footer-text mb-0">Need an account? <a href="{% url 'register' %}">Request access</a></p>
+
+    <!-- Footer -->
+
+    <p class="footer-text">
+
+        © 2026 SEVA ONE. All Rights Reserved.
+
+    </p>
+
+</div>
+
+{% include 'password_toggle_script.html' %}
+
+</body>
+</html>

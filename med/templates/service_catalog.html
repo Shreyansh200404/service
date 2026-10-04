@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <section class="p-4 p-lg-5 mb-4 rounded-4 text-white" style="background:linear-gradient(120deg,#123f86,#0e7490)">
+        <span class="small text-uppercase fw-bold opacity-75">One portal · Many services</span>
+        <h1 class="display-6 fw-bold mt-2 mb-2">Find the service you need</h1>
+        <p class="mb-0 opacity-75">Explore available citizen services, view the details, and apply through the form provided.</p>
+    </section>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div><h2 class="h4 fw-bold mb-1">Browse by category</h2><p class="text-muted mb-0">Service fees are shown before you apply.</p></div>
+        <div class="input-group" style="max-width:340px"><span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span><input id="serviceSearch" class="form-control" placeholder="Search a service" aria-label="Search a service"></div>
+    </div>
+
+    {% for main in main_services %}
+        <section class="mb-5 service-category">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <span class="rounded-3 p-3 bg-primary-subtle text-primary"><i class="fa-solid fa-folder-open fa-lg"></i></span>
+                <div><h2 class="h5 fw-bold mb-1">{{ main.name }}</h2>{% if main.description %}<p class="text-muted small mb-0">{{ main.description }}</p>{% endif %}</div>
+            </div>
+            <div class="row g-3">
+                {% for service in main.services.all %}
+                    {% if service.is_active %}
+                    <div class="col-md-6 col-xl-4 service-card" data-search="{{ main.name|lower }} {{ service.name|lower }} {{ service.description|lower }}">
+                        <article class="card h-100 shadow-sm">
+                            <div class="card-body p-4 d-flex flex-column">
+                                <span class="small text-uppercase fw-semibold text-primary mb-2">Application service</span>
+                                <h3 class="h5 fw-bold">{{ service.name }}</h3>
+                                <p class="text-muted flex-grow-1">{% if service.description %}{{ service.description }}{% else %}Apply online using the application form for this service.{% endif %}</p>
+                                <div class="d-flex justify-content-between align-items-center border-top pt-3 mb-3">
+                                    <span class="small text-muted">Service fee</span>
+                                    <strong>{% if service.amount %}&#8377;{{ service.amount|floatformat:2 }}{% else %}Free{% endif %}</strong>
+                                </div>
+                                {% if user.is_authenticated %}
+                                    <form method="post" action="{% url 'apply_for_service' service.pk %}">
+                                        {% csrf_token %}
+                                        <button class="btn btn-primary w-100" type="submit">Apply now <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i></button>
+                                    </form>
+                                {% else %}
+                                    <a class="btn btn-primary" href="{% url 'login' %}">Sign in to apply <i class="fa-solid fa-arrow-right ms-2"></i></a>
+                                {% endif %}
+                            </div>
+                        </article>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                    <div class="col-12"><p class="text-muted">No services in this category yet.</p></div>
+                {% endfor %}
+            </div>
+        </section>
+    {% empty %}
+        <div class="card text-center p-5"><i class="fa-solid fa-folder-open fa-2x text-primary mb-3"></i><h2 class="h5">No services listed yet</h2><p class="text-muted mb-0">Please check back later for available applications.</p></div>
+    {% endfor %}
+
+    <div id="noSearchResults" class="alert alert-light border text-center d-none">No matching services found.</div>
+    <p class="small text-muted text-center mt-4"><i class="fa-solid fa-circle-info me-1"></i>Applications are submitted through the Google Form linked to each service.</p>
+</div>
+<script>
+    document.getElementById('serviceSearch').addEventListener('input', function () {
+        const term = this.value.trim().toLowerCase();
+        let visible = 0;
+        document.querySelectorAll('.service-card').forEach(function (card) {
+            const matches = card.dataset.search.includes(term);
+            card.classList.toggle('d-none', !matches);
+            if (matches) visible++;
+        });
+        document.querySelectorAll('.service-category').forEach(function (category) {
+            category.classList.toggle('d-none', !category.querySelector('.service-card:not(.d-none)'));
+        });
+        document.getElementById('noSearchResults').classList.toggle('d-none', visible > 0);
+    });
+</script>
+{% endblock %}

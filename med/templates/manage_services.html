@@ -1,0 +1,61 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="h2">Manage Citizen Services</h1>
+            <p class="text-muted mb-0">Create main categories, then add sub-services with Google Form links.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" href="{% url 'admin_dashboard' %}">Dashboard</a>
+            <a class="btn btn-primary" href="{% url 'add_main_service' %}">Add Main Service</a>
+            <a class="btn btn-success" href="{% url 'add_service' %}">Add Sub-service</a>
+        </div>
+    </div>
+
+    {% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}
+
+    {% for main in main_services %}
+        <section class="card shadow-sm mb-4">
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <h2 class="h5 mb-1">{{ main.name }}</h2>
+                    {% if main.description %}<small class="text-muted">{{ main.description }}</small>{% endif %}
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    {% if main.is_active %}<span class="badge text-bg-success">Active</span>{% else %}<span class="badge text-bg-secondary">Hidden</span>{% endif %}
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'add_service' %}?main_service={{ main.pk }}">Add sub-service</a>
+                    <form method="post" action="{% url 'delete_main_service' main.pk %}" onsubmit="return confirm('Delete this category and all its sub-services?');">
+                        {% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit">Delete category</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card-body">
+                {% for service in main.services.all %}
+                    <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom py-3 gap-2">
+                        <div>
+                            <strong>{{ service.name }}</strong>
+                            <div class="small fw-semibold">{% if service.amount %}Fee: &#8377;{{ service.amount|floatformat:2 }}{% else %}Free{% endif %}</div>
+                            {% if service.payment_qr_image %}<a class="small" href="{% url 'service_payment_qr' service.pk %}" target="_blank" rel="noopener noreferrer">View PhonePe QR</a>{% else %}<div class="small text-warning">Payment QR not uploaded</div>{% endif %}
+                            {% if service.description %}<div class="text-muted small">{{ service.description }}</div>{% endif %}
+                            <a class="small" href="{{ service.google_form_url }}" target="_blank" rel="noopener noreferrer">Open Google Form</a>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            {% if service.is_active %}<span class="badge text-bg-success">Active</span>{% else %}<span class="badge text-bg-secondary">Hidden</span>{% endif %}
+                            <a class="btn btn-sm btn-outline-primary" href="{% url 'edit_service' service.pk %}">Edit</a>
+                            <form method="post" action="{% url 'delete_service' service.pk %}" onsubmit="return confirm('Delete this sub-service?');">
+                                {% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">No sub-services yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+    {% empty %}
+        <div class="alert alert-info">No main services yet. Add a main service to get started.</div>
+    {% endfor %}
+</div>
+{% endblock %}

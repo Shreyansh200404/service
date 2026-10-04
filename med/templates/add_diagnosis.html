@@ -1,0 +1,145 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center">
+
+    <div class="card custom-card">
+
+        <!-- Header -->
+
+        <div class="card-header text-center">
+
+            <div class="icon-box">
+
+                <i class="fa-solid fa-notes-medical"></i>
+
+            </div>
+
+            <h2 class="mt-3">
+                Add Diagnosis
+            </h2>
+
+            <p class="text-light">
+                Add a new diagnosis for medicine management
+            </p>
+
+        </div>
+
+        <!-- Body -->
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <!-- Diagnosis Name -->
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-bold">
+
+                        Diagnosis Name
+
+                    </label>
+
+                    <input type="text"
+                           name="name"
+                           class="form-control custom-input"
+                           placeholder="Enter diagnosis name"
+                           required>
+
+                </div>
+
+                <!-- Buttons -->
+
+                <div class="d-flex justify-content-between">
+
+                    <a href="/admin-dashboard/"
+                       class="btn btn-secondary btn-custom">
+
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Back
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary btn-custom">
+
+                        <i class="fa-solid fa-plus"></i>
+                        Add Diagnosis
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+    body{
+        background:#eef4ff;
+    }
+
+    .custom-card{
+        width:100%;
+        max-width:600px;
+        border:none;
+        border-radius:20px;
+        overflow:hidden;
+        margin-top:40px;
+        box-shadow:0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .card-header{
+        background:linear-gradient(to right,#2563eb,#06b6d4);
+        padding:35px;
+        color:white;
+    }
+
+    .icon-box{
+        width:80px;
+        height:80px;
+        background:white;
+        border-radius:50%;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        margin:auto;
+        color:#2563eb;
+        font-size:35px;
+    }
+
+    .card-body{
+        padding:35px;
+        background:white;
+    }
+
+    .custom-input{
+        padding:12px;
+        border-radius:10px;
+        border:1px solid #ced4da;
+        transition:0.3s;
+    }
+
+    .custom-input:focus{
+        border-color:#2563eb;
+        box-shadow:0 0 8px rgba(37,99,235,0.3);
+    }
+
+    .btn-custom{
+        padding:10px 20px;
+        border-radius:10px;
+        font-weight:600;
+    }
+
+</style>
+
+{% endblock %}

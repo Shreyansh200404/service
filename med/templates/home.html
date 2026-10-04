@@ -1,0 +1,2100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SEVA ONE</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Poppins',sans-serif;
+            background:#f7f8fa;
+            color:#172033;
+        }
+
+        /* =====================================
+           TOP HEADER
+        ===================================== */
+
+        .top-header{
+            background:#ffffff;
+            border-bottom:1px solid #e5e7eb;
+            padding:10px 0;
+        }
+
+        .header-container{
+            max-width:1180px;
+            margin:auto;
+            padding:0 20px;
+
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:20px;
+        }
+
+        .brand{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            text-decoration:none;
+        }
+
+        .brand-icon{
+            width:160px;
+            height:78px;
+
+            border-radius:12px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            background:transparent;
+            overflow:hidden;
+            box-shadow:none;
+        }
+
+        .brand-icon img{
+            width:100%;
+            height:100%;
+            object-fit:contain;
+            display:block;
+        }
+
+        .brand-text h2{
+            font-size:20px;
+            font-weight:800;
+            margin:0;
+            color:#123c75;
+        }
+
+        .brand-text span{
+            font-size:11px;
+            color:#6b7280;
+        }
+
+        .header-buttons{
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .header-btn{
+            text-decoration:none;
+            padding:10px 18px;
+            border-radius:7px;
+            font-size:13px;
+            font-weight:600;
+            transition:.2s;
+        }
+
+        .register-btn{
+            color:#e85d3f;
+            background:#fff;
+            border:1px solid #f1b3a4;
+        }
+
+        .register-btn:hover{
+            background:#fff3ef;
+            color:#d94b2f;
+        }
+
+        .login-btn{
+            color:#fff;
+            background:#174ea6;
+            border:1px solid #174ea6;
+        }
+
+        .login-btn:hover{
+            background:#123d80;
+            color:#fff;
+        }
+
+
+        /* =====================================
+           NAVIGATION
+        ===================================== */
+
+        .navbar-custom{
+            background:#123f78;
+            box-shadow:0 3px 10px rgba(0,0,0,.08);
+        }
+
+        .nav-container{
+            max-width:1180px;
+            margin:auto;
+            padding:0 20px;
+
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        .nav-links{
+            display:flex;
+            align-items:center;
+            gap:0;
+        }
+
+        .nav-links a{
+            color:#fff;
+            text-decoration:none;
+            font-size:13px;
+            font-weight:500;
+
+            padding:14px 18px;
+
+            transition:.2s;
+        }
+
+        .nav-links a:hover{
+            background:#0d315e;
+        }
+
+        .nav-links a.active{
+            background:#e86b4c;
+        }
+
+        .nav-help{
+            color:#fff;
+            font-size:12px;
+        }
+
+
+        /* =====================================
+           HERO SECTION
+        ===================================== */
+
+        .hero{
+            background:
+                linear-gradient(
+                    100deg,
+                    #dcecf8,
+                    #e9f5fb 50%,
+                    #fff3ed
+                );
+
+            border-bottom:1px solid #d9e4ed;
+        }
+
+        .hero-container{
+            max-width:1180px;
+            margin:auto;
+
+            padding:45px 20px;
+
+            display:grid;
+            grid-template-columns:1.5fr 1fr;
+            align-items:center;
+            gap:40px;
+        }
+
+        .hero-content h1{
+            font-size:42px;
+            line-height:1.2;
+            font-weight:800;
+
+            margin-bottom:14px;
+
+            color:#174ea6;
+        }
+
+        .hero-content h1 span{
+            color:#e86b4c;
+        }
+
+        .hero-content p{
+            max-width:650px;
+            font-size:15px;
+            line-height:1.8;
+            color:#46566b;
+            margin-bottom:22px;
+        }
+
+        .hero-buttons{
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+        }
+
+        .hero-btn{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+
+            padding:12px 20px;
+
+            border-radius:7px;
+
+            text-decoration:none;
+
+            font-size:13px;
+            font-weight:600;
+
+            transition:.25s;
+        }
+
+        .hero-primary{
+            background:#e86b4c;
+            color:white;
+        }
+
+        .hero-primary:hover{
+            color:white;
+            background:#d95638;
+            transform:translateY(-2px);
+        }
+
+        .hero-secondary{
+            background:#174ea6;
+            color:#fff;
+        }
+
+        .hero-secondary:hover{
+            color:#fff;
+            background:#123d80;
+            transform:translateY(-2px);
+        }
+
+        .hero-illustration{
+            min-height:220px;
+
+            border-radius:25px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(23,78,166,.12),
+                    rgba(232,107,76,.15)
+                );
+        }
+
+        .hero-icon{
+            width:360px;
+            height:260px;
+
+            border-radius:25px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            background:transparent;
+
+            box-shadow:none;
+            overflow:hidden;
+        }
+
+        .hero-icon img{
+            width:100%;
+            height:100%;
+            object-fit:contain;
+            display:block;
+        }
+
+
+        /* =====================================
+           NOTICE BAR
+        ===================================== */
+
+        .notice-bar{
+            background:#073d70;
+            color:white;
+        }
+
+        .notice-container{
+            max-width:1180px;
+            margin:auto;
+            padding:9px 20px;
+
+            display:flex;
+            align-items:center;
+            gap:12px;
+
+            font-size:12px;
+        }
+
+        .notice-icon{
+            width:30px;
+            height:30px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            background:#e86b4c;
+            border-radius:5px;
+        }
+
+        .notice-text{
+            overflow:hidden;
+            white-space:nowrap;
+        }
+
+
+        /* =====================================
+           MAIN CONTENT
+        ===================================== */
+
+        .main-container{
+            max-width:1080px;
+            margin:auto;
+            padding:45px 20px;
+        }
+
+
+        /* =====================================
+           SECTION TITLE
+        ===================================== */
+
+        .section-title{
+            text-align:center;
+            margin-bottom:28px;
+        }
+
+        .section-title h2{
+            font-size:28px;
+            font-weight:800;
+            color:#172033;
+        }
+
+        .section-title h2 span{
+            color:#e86b4c;
+        }
+
+        .section-title p{
+            font-size:13px;
+            color:#718096;
+            margin-top:6px;
+        }
+
+
+        /* =====================================
+           SERVICE PORTAL
+        ===================================== */
+
+        .service-wrapper{
+            background:#fff4df;
+
+            border:1px solid #f2c999;
+
+            border-radius:8px;
+
+            padding:0 18px 22px;
+
+            box-shadow:
+                0 5px 18px rgba(0,0,0,.05);
+        }
+
+        .service-main-tabs{
+            display:flex;
+            margin-left:-18px;
+            margin-right:-18px;
+        }
+
+        .main-tab{
+            flex:1;
+
+            padding:14px 18px;
+
+            border:none;
+
+            background:#ffe8c4;
+
+            color:#263238;
+
+            font-family:inherit;
+
+            font-size:13px;
+
+            font-weight:600;
+
+            cursor:pointer;
+
+            border-bottom:1px solid #edc68f;
+        }
+
+        .main-tab:first-child{
+            border-radius:8px 0 0 0;
+        }
+
+        .main-tab:last-child{
+            border-radius:0 8px 0 0;
+        }
+
+        .main-tab.active{
+            background:#fff4df;
+            border-bottom:3px solid #e86b4c;
+            color:#173f70;
+        }
+
+
+        /* Category tabs */
+
+        .category-tabs{
+            display:flex;
+            gap:10px;
+
+            padding:18px 0;
+
+            overflow-x:auto;
+        }
+
+        .category-tab{
+            flex-shrink:0;
+
+            border:1px solid #e4b98b;
+
+            background:#fff9ef;
+
+            padding:10px 20px;
+
+            border-radius:25px;
+
+            font-family:inherit;
+
+            font-size:12px;
+
+            color:#4b5563;
+
+            cursor:pointer;
+
+            transition:.2s;
+        }
+
+        .category-tab:hover,
+        .category-tab.active{
+            background:#ef7354;
+            color:#fff;
+            border-color:#ef7354;
+        }
+
+
+        /* =====================================
+           SERVICE GRID
+        ===================================== */
+
+        .services-grid{
+            display:grid;
+
+            grid-template-columns:
+                repeat(3,1fr);
+
+            gap:12px;
+        }
+
+        .service-card{
+            min-height:130px;
+
+            background:#fff;
+
+            border:1px solid #e0e0e0;
+
+            border-radius:7px;
+
+            display:flex;
+            flex-direction:column;
+
+            align-items:center;
+            justify-content:center;
+
+            text-align:center;
+
+            padding:18px 10px;
+
+            text-decoration:none;
+
+            color:#27364b;
+
+            box-shadow:
+                0 3px 7px rgba(0,0,0,.08);
+
+            transition:.25s;
+        }
+
+        .service-card:hover{
+            transform:translateY(-4px);
+
+            border-color:#e86b4c;
+
+            box-shadow:
+                0 8px 18px rgba(232,107,76,.18);
+
+            color:#174ea6;
+        }
+
+        .service-icon{
+            width:58px;
+            height:58px;
+
+            border-radius:12px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            margin-bottom:10px;
+
+            font-size:26px;
+
+            color:#fff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #174ea6,
+                    #2875c7
+                );
+        }
+
+        .service-card:nth-child(2) .service-icon{
+            background:linear-gradient(135deg,#ef6c52,#f89b62);
+        }
+
+        .service-card:nth-child(3) .service-icon{
+            background:linear-gradient(135deg,#198754,#45b97c);
+        }
+
+        .service-card:nth-child(4) .service-icon{
+            background:linear-gradient(135deg,#7c3aed,#a855f7);
+        }
+
+        .service-card:nth-child(5) .service-icon{
+            background:linear-gradient(135deg,#dc2626,#f87171);
+        }
+
+        .service-card:nth-child(6) .service-icon{
+            background:linear-gradient(135deg,#0891b2,#22d3ee);
+        }
+
+        .service-card:nth-child(7) .service-icon{
+            background:linear-gradient(135deg,#ca8a04,#facc15);
+        }
+
+        .service-card:nth-child(8) .service-icon{
+            background:linear-gradient(135deg,#0f766e,#2dd4bf);
+        }
+
+        .service-card:nth-child(9) .service-icon{
+            background:linear-gradient(135deg,#db2777,#f472b6);
+        }
+
+        .service-card:nth-child(10) .service-icon{
+            background:linear-gradient(135deg,#2563eb,#60a5fa);
+        }
+
+        .service-card:nth-child(11) .service-icon{
+            background:linear-gradient(135deg,#9333ea,#c084fc);
+        }
+
+        .service-card:nth-child(12) .service-icon{
+            background:linear-gradient(135deg,#ea580c,#fb923c);
+        }
+
+        .service-card h5{
+            font-size:13px;
+            font-weight:600;
+            margin:0;
+        }
+
+        .service-card small{
+            color:#7b8794;
+            font-size:10px;
+            margin-top:4px;
+        }
+
+
+        /* =====================================
+           TRACKING
+        ===================================== */
+
+        .tracking-section{
+            margin-top:50px;
+        }
+
+        .tracking-box{
+            background:
+                linear-gradient(
+                    120deg,
+                    #edf5ff,
+                    #f5f0ff,
+                    #fff5ef
+                );
+
+            border:1px solid #d9e3f0;
+
+            border-radius:12px;
+
+            padding:28px;
+        }
+
+        .tracking-box h3{
+            color:#174ea6;
+            font-size:21px;
+            font-weight:700;
+        }
+
+        .tracking-box p{
+            color:#68778b;
+            font-size:13px;
+        }
+
+        .tracking-form{
+            display:flex;
+            gap:10px;
+        }
+
+        .tracking-form input{
+            height:48px;
+            border:1px solid #cbd5e1;
+            border-radius:7px;
+            padding:0 15px;
+        }
+
+        .tracking-form button{
+            border:none;
+            border-radius:7px;
+            padding:0 22px;
+            background:#e86b4c;
+            color:white;
+            font-weight:600;
+        }
+
+        .tracking-form button:hover{
+            background:#d95638;
+        }
+
+        .tracking-status{
+            margin-top:18px;
+            padding:18px;
+
+            background:#fff;
+
+            border-radius:8px;
+
+            border:1px solid #e0e5eb;
+        }
+
+
+        /* =====================================
+           NEWS SECTION
+        ===================================== */
+
+        .news-section{
+            margin-top:55px;
+        }
+
+        .news-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:20px;
+        }
+
+        .news-card{
+            background:#fff;
+
+            border-radius:10px;
+
+            overflow:hidden;
+
+            border:1px solid #e3e7ed;
+
+            box-shadow:
+                0 5px 18px rgba(0,0,0,.06);
+
+            transition:.25s;
+        }
+
+        .news-card:hover{
+            transform:translateY(-5px);
+
+            box-shadow:
+                0 12px 25px rgba(0,0,0,.1);
+        }
+
+        .news-image{
+            height:150px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            color:white;
+
+            font-size:50px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #174ea6,
+                    #3b82f6
+                );
+        }
+
+        .news-card:nth-child(2) .news-image{
+            background:
+                linear-gradient(
+                    135deg,
+                    #e86b4c,
+                    #f59e0b
+                );
+        }
+
+        .news-card:nth-child(3) .news-image{
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f766e,
+                    #14b8a6
+                );
+        }
+
+        .news-content{
+            padding:18px;
+        }
+
+        .news-tag{
+            display:inline-block;
+
+            background:#fff0eb;
+
+            color:#e05c3d;
+
+            padding:4px 9px;
+
+            border-radius:4px;
+
+            font-size:10px;
+
+            font-weight:600;
+
+            margin-bottom:8px;
+        }
+
+        .news-content h4{
+            font-size:15px;
+            font-weight:700;
+            margin-bottom:7px;
+        }
+
+        .news-content p{
+            font-size:11px;
+            line-height:1.6;
+            color:#7b8794;
+            margin:0;
+        }
+
+
+        /* =====================================
+           CONTACT
+        ===================================== */
+
+        .contact-section{
+            margin-top:50px;
+
+            background:#fff;
+
+            border:1px solid #e2e8f0;
+
+            border-radius:12px;
+
+            padding:25px;
+        }
+
+        .contact-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            margin-bottom:18px;
+        }
+
+        .contact-header h3{
+            font-size:20px;
+            color:#174ea6;
+            font-weight:700;
+            margin:0;
+        }
+
+        .contact-header a{
+            color:#e86b4c;
+            text-decoration:none;
+            font-size:12px;
+            font-weight:600;
+        }
+
+        .contact-items{
+            display:flex;
+            flex-wrap:wrap;
+            gap:15px;
+        }
+
+        .contact-item{
+            display:flex;
+            align-items:center;
+            gap:8px;
+
+            padding:10px 15px;
+
+            background:#f8fafc;
+
+            border-radius:7px;
+
+            color:#374151;
+
+            text-decoration:none;
+
+            font-size:12px;
+
+            border:1px solid #e5e7eb;
+        }
+
+        .contact-item:hover{
+            color:#174ea6;
+            border-color:#b7c9e2;
+        }
+
+        .contact-item i{
+            color:#174ea6;
+        }
+
+
+        /* =====================================
+           FOOTER
+        ===================================== */
+
+        footer{
+            margin-top:50px;
+
+            background:#123f78;
+
+            color:white;
+        }
+
+        .footer-container{
+            max-width:1180px;
+            margin:auto;
+
+            padding:30px 20px;
+
+            display:grid;
+            grid-template-columns:2fr 1fr 1fr;
+            gap:30px;
+        }
+
+        footer h4{
+            font-size:17px;
+            margin-bottom:10px;
+        }
+
+        footer p,
+        footer a{
+            color:#d7e4f4;
+            font-size:11px;
+            line-height:1.8;
+        }
+
+        footer a{
+            display:block;
+            text-decoration:none;
+        }
+
+        footer a:hover{
+            color:#fff;
+        }
+
+        .footer-bottom{
+            text-align:center;
+
+            padding:12px;
+
+            background:#0d315e;
+
+            color:#cbd9e9;
+
+            font-size:11px;
+        }
+
+
+        /* =====================================
+           MOBILE
+        ===================================== */
+
+        @media(max-width:900px){
+
+            .hero-container{
+                grid-template-columns:1fr;
+            }
+
+            .hero-illustration{
+                display:none;
+            }
+
+            .news-grid{
+                grid-template-columns:1fr 1fr;
+            }
+
+            .footer-container{
+                grid-template-columns:1fr 1fr;
+            }
+
+        }
+
+        @media(max-width:650px){
+
+            .header-container{
+                flex-direction:column;
+                align-items:stretch;
+            }
+
+            .header-buttons{
+                justify-content:center;
+            }
+
+            .nav-container{
+                overflow-x:auto;
+            }
+
+            .nav-links{
+                min-width:max-content;
+            }
+
+            .nav-help{
+                display:none;
+            }
+
+            .hero-container{
+                padding:30px 18px;
+            }
+
+            .hero-content h1{
+                font-size:31px;
+            }
+
+            .services-grid{
+                grid-template-columns:
+                    repeat(2,1fr);
+            }
+
+            .news-grid{
+                grid-template-columns:1fr;
+            }
+
+            .tracking-form{
+                flex-direction:column;
+            }
+
+            .tracking-form button{
+                height:48px;
+            }
+
+            .footer-container{
+                grid-template-columns:1fr;
+            }
+
+            .main-container{
+                padding:30px 15px;
+            }
+
+            .service-wrapper{
+                padding-left:12px;
+                padding-right:12px;
+            }
+
+            .service-main-tabs{
+                margin-left:-12px;
+                margin-right:-12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<header class="top-header">
+
+    <div class="header-container">
+
+        <a href="{% url 'home' %}" class="brand">
+
+            <div class="brand-icon">
+                <img src="{% static 'seva-one-logo.jpg' %}" alt="SEVA ONE logo">
+            </div>
+
+            <div class="brand-text">
+
+                <h2 style="font-size: 2.1rem;">SEVA ONE</h2>
+
+                <span>Digital Services for Citizens</span>
+
+            </div>
+
+        </a>
+
+
+        <div class="header-buttons">
+
+            <a href="{% url 'register' %}"
+               class="header-btn register-btn">
+
+                <i class="fa-solid fa-user-plus"></i>
+                Request an Account
+
+            </a>
+
+            <a href="{% url 'login' %}"
+               class="header-btn login-btn">
+
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Login
+
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================
+     NAVIGATION
+========================================= -->
+
+<nav class="navbar-custom">
+
+    <div class="nav-container">
+
+        <div class="nav-links">
+
+            <a href="{% url 'home' %}" class="active">
+                <i class="fa-solid fa-house"></i>
+                Home
+            </a>
+
+            <a href="#services">
+                <i class="fa-solid fa-grid-2"></i>
+                Services
+            </a>
+
+            <a href="#tracking">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Track Request
+            </a>
+
+            <a href="#news">
+                <i class="fa-solid fa-newspaper"></i>
+                News & Updates
+            </a>
+
+            <a href="{% url 'contact' %}">
+                <i class="fa-solid fa-phone"></i>
+                Contact
+            </a>
+
+        </div>
+
+        <div class="nav-help">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            Secure Citizen Services
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================================
+     HERO
+========================================= -->
+
+<section class="hero">
+
+    <div class="hero-container">
+
+        <div class="hero-content">
+
+            <h1>
+
+                Your Gateway to
+
+                <span>Citizen Services</span>
+
+            </h1>
+
+            <p>
+
+                Access essential government and citizen services
+                from one convenient portal. Browse services,
+                submit applications and track your requests online.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <a href="#services"
+                   class="hero-btn hero-primary">
+
+                    <i class="fa-solid fa-layer-group"></i>
+
+                    Explore Services
+
+                </a>
+
+
+                <a href="{% url 'register' %}"
+                   class="hero-btn hero-secondary">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                    Request an Account
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-illustration">
+
+            <div class="hero-icon">
+
+                <img src="{% static 'seva-one-logo.jpg' %}" alt="SEVA ONE logo">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     NOTICE BAR
+========================================= -->
+
+<div class="notice-bar">
+
+    <div class="notice-container">
+
+        <div class="notice-icon">
+
+            <i class="fa-solid fa-bullhorn"></i>
+
+        </div>
+
+        <div class="notice-text">
+
+            <strong>Important:</strong>
+
+            Always verify information before submitting
+            applications or sharing personal details.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<main class="main-container">
+
+
+<!-- =========================================
+     SERVICES
+========================================= -->
+
+<section id="services">
+
+    <div class="section-title">
+
+        <h2>
+            Our <span>Services</span>
+        </h2>
+
+        <p>
+            Access commonly used citizen and government services
+        </p>
+
+    </div>
+
+
+    <div class="service-wrapper">
+
+
+        <!-- Main tabs -->
+
+        <div class="service-main-tabs">
+
+            <button class="main-tab active">
+                Government Citizen Services
+            </button>
+
+            <button class="main-tab">
+                Documentation Services
+            </button>
+
+        </div>
+
+
+        <!-- Categories -->
+
+        <div class="category-tabs">
+
+            <button class="category-tab active">
+                All Services
+            </button>
+
+            <button class="category-tab">
+                Identity Services
+            </button>
+
+            <button class="category-tab">
+                Financial Services
+            </button>
+
+            <button class="category-tab">
+                Welfare Services
+            </button>
+
+        </div>
+
+
+        <!-- Service cards -->
+
+        <div class="services-grid">
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-id-card"></i>
+
+                </div>
+
+                <h5>Aadhaar Services</h5>
+
+                <small>Identity & Updates</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-address-card"></i>
+
+                </div>
+
+                <h5>PAN Services</h5>
+
+                <small>PAN Application</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-heart-pulse"></i>
+
+                </div>
+
+                <h5>Health Services</h5>
+
+                <small>Health Schemes</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-passport"></i>
+
+                </div>
+
+                <h5>Passport Services</h5>
+
+                <small>Passport Assistance</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-building-columns"></i>
+
+                </div>
+
+                <h5>Banking Services</h5>
+
+                <small>Financial Services</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-file-lines"></i>
+
+                </div>
+
+                <h5>Certificates</h5>
+
+                <small>Online Documents</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-users"></i>
+
+                </div>
+
+                <h5>Social Welfare</h5>
+
+                <small>Citizen Benefits</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-seedling"></i>
+
+                </div>
+
+                <h5>Farmer Services</h5>
+
+                <small>Agricultural Schemes</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-graduation-cap"></i>
+
+                </div>
+
+                <h5>Education Services</h5>
+
+                <small>Student Services</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-car"></i>
+
+                </div>
+
+                <h5>Transport Services</h5>
+
+                <small>Vehicle Services</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-house"></i>
+
+                </div>
+
+                <h5>Housing Services</h5>
+
+                <small>Housing Schemes</small>
+
+            </a>
+
+
+            <a href="{% url 'login' %}"
+               class="service-card">
+
+                <div class="service-icon">
+
+                    <i class="fa-solid fa-briefcase"></i>
+
+                </div>
+
+                <h5>Employment Services</h5>
+
+                <small>Employment Support</small>
+
+            </a>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     TRACK REQUEST
+========================================= -->
+
+<section id="tracking"
+         class="tracking-section">
+
+    <div class="section-title">
+
+        <h2>
+            Track Your <span>Request</span>
+        </h2>
+
+        <p>
+            Check the current status of your account request
+        </p>
+
+    </div>
+
+
+    <div class="tracking-box">
+
+        <h3>
+
+            <i class="fa-solid fa-location-crosshairs"></i>
+
+            Account Request Tracking
+
+        </h3>
+
+        <p>
+
+            Enter the reference number received after submitting
+            your account request.
+
+        </p>
+
+
+        <form method="get"
+              action="{% url 'home' %}"
+              class="tracking-form">
+
+            <input type="text"
+                   name="ref"
+                   maxlength="24"
+                   placeholder="Enter reference number e.g. REQ-12345 or CSP-000001"
+                   value="{{ reference_number }}"
+                   required>
+
+            <button type="submit">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                Check Status
+
+            </button>
+
+        </form>
+
+
+        {% if tracking_performed %}
+
+            {% if registration_request %}
+
+                <div class="tracking-status">
+
+                    <div class="d-flex
+                                flex-wrap
+                                justify-content-between
+                                align-items-center
+                                gap-2">
+
+                        <div>
+
+                            <span class="small text-muted">
+                                Reference Number
+                            </span>
+
+                            <div class="fw-bold">
+
+                                {{ registration_request.reference_number }}
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="badge
+
+                        {% if registration_request.status == 'approved' %}
+                            text-bg-success
+                        {% elif registration_request.status == 'rejected' %}
+                            text-bg-secondary
+                        {% else %}
+                            text-bg-warning
+                        {% endif %}">
+
+                            {{ registration_request.get_status_display }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="small text-muted mt-2">
+
+                        Submitted
+                        {{ registration_request.requested_at|date:"M j, Y, g:i a" }}
+
+                    </div>
+
+
+                    {% if registration_request.status == 'pending' %}
+
+                        <p class="mb-0 mt-2">
+
+                            Your request is waiting for admin review.
+
+                        </p>
+
+                    {% elif registration_request.status == 'approved'
+                          and registration_request.credentials_sent_at %}
+
+                        <p class="mb-0 mt-2">
+
+                            Your account is approved.
+                            Login credentials were sent to
+                            {{ registration_request.email }}
+                            on
+                            {{ registration_request.credentials_sent_at|date:"M j, Y, g:i a" }}.
+
+                        </p>
+
+                    {% elif registration_request.status == 'approved' %}
+
+                        <p class="mb-0 mt-2">
+
+                            Your account is approved, but credentials
+                            have not been emailed yet.
+
+                            <a href="{% url 'contact' %}">
+                                Contact the portal team
+                            </a>.
+
+                        </p>
+
+                    {% else %}
+
+                        <p class="mb-0 mt-2">
+
+                            This request was not approved.
+
+                            <a href="{% url 'contact' %}">
+                                Contact the portal team
+                            </a>
+
+                            for more information.
+
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            {% elif application %}
+
+                <div class="tracking-status">
+
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+
+                        <div>
+
+                            <span class="small text-muted">
+                                Receipt Number
+                            </span>
+
+                            <div class="fw-bold">
+                                {{ application.receipt_number }}
+                            </div>
+
+                        </div>
+
+                        <span class="badge
+
+                        {% if application.payment_status == 'paid' %}
+                            text-bg-success
+                        {% elif application.payment_status == 'verification_pending' %}
+                            text-bg-info
+                        {% elif application.payment_status == 'waived' %}
+                            text-bg-secondary
+                        {% else %}
+                            text-bg-warning
+                        {% endif %}">
+
+                            {{ application.get_payment_status_display }}
+
+                        </span>
+
+                    </div>
+
+                    <div class="small text-muted mt-2">
+                        Submitted {{ application.created_at|date:"M j, Y, g:i a" }}
+                    </div>
+
+                    <p class="mb-0 mt-2">
+                        Application for <strong>{{ application.service_name }}</strong> is currently
+                        <strong>{{ application.get_work_status_display|lower }}</strong>.
+                    </p>
+
+                    <!-- <p class="mb-0 mt-2">
+                        <a href="{% url 'application_receipt' application_id=application.pk %}">
+                            View full application receipt
+                        </a>
+                    </p> -->
+
+                </div>
+
+            {% else %}
+
+                <div class="alert alert-warning mt-3 mb-0">
+
+                    <i class="fa-solid fa-circle-exclamation"></i>
+
+                    No request was found for that reference.
+                    Please check the reference number.
+
+                </div>
+
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     NEWS
+========================================= -->
+
+<section id="news"
+         class="news-section">
+
+    <div class="section-title">
+
+        <h2>
+            News and <span>Updates</span>
+        </h2>
+
+        <p>
+            Latest announcements and citizen service information
+        </p>
+
+    </div>
+
+
+    <div class="news-grid">
+
+
+        <article class="news-card">
+
+            <div class="news-image">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+            </div>
+
+            <div class="news-content">
+
+                <span class="news-tag">
+                    IMPORTANT
+                </span>
+
+                <h4>
+                    Stay Safe from Online Scams
+                </h4>
+
+                <p>
+                    Never share passwords, OTPs or confidential
+                    information with unknown persons.
+                </p>
+
+            </div>
+
+        </article>
+
+
+        <article class="news-card">
+
+            <div class="news-image">
+
+                <i class="fa-solid fa-bullhorn"></i>
+
+            </div>
+
+            <div class="news-content">
+
+                <span class="news-tag">
+                    UPDATE
+                </span>
+
+                <h4>
+                    New Citizen Services Available
+                </h4>
+
+                <p>
+                    Explore the latest services and application
+                    facilities available through the portal.
+                </p>
+
+            </div>
+
+        </article>
+
+
+        <article class="news-card">
+
+            <div class="news-image">
+
+                <i class="fa-solid fa-laptop-code"></i>
+
+            </div>
+
+            <div class="news-content">
+
+                <span class="news-tag">
+                    DIGITAL
+                </span>
+
+                <h4>
+                    Digital Services Made Easier
+                </h4>
+
+                <p>
+                    Submit applications online and track your
+                    requests from anywhere.
+                </p>
+
+            </div>
+
+        </article>
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     CONTACT
+========================================= -->
+
+<section class="contact-section">
+
+    <div class="contact-header">
+
+        <h3>
+
+            <i class="fa-solid fa-headset"></i>
+
+            Contact & Support
+
+        </h3>
+
+        <a href="{% url 'contact' %}">
+            View Full Contact Page →
+        </a>
+
+    </div>
+
+
+    {% if contact_details %}
+
+        <div class="contact-items">
+
+
+            {% if contact_details.phone_number %}
+
+                <a href="tel:{{ contact_details.phone_number }}"
+                   class="contact-item">
+
+                    <i class="fa-solid fa-phone"></i>
+
+                    {{ contact_details.phone_number }}
+
+                </a>
+
+            {% endif %}
+
+
+            {% if contact_details.email %}
+
+                <a href="mailto:{{ contact_details.email }}"
+                   class="contact-item">
+
+                    <i class="fa-solid fa-envelope"></i>
+
+                    {{ contact_details.email }}
+
+                </a>
+
+            {% endif %}
+
+
+            {% if contact_details.whatsapp_number %}
+
+                <a href="{{ contact_details.whatsapp_url }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="contact-item">
+
+                    <i class="fa-brands fa-whatsapp text-success"></i>
+
+                    {{ contact_details.whatsapp_number }}
+
+                </a>
+
+            {% endif %}
+
+
+            {% if contact_details.instagram_id %}
+
+                <a href="{{ contact_details.instagram_url }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="contact-item">
+
+                    <i class="fa-brands fa-instagram"></i>
+
+                    {{ contact_details.instagram_id }}
+
+                </a>
+
+            {% endif %}
+
+
+        </div>
+
+    {% else %}
+
+        <p class="text-muted mb-0">
+
+            Contact details are being configured.
+
+        </p>
+
+    {% endif %}
+
+</section>
+
+
+</main>
+
+
+<!-- =========================================
+     FOOTER
+========================================= -->
+
+<footer>
+
+    <div class="footer-container">
+
+
+        <div>
+
+            <h4>
+                SEVA ONE
+            </h4>
+
+            <p>
+                A centralized digital platform designed to
+                provide convenient access to essential citizen
+                services and information.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <h4>
+                Quick Links
+            </h4>
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <a href="#services">
+                Services
+            </a>
+
+            <a href="#tracking">
+                Track Request
+            </a>
+
+            <a href="{% url 'contact' %}">
+                Contact
+            </a>
+
+        </div>
+
+
+        <div>
+
+            <h4>
+                Account
+            </h4>
+
+            <a href="{% url 'login' %}">
+                Login
+            </a>
+
+            <a href="{% url 'register' %}">
+                Request Account
+            </a>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        © 2026 SEVA ONE.
+        All Rights Reserved.
+
+    </div>
+
+</footer>
+
+
+<!-- Bootstrap JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+<script>
+
+    /*
+       Service category buttons
+    */
+
+    document.querySelectorAll(".category-tab").forEach(button => {
+
+        button.addEventListener("click", function(){
+
+            document
+                .querySelectorAll(".category-tab")
+                .forEach(btn => btn.classList.remove("active"));
+
+            this.classList.add("active");
+
+        });
+
+    });
+
+
+    /*
+       Main service tabs
+    */
+
+    document.querySelectorAll(".main-tab").forEach(button => {
+
+        button.addEventListener("click", function(){
+
+            document
+                .querySelectorAll(".main-tab")
+                .forEach(btn => btn.classList.remove("active"));
+
+            this.classList.add("active");
+
+        });
+
+    });
+
+</script>
+
+
+</body>
+
+</html>

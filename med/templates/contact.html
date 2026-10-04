@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <section class="p-4 p-lg-5 mb-4 rounded-4 text-white" style="background:linear-gradient(120deg,#123f86,#0e7490)">
+        <span class="small text-uppercase fw-bold opacity-75" style="font-size: 0.9rem;">SEVA ONE</span>
+        <h1 class="display-6 fw-bold mt-2 mb-2">Contact our team</h1>
+        <p class="mb-0 opacity-75">Reach our team through the contact channels below.</p>
+    </section>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <section class="card h-100"><div class="card-body p-4">
+                <h2 class="h4 fw-bold">Phone and email</h2>
+                {% if contact_details and contact_details.phone_number %}<p class="mb-3"><i class="fa-solid fa-phone text-primary me-2"></i><a href="tel:{{ contact_details.phone_number }}">{{ contact_details.phone_number }}</a></p>{% endif %}
+                {% if contact_details and contact_details.email %}<p class="mb-0"><i class="fa-solid fa-envelope text-primary me-2"></i><a href="mailto:{{ contact_details.email }}">{{ contact_details.email }}</a></p>{% endif %}
+                {% if not contact_details or not contact_details.phone_number and not contact_details.email %}<p class="text-muted mb-0">Phone and email details are being configured.</p>{% endif %}
+            </div></section>
+        </div>
+        <div class="col-md-6">
+            <section class="card h-100"><div class="card-body p-4">
+                <h2 class="h4 fw-bold">Social channels</h2>
+                {% if contact_details and contact_details.whatsapp_number %}<p class="mb-3"><i class="fa-brands fa-whatsapp text-success me-2"></i><a href="{{ contact_details.whatsapp_url }}" target="_blank" rel="noopener noreferrer">WhatsApp {{ contact_details.whatsapp_number }}</a></p>{% endif %}
+                {% if contact_details and contact_details.instagram_id %}<p class="mb-0"><i class="fa-brands fa-instagram text-primary me-2"></i><a href="{{ contact_details.instagram_url }}" target="_blank" rel="noopener noreferrer">{{ contact_details.instagram_id }}</a></p>{% endif %}
+                {% if not contact_details or not contact_details.whatsapp_number and not contact_details.instagram_id %}<p class="text-muted mb-0">Social contact details are being configured.</p>{% endif %}
+            </div></section>
+        </div>
+    </div>
+</div>
+{% endblock %}

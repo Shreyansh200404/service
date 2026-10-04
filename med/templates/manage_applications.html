@@ -1,0 +1,96 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <span class="small text-uppercase fw-bold text-primary">User management</span>
+            <h1 class="h2 fw-bold mt-1 mb-1">Service applications</h1>
+            <p class="text-muted mb-0">Review applicants and keep payment and work progress up to date.</p>
+        </div>
+        <span class="badge rounded-pill text-bg-light">{{ applications|length }} shown</span>
+    </header>
+
+    {% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>{% endfor %}
+
+    <form method="get" class="card card-body mb-3">
+        <div class="row g-2 align-items-end">
+            <div class="col-sm-6 col-lg-3">
+                <label for="filterService" class="form-label">Service</label>
+                <select name="service" id="filterService" class="form-select">
+                    <option value="">All services</option>
+                    {% for service in services %}
+                        <option value="{{ service.pk }}" {% if selected_service == service.pk|stringformat:'s' %}selected{% endif %}>{{ service.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <label for="filterPayment" class="form-label">Payment</label>
+                <select name="payment_status" id="filterPayment" class="form-select">
+                    <option value="">All payment statuses</option>
+                    {% for value, label in payment_statuses %}<option value="{{ value }}" {% if selected_payment_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <label for="filterWork" class="form-label">Work</label>
+                <select name="work_status" id="filterWork" class="form-select">
+                    <option value="">All work statuses</option>
+                    {% for value, label in work_statuses %}<option value="{{ value }}" {% if selected_work_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-6 col-lg-3 d-flex gap-2">
+                <button class="btn btn-primary flex-grow-1" type="submit"><i class="fa-solid fa-filter me-1"></i> Filter</button>
+                <a class="btn btn-outline-secondary" href="{% url 'manage_applications' %}">Clear</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr><th class="ps-3">Applicant</th><th>Service</th><th>Amount</th><th>Applied</th><th class="text-end pe-3">Payment and work status</th></tr>
+                </thead>
+                <tbody>
+                    {% for application in applications %}
+                    <tr>
+                        <td class="ps-3">
+                            <div class="fw-semibold">{{ application.applicant_name }}</div>
+                            <div class="small text-muted">{{ application.applicant_email|default:"No email provided" }}</div>
+                        </td>
+                        <td>
+                            <div>{{ application.service_name }}</div>
+                            {% if application.service %}<div class="small text-muted">{{ application.service.main_service.name }}</div>{% endif %}
+                            <div class="small">PhonePe ref: {{ application.transaction_ref|default:"Not submitted" }}</div>
+                            <div><a class="small" href="{% url 'application_receipt' application.pk %}">View receipt</a></div>
+                        </td>
+                        <td class="text-nowrap">&#8377;{{ application.amount|floatformat:2 }}</td>
+                        <td class="text-nowrap">{{ application.created_at|date:"M j, Y" }}<div class="small text-muted">{{ application.created_at|date:"g:i a" }}</div></td>
+                        <td class="text-end pe-3">
+                            <form method="post" action="{% url 'update_application_status' application.pk %}" class="row g-2 align-items-center justify-content-end">
+                                {% csrf_token %}
+                                <div class="col-12 col-sm-5 col-lg-4">
+                                    <label class="visually-hidden" for="payment-{{ application.pk }}">Payment status</label>
+                                    <select class="form-select form-select-sm" name="payment_status" id="payment-{{ application.pk }}">
+                                        {% for value, label in payment_statuses %}<option value="{{ value }}" {% if application.payment_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-12 col-sm-5 col-lg-4">
+                                    <label class="visually-hidden" for="work-{{ application.pk }}">Work status</label>
+                                    <select class="form-select form-select-sm" name="work_status" id="work-{{ application.pk }}">
+                                        {% for value, label in work_statuses %}<option value="{{ value }}" {% if application.work_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-auto"><button class="btn btn-sm btn-primary w-100" type="submit">Save</button></div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-5"><i class="fa-solid fa-inbox fa-2x text-muted mb-3"></i><div class="fw-semibold">No applications found</div><div class="small text-muted">Applications will appear here when users apply through the portal.</div></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

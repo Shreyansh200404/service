@@ -1,0 +1,34 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <section class="card shadow-sm mx-auto" style="max-width:760px">
+        <div class="card-body p-4 p-md-5">
+            <a href="{% url 'manage_users' %}" class="small text-decoration-none"><i class="fa-solid fa-arrow-left me-1"></i> Back to users</a>
+            <h1 class="h3 fw-bold mt-3">Create requested account</h1>
+            <p class="text-muted">Review the request, assign a username and initial password, then share those credentials with the user securely.</p>
+            <div class="rounded-3 bg-light p-3 mb-4">
+                <div class="fw-semibold">{{ registration_request.full_name }}</div>
+                <div class="small text-muted">{{ registration_request.email }}</div>
+                {% if registration_request.reason %}<div class="small mt-2">{{ registration_request.reason }}</div>{% endif %}
+            </div>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div class="form-text">{{ field.help_text|safe }}</div>{% endif %}
+                        {% for error in field.errors %}<div class="small text-danger">{{ error }}</div>{% endfor %}
+                    </div>
+                {% endfor %}
+                {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-user-check me-1"></i> Create account</button>
+                    <a class="btn btn-outline-secondary" href="{% url 'manage_users' %}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}

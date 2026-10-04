@@ -1,0 +1,48 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <span class="text-uppercase small fw-bold text-primary">Administration</span>
+            <h1 class="h2 fw-bold mt-1 mb-1">Service overview</h1>
+            <p class="text-muted mb-0">Manage public-facing categories and application form links.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <!-- <a class="btn btn-outline-primary" href="{% url 'service_catalog' %}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Preview portal</a> -->
+            <a class="btn btn-primary" href="{% url 'manage_services' %}"><i class="fa-solid fa-sliders me-1"></i> Manage services</a>
+        </div>
+    </header>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-4"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3"><span class="rounded-3 p-3 bg-primary-subtle text-primary"><i class="fa-solid fa-layer-group fa-lg"></i></span><div><div class="text-muted small">Main categories</div><div class="fs-3 fw-bold">{{ main_service_count }}</div></div></div></div></div>
+        <div class="col-sm-6 col-xl-4"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3"><span class="rounded-3 p-3 bg-info-subtle text-info"><i class="fa-solid fa-list-check fa-lg"></i></span><div><div class="text-muted small">All sub-services</div><div class="fs-3 fw-bold">{{ service_count }}</div></div></div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3"><span class="rounded-3 p-3 bg-success-subtle text-success"><i class="fa-solid fa-circle-check fa-lg"></i></span><div><div class="text-muted small">Active services</div><div class="fs-3 fw-bold">{{ active_service_count }}</div></div></div></div></div>
+        <div class="col-sm-6 col-xl-3"><a class="text-decoration-none text-res  et" href="{% url 'manage_applications' %}"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3"><span class="rounded-3 p-3 bg-warning-subtle text-warning"><i class="fa-solid fa-clipboard-list fa-lg"></i></span><div><div class="text-muted small">Tracked applications</div><div class="fs-3 fw-bold">{{ application_count }}</div><div class="small text-muted">{{ unpaid_application_count }} unpaid</div></div></div></div></a></div>
+    </div>
+
+    <section class="card">
+        <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+            <div><h2 class="h5 fw-bold mb-1">Main service categories</h2><p class="small text-muted mb-0">Categories currently set up in the portal.</p></div>
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'add_main_service' %}"><i class="fa-solid fa-plus me-1"></i> Add category</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light"><tr><th class="ps-4">Category</th><th>Sub-services</th><th>Status</th><th class="text-end pe-4">Action</th></tr></thead>
+                <tbody>
+                    {% for main in main_services %}
+                    <tr>
+                        <td class="ps-4"><div class="fw-semibold">{{ main.name }}</div>{% if main.description %}<div class="small text-muted">{{ main.description|truncatechars:100 }}</div>{% endif %}</td>
+                        <td>{{ main.services.count }}</td>
+                        <td>{% if main.is_active %}<span class="badge rounded-pill text-bg-success">Active</span>{% else %}<span class="badge rounded-pill text-bg-secondary">Hidden</span>{% endif %}</td>
+                        <td class="text-end pe-4"><a class="btn btn-sm btn-outline-primary" href="{% url 'manage_services' %}">Manage</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center py-5"><div class="text-muted mb-3">No categories have been added yet.</div><a class="btn btn-primary" href="{% url 'add_main_service' %}">Create the first category</a></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}

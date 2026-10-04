@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>SEVA ONE</title>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    {% include 'theme_toggle.html' %}
+
+    <style>
+
+        body{
+            margin:0;
+            padding:0;
+            background:#f4f7fb;
+            font-family:Arial, sans-serif;
+        }
+
+        /* Navbar */
+
+        .navbar-custom{
+            background:linear-gradient(to right,#2563eb,#06b6d4);
+            padding:15px 40px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logo-section{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .logo-icon{
+            width:150px;
+            height:52px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:transparent;
+            border-radius:14px;
+            overflow:hidden;
+            box-shadow:none;
+        }
+
+        .logo-icon img{
+            width:100%;
+            height:100%;
+            object-fit:contain;
+            display:block;
+        }
+
+        .navbar-title{
+            color:white;
+            font-size:30px;
+            font-weight:bold;
+            margin:0;
+        }
+
+        .navbar-subtitle{
+            color:#dbeafe;
+            font-size:14px;
+            margin:0;
+        }
+
+        /* Buttons */
+
+        .nav-buttons{
+            display:flex;
+            gap:12px;
+            align-items:center;
+            flex-wrap:wrap;
+        }
+
+        .btn-custom{
+            border:none;
+            padding:10px 18px;
+            border-radius:10px;
+            font-weight:600;
+            transition:0.3s;
+            text-decoration:none;
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+
+        /* Home */
+
+        .btn-home{
+            background:white;
+            color:#2563eb;
+        }
+
+        .btn-home:hover{
+            background:#dbeafe;
+            color:#2563eb;
+        }
+
+        /* Add Medicine */
+
+        .btn-medicine{
+            background:#2563eb;
+            color:white;
+        }
+
+        .btn-medicine:hover{
+            background:#1d4ed8;
+            color:white;
+        }
+
+        /* Add Diagnosis */
+
+        .btn-diagnosis{
+            background:#16a34a;
+            color:white;
+        }
+
+        .btn-diagnosis:hover{
+            background:#15803d;
+            color:white;
+        }
+
+        /* Register User */
+
+        .btn-user{
+            background:#7c3aed;
+            color:white;
+        }
+
+        .btn-user:hover{
+            background:#6d28d9;
+            color:white;
+        }
+
+        /* Logout */
+
+        .btn-logout{
+            background:#ef4444;
+            color:white;
+        }
+
+        .btn-logout:hover{
+            background:#dc2626;
+            color:white;
+        }
+
+        /* Content */
+
+        .content-container{
+            padding:35px;
+        }
+
+        /* Responsive */
+
+        @media(max-width:768px){
+
+            .navbar-custom{
+                flex-direction:column;
+                gap:20px;
+                text-align:center;
+            }
+
+            .nav-buttons{
+                justify-content:center;
+            }
+
+        }
+
+        /* Citizen service portal theme */
+        body{background:#f3f6fa;color:#14213d;font-family:Inter,"Segoe UI",Arial,sans-serif}
+        .navbar-custom{background:#fff;padding:14px clamp(16px,4vw,56px);border-bottom:1px solid #e2e8f0;box-shadow:0 4px 18px rgba(15,23,42,.05);gap:16px}
+        .logo-icon{background:#e8f0fe;border-radius:14px;overflow:hidden}
+        .logo-badge{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;letter-spacing:1px;color:#fff;background:linear-gradient(135deg, #174ea6, #2563eb)}
+        .navbar-title{color:#14213d;font-size:20px;font-weight:750}
+        .navbar-subtitle{color:#64748b;font-size:12px}
+        .nav-buttons{gap:8px;flex-wrap:wrap}
+        .btn-custom{border-radius:9px;padding:9px 13px;font-size:14px}
+        .btn-home{background:#edf4ff;color:#174ea6}
+        .btn-home:hover{background:#dbeafe;color:#174ea6}
+        .btn-medicine{background:#174ea6;color:#fff}
+        .btn-medicine:hover{background:#123f86;color:#fff}
+        .btn-user{background:#0e7490;color:#fff}
+        .btn-user:hover{background:#155e75;color:#fff}
+        .content-container{min-height:calc(100vh - 110px);padding:clamp(18px,3vw,40px)}
+        .card{border:1px solid #e7edf4;border-radius:16px}
+        .portal-footer{color:#64748b;font-size:13px;text-align:center;padding:18px}
+        @media(max-width:768px){.navbar-custom{padding:16px;text-align:center}.nav-buttons{justify-content:center}}
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<div class="navbar-custom d-flex justify-content-between align-items-center">
+
+    <!-- Left Logo -->
+
+    <div class="logo-section">
+
+        <div class="logo-icon">
+            <img src="{% static 'seva-one-logo.jpg' %}" alt="SEVA ONE logo">
+        </div>
+
+        <div>
+
+            <h1 class="navbar-title">
+                SEVA ONE
+            </h1>
+
+            <p class="navbar-subtitle">
+                Manage citizen service categories and applications
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Right Buttons -->
+
+    <nav class="nav-buttons" aria-label="Admin navigation">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color theme" title="Switch color theme" aria-pressed="false"></button>
+        <a href="{% url 'admin_dashboard' %}" class="btn-custom btn-home"><i class="fa-solid fa-gauge-high"></i> Overview</a>
+        <a href="{% url 'manage_services' %}" class="btn-custom btn-medicine"><i class="fa-solid fa-list-check"></i> Manage services</a>
+        <a href="{% url 'manage_applications' %}" class="btn-custom btn-medicine"><i class="fa-solid fa-clipboard-list"></i> Applications</a>
+        <a href="{% url 'manage_users' %}" class="btn-custom btn-medicine"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="{% url 'manage_contact_details' %}" class="btn-custom btn-medicine"><i class="fa-solid fa-address-card"></i> Contact info</a>
+        <!-- <a href="{% url 'service_catalog' %}" class="btn-custom btn-home"><i class="fa-solid fa-arrow-up-right-from-square"></i> View portal</a> -->
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn-custom btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sign out</a>
+        {% endif %}
+    </nav>
+
+</div>
+
+<footer class="portal-footer">SEVA ONE · Administration</footer>
+
+<!-- Page Content -->
+
+<div class="content-container">
+
+    {% block content %}
+
+    {% endblock %}
+
+</div>
+
+{% include 'password_toggle_script.html' %}
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <header class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div>
+            <span class="small text-uppercase fw-bold text-primary">Account administration</span>
+            <h1 class="h2 fw-bold mt-1 mb-1">User management</h1>
+            <p class="text-muted mb-0">Review account requests, assign login credentials, and manage existing users.</p>
+        </div>
+        <span class="badge rounded-pill text-bg-warning">{{ pending_request_count }} requests pending</span>
+    </header>
+
+    {% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>{% endfor %}
+
+    <section class="card mb-4">
+        <div class="card-header bg-white py-3">
+            <h2 class="h5 fw-bold mb-1">Registration requests</h2>
+            <p class="small text-muted mb-0">No account is created until an admin assigns a username and password.</p>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light"><tr><th class="ps-3">Applicant</th><th>Phone</th><th>Request / reference</th><th>Received</th><th>Status</th><th class="text-end pe-3">Action</th></tr></thead>
+                <tbody>
+                    {% for registration_request in registration_requests %}
+                    <tr>
+                        <td class="ps-3"><div class="fw-semibold">{{ registration_request.full_name }}</div><div class="small text-muted">{{ registration_request.email }}</div></td>
+                        <td class="text-nowrap">{{ registration_request.phone_number }}</td>
+                        <td><div>{{ registration_request.reason|default:"—"|truncatechars:100 }}</div><div class="small text-muted">{{ registration_request.reference_number }}</div></td>
+                        <td class="text-nowrap">{{ registration_request.requested_at|date:"M j, Y, g:i a" }}</td>
+                        <td>
+                            {% if registration_request.status == 'pending' %}<span class="badge text-bg-warning">Pending</span>
+                            {% elif registration_request.status == 'approved' %}<span class="badge text-bg-success">Account created</span>
+                            {% else %}<span class="badge text-bg-secondary">Rejected</span>{% endif %}
+                            {% if registration_request.reviewed_by %}<div class="small text-muted">by {{ registration_request.reviewed_by.username }}</div>{% endif %}
+                            {% if registration_request.status == 'approved' %}
+                                {% if registration_request.credentials_sent_at %}<div class="small text-success">Credentials emailed {{ registration_request.credentials_sent_at|date:"M j, Y" }}</div>
+                                {% else %}<div class="small text-warning">Credentials email not sent</div>{% endif %}
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-3">
+                            {% if registration_request.status == 'pending' %}
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a class="btn btn-sm btn-primary" href="{% url 'create_requested_user' registration_request.pk %}">Create account</a>
+                                    <form method="post" action="{% url 'reject_registration_request' registration_request.pk %}" onsubmit="return confirm('Reject this account request?');">
+                                        {% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit">Reject</button>
+                                    </form>
+                                </div>
+                            {% else %}<span class="small text-muted">Reviewed {{ registration_request.reviewed_at|date:"M j, Y" }}</span>{% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center py-5 text-muted">No account requests have been submitted.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="card-header bg-white py-3">
+            <h2 class="h5 fw-bold mb-1">User accounts</h2>
+            <p class="small text-muted mb-0">Superuser administrator accounts are protected and cannot be deleted here.</p>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light"><tr><th class="ps-3">Username</th><th>Name</th><th>Email</th><th>Last login</th><th class="text-end pe-3">Action</th></tr></thead>
+                <tbody>
+                    {% for account in users %}
+                    <tr>
+                        <td class="ps-3 fw-semibold">{{ account.username }}</td>
+                        <td>{{ account.get_full_name|default:"—" }}</td>
+                        <td>{{ account.email|default:"—" }}</td>
+                        <td>{{ account.last_login|date:"M j, Y, g:i a"|default:"Never" }}</td>
+                        <td class="text-end pe-3">
+                            <form method="post" action="{% url 'delete_user' account.pk %}" onsubmit="return confirm('Delete user {{ account.username|escapejs }}? Their application history will remain in the portal.');">
+                                {% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit"><i class="fa-solid fa-trash me-1"></i> Delete user</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-5 text-muted">No user accounts have been created.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}

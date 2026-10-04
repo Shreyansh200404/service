@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <section class="p-4 p-lg-5 mb-4 rounded-4 text-white" style="background:linear-gradient(120deg,#123f86,#0e7490)">
+        <div class="row align-items-center g-3">
+            <div class="col-lg-8">
+                <span class="small text-uppercase fw-bold opacity-75">Citizen Services</span>
+                <h1 class="display-6 fw-bold mt-2">What can we help you with?</h1>
+                <p class="mb-0 opacity-75">Browse categories, review the available applications, and continue using the form linked to each service.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end"><a href="{% url 'service_catalog' %}" class="btn btn-light text-primary fw-semibold"><i class="fa-solid fa-arrow-right me-2"></i>Browse all services</a></div>
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+            <div><h2 class="h4 fw-bold mb-1">My applications</h2><p class="text-muted mb-0">Track payment and work progress for your requests.</p></div>
+            <span class="badge rounded-pill text-bg-light">{{ applications|length }} total</span>
+        </div>
+        <div class="card">
+            {% for application in applications %}
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-3 border-bottom">
+                    <div>
+                        <div class="fw-semibold">{{ application.service_name }}</div>
+                        <div class="small text-muted">Applied {{ application.created_at|date:"M j, Y, g:i a" }} · Amount: &#8377;{{ application.amount|floatformat:2 }}</div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge {% if application.payment_status == 'paid' %}text-bg-success{% elif application.payment_status == 'waived' %}text-bg-secondary{% elif application.payment_status == 'verification_pending' %}text-bg-info{% else %}text-bg-warning{% endif %}">Payment: {{ application.get_payment_status_display }}</span>
+                        <span class="badge text-bg-info">Work: {{ application.get_work_status_display }}</span>
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'application_receipt' application.pk %}">Receipt</a>
+                        {% if application.payment_status == 'unpaid' or application.payment_status == 'verification_pending' %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'payment_page' application.pk %}">Payment page</a>{% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="p-4 text-center text-muted">You haven’t applied for a service yet.</div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-3">
+        <div><h2 class="h4 fw-bold mb-1">Service categories</h2><p class="text-muted mb-0">Select an application to continue to its Google Form.</p></div>
+        <div class="input-group" style="max-width:320px"><span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span><input id="serviceSearch" class="form-control" placeholder="Search services" aria-label="Search services"></div>
+    </div>
+
+    <div class="row g-3" id="serviceGrid">
+        {% for service in services %}
+            <div class="col-md-6 col-xl-4 service-card" data-search="{{ service.main_service.name|lower }} {{ service.name|lower }} {{ service.description|lower }}">
+                    <article class="card h-100 shadow-sm">
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <span class="rounded-3 p-3 bg-primary-subtle text-primary"><i class="fa-solid fa-file-signature fa-lg"></i></span>
+                                <span class="badge rounded-pill text-bg-light">{{ service.main_service.name }}</span>
+                            </div>
+                            <h3 class="h5 fw-bold">{{ service.name }}</h3>
+                            {% if service.description %}<p class="text-muted">{{ service.description }}</p>{% else %}<p class="text-muted">Apply online using the application form for this service.</p>{% endif %}
+                            <div class="d-flex justify-content-between align-items-center border-top pt-3 mb-3">
+                                <span class="small text-muted">Service fee</span>
+                                <strong>{% if service.amount %}&#8377;{{ service.amount|floatformat:2 }}{% else %}Free{% endif %}</strong>
+                            </div>
+                            <form method="post" action="{% url 'apply_for_service' service.pk %}" class="mt-auto">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary w-100">Apply now <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i></button>
+                            </form>
+                        </div>
+                    </article>
+                </div>
+        {% empty %}
+            <div class="col-12"><div class="card text-center p-5"><i class="fa-solid fa-folder-open fa-2x text-primary mb-3"></i><h3 class="h5">Services are being prepared</h3><p class="text-muted mb-0">Please check back soon.</p></div></div>
+        {% endfor %}
+    </div>
+    <div id="noSearchResults" class="alert alert-light border text-center mt-3 d-none">No matching services found.</div>
+</div>
+<script>
+    document.getElementById('serviceSearch').addEventListener('input', function () {
+        const term = this.value.trim().toLowerCase();
+        let visible = 0;
+        document.querySelectorAll('.service-card').forEach(function (card) {
+            const matches = card.dataset.search.includes(term);
+            card.classList.toggle('d-none', !matches);
+            if (matches) visible++;
+        });
+        document.getElementById('noSearchResults').classList.toggle('d-none', visible > 0);
+    });
+</script>
+{% endblock %}

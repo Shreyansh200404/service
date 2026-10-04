@@ -1,0 +1,226 @@
+<style>
+    .theme-toggle {
+        display: inline-grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        flex: 0 0 40px;
+        padding: 0;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        background: #fff;
+        color: #174ea6;
+        cursor: pointer;
+    }
+
+    .theme-toggle:hover {
+        background: #edf4ff;
+    }
+
+    .theme-toggle:focus-visible {
+        outline: 2px solid #174ea6;
+        outline-offset: 2px;
+    }
+
+    html[data-theme="dark"] {
+        color-scheme: dark;
+        --theme-bg: #101923;
+        --theme-surface: #172432;
+        --theme-surface-raised: #1e2d3c;
+        --theme-ink: #e7edf4;
+        --theme-muted: #a9b7c6;
+        --theme-border: #344556;
+        --theme-link: #8ab4f8;
+    }
+
+    html[data-theme="dark"] body {
+        background: var(--theme-bg) !important;
+        color: var(--theme-ink) !important;
+    }
+
+    html[data-theme="dark"] .navbar-custom {
+        background: #121e2a !important;
+        border-color: var(--theme-border) !important;
+        color: var(--theme-ink) !important;
+    }
+
+    html[data-theme="dark"] .navbar-title,
+    html[data-theme="dark"] .dashboard-title,
+    html[data-theme="dark"] .medicine-title,
+    html[data-theme="dark"] h1,
+    html[data-theme="dark"] h2,
+    html[data-theme="dark"] h3,
+    html[data-theme="dark"] h4,
+    html[data-theme="dark"] h5,
+    html[data-theme="dark"] h6,
+    html[data-theme="dark"] label,
+    html[data-theme="dark"] .form-label {
+        color: var(--theme-ink) !important;
+    }
+
+    html[data-theme="dark"] .navbar-subtitle,
+    html[data-theme="dark"] .text-muted,
+    html[data-theme="dark"] .dashboard-subtitle,
+    html[data-theme="dark"] .medicine-subtitle {
+        color: var(--theme-muted) !important;
+    }
+
+    html[data-theme="dark"] .content-container,
+    html[data-theme="dark"] main {
+        background: var(--theme-bg);
+    }
+
+    html[data-theme="dark"] .card,
+    html[data-theme="dark"] .card-body,
+    html[data-theme="dark"] .card-header,
+    html[data-theme="dark"] .card-footer,
+    html[data-theme="dark"] .table-card,
+    html[data-theme="dark"] .dashboard-card,
+    html[data-theme="dark"] .diagnosis-box {
+        background-color: var(--theme-surface) !important;
+        color: var(--theme-ink) !important;
+        border-color: var(--theme-border) !important;
+    }
+
+    html[data-theme="dark"] .bg-white,
+    html[data-theme="dark"] .bg-light,
+    html[data-theme="dark"] .text-bg-light {
+        background-color: var(--theme-surface-raised) !important;
+        color: var(--theme-ink) !important;
+    }
+
+    html[data-theme="dark"] .text-dark,
+    html[data-theme="dark"] .diagnosis-name,
+    html[data-theme="dark"] .medicine-name,
+    html[data-theme="dark"] .table {
+        color: var(--theme-ink) !important;
+    }
+
+    html[data-theme="dark"] a:not(.btn):not(.nav-link) {
+        color: var(--theme-link);
+    }
+
+    html[data-theme="dark"] .table {
+        --bs-table-color: var(--theme-ink);
+        --bs-table-bg: var(--theme-surface);
+        --bs-table-border-color: var(--theme-border);
+        --bs-table-striped-bg: #1b2a39;
+        --bs-table-hover-bg: #223548;
+    }
+
+    html[data-theme="dark"] .table-light {
+        --bs-table-color: var(--theme-ink);
+        --bs-table-bg: var(--theme-surface-raised);
+        --bs-table-border-color: var(--theme-border);
+    }
+
+    html[data-theme="dark"] .form-control,
+    html[data-theme="dark"] .form-select,
+    html[data-theme="dark"] .input-group-text {
+        background-color: #111d29 !important;
+        color: var(--theme-ink) !important;
+        border-color: var(--theme-border) !important;
+    }
+
+    html[data-theme="dark"] .form-control::placeholder {
+        color: #91a0b0;
+    }
+
+    html[data-theme="dark"] .form-control:focus,
+    html[data-theme="dark"] .form-select:focus {
+        border-color: #8ab4f8 !important;
+        box-shadow: 0 0 0 .2rem rgb(138 180 248 / 20%) !important;
+    }
+
+    html[data-theme="dark"] .btn-back,
+    html[data-theme="dark"] .btn-home {
+        background: #24364a !important;
+        color: #d9e8ff !important;
+    }
+
+    html[data-theme="dark"] .btn-medicine {
+        background: #245b91 !important;
+        color: #fff !important;
+    }
+
+    html[data-theme="dark"] .btn-outline-secondary,
+    html[data-theme="dark"] .btn-outline-primary {
+        color: #c5d9f5;
+        border-color: #71869b;
+    }
+
+    html[data-theme="dark"] .alert-light {
+        background: var(--theme-surface-raised);
+        color: var(--theme-ink);
+        border-color: var(--theme-border);
+    }
+
+    html[data-theme="dark"] .login-card {
+        background: var(--theme-surface) !important;
+        color: var(--theme-ink) !important;
+        border-color: var(--theme-border) !important;
+    }
+
+    html[data-theme="dark"] .login-title {
+        color: var(--theme-ink) !important;
+    }
+
+    html[data-theme="dark"] .login-subtitle,
+    html[data-theme="dark"] .footer-text {
+        color: var(--theme-muted) !important;
+    }
+
+    html[data-theme="dark"] .theme-toggle {
+        background: var(--theme-surface-raised);
+        color: #f6d365;
+        border-color: var(--theme-border);
+    }
+</style>
+
+<script>
+    (function () {
+        const storageKey = 'citizen-services-theme';
+        let savedTheme = null;
+
+        try {
+            savedTheme = localStorage.getItem(storageKey);
+        } catch (error) {
+            savedTheme = null;
+        }
+
+        const initialTheme = savedTheme || (
+            window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+        );
+        document.documentElement.dataset.theme = initialTheme;
+
+        function updateThemeButtons(theme) {
+            document.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
+                const switchToDark = theme !== 'dark';
+                button.innerHTML = switchToDark
+                    ? '<i class="fa-solid fa-moon" aria-hidden="true"></i>'
+                    : '<i class="fa-solid fa-sun" aria-hidden="true"></i>';
+                button.setAttribute('aria-label', switchToDark ? 'Switch to dark mode' : 'Switch to light mode');
+                button.setAttribute('title', switchToDark ? 'Switch to dark mode' : 'Switch to light mode');
+                button.setAttribute('aria-pressed', String(theme === 'dark'));
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            updateThemeButtons(document.documentElement.dataset.theme);
+            document.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+                    document.documentElement.dataset.theme = nextTheme;
+                    updateThemeButtons(nextTheme);
+                    try {
+                        localStorage.setItem(storageKey, nextTheme);
+                    } catch (error) {
+                        // Theme still works for this page if storage is unavailable.
+                    }
+                });
+            });
+        });
+    })();
+</script>
