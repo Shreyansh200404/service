@@ -1633,31 +1633,29 @@
 
                         </p>
 
-                    {% elif registration_request.status == 'approved'
-                          and registration_request.credentials_sent_at %}
-
-                        <p class="mb-0 mt-2">
-
-                            Your account is approved.
-                            Login credentials were sent to
-                            {{ registration_request.email }}
-                            on
-                            {{ registration_request.credentials_sent_at|date:"M j, Y, g:i a" }}.
-
-                        </p>
-
                     {% elif registration_request.status == 'approved' %}
 
-                        <p class="mb-0 mt-2">
+                        {% if registration_request.credentials_sent_at %}
+                            <p class="mb-0 mt-2">
 
-                            Your account is approved, but credentials
-                            have not been emailed yet.
+                                Your account is approved and credentials were sent to
+                                {{ registration_request.email }}
+                                on
+                                {{ registration_request.credentials_sent_at|date:"M j, Y, g:i a" }}.
 
-                            <a href="{% url 'contact' %}">
-                                Contact the portal team
-                            </a>.
+                            </p>
+                        {% else %}
+                            <p class="mb-0 mt-2">
 
-                        </p>
+                                Your account is approved, but credentials
+                                have not been emailed yet.
+
+                                <a href="{% url 'contact' %}">
+                                    Contact the portal team
+                                </a>.
+
+                            </p>
+                        {% endif %}
 
                     {% else %}
 

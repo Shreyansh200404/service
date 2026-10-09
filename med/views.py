@@ -1,4 +1,5 @@
 import mimetypes
+import logging
 import secrets
 from datetime import timedelta
 
@@ -42,6 +43,7 @@ from .models import (
 )
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 def home(request):
     reference_number = request.GET.get("ref", "").strip()[:24]
@@ -213,6 +215,7 @@ def request_password_reset(request):
         email = form.cleaned_data["email"].strip()
         user = User.objects.filter(email__iexact=email, is_active=True).first()
         request.session.pop("password_reset_user_id", None)
+        request.session.pop("password_reset_email_error", None)
 
         if user:
             now = timezone.now()
@@ -231,25 +234,37 @@ def request_password_reset(request):
                     code_hash=make_password(code),
                     expires_at=now + timedelta(minutes=10),
                 )
-                try:
-                    sent = send_mail(
-                        subject="Your password reset code",
-                        message=(
-                            f"Your SEVA ONE password reset code is: {code}\n\n"
-                            "This code expires in 10 minutes and can only be used once. "
-                            "If you did not request this, ignore this email."
-                        ),
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[user.email],
-                        fail_silently=False,
-                    ) == 1
-                except Exception:
+                request.session["password_reset_user_id"] = user.pk
+                if settings.EMAIL_BACKEND.endswith("console.EmailBackend"):
+                    logger.error(
+                        "Password reset email backend is console-only for user %s",
+                        user.pk,
+                    )
                     sent = False
-                if sent:
-                    request.session["password_reset_user_id"] = user.pk
                 else:
+                    try:
+                        sent = send_mail(
+                            subject="Your password reset code",
+                            message=(
+                                f"Your SEVA ONE password reset code is: {code}\n\n"
+                                "This code expires in 10 minutes and can only be used once. "
+                                "If you did not request this, ignore this email."
+                            ),
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[user.email],
+                            fail_silently=False,
+                        ) == 1
+                    except Exception:
+                        logger.exception(
+                            "Failed to send password reset email for user %s",
+                            user.pk,
+                        )
+                        sent = False
+                if not sent:
+                    logger.error("Password reset email was not sent for user %s", user.pk)
                     otp_record.used_at = timezone.now()
                     otp_record.save(update_fields=["used_at"])
+                    request.session["password_reset_email_error"] = True
 
         return redirect("verify_password_reset")
     return render(request, "password_reset_request.html", {"form": form})
@@ -258,6 +273,11 @@ def request_password_reset(request):
 def verify_password_reset(request):
     user_id = request.session.get("password_reset_user_id")
     user = User.objects.filter(pk=user_id, is_active=True).first() if user_id else None
+    if request.method == "POST" and not user:
+        email = request.POST.get("email", "").strip()
+        if email:
+            user = User.objects.filter(email__iexact=email, is_active=True).first()
+
     form = PasswordResetConfirmForm(
         request.POST if request.method == "POST" else None,
         user=user,
@@ -265,7 +285,8 @@ def verify_password_reset(request):
 
     if request.method == "POST":
         if not user:
-            form.add_error(None, "The code is invalid or expired. Request a new code and try again.")
+            if form.is_valid():
+                form.add_error(None, "The code is invalid or expired. Request a new code and try again.")
         elif form.is_valid():
             now = timezone.now()
             with transaction.atomic():
@@ -290,9 +311,18 @@ def verify_password_reset(request):
                         used_at__isnull=True,
                     ).update(used_at=now)
                     request.session.pop("password_reset_user_id", None)
+                    request.session.pop("password_reset_email_error", None)
                     return redirect("password_reset_complete")
 
-    return render(request, "password_reset_verify.html", {"form": form})
+    return render(
+        request,
+        "password_reset_verify.html",
+        {
+            "form": form,
+            "reset_user": user,
+            "delivery_error": request.session.get("password_reset_email_error", False),
+        },
+    )
 
 
 def password_reset_complete(request):
@@ -680,7 +710,3 @@ def delete_main_service(request, service_id):
     get_object_or_404(MainService, pk=service_id).delete()
     messages.success(request, "Main service and its sub-services deleted.")
     return redirect("manage_services")
-
-
-
-

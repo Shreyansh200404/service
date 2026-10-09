@@ -109,6 +109,14 @@ class PasswordResetRequestForm(forms.Form):
 
 
 class PasswordResetConfirmForm(forms.Form):
+    email = forms.EmailField(
+        label="Account email",
+        widget=forms.EmailInput(attrs={
+            "class": "form-control",
+            "autocomplete": "email",
+            "placeholder": "Account email address",
+        }),
+    )
     otp = forms.CharField(
         label="6-digit email code",
         max_length=6,
@@ -137,6 +145,8 @@ class PasswordResetConfirmForm(forms.Form):
     def __init__(self, *args, user=None, **kwargs):
         self.user = user
         super().__init__(*args, **kwargs)
+        if user:
+            self.fields.pop("email")
 
     def clean(self):
         cleaned_data = super().clean()

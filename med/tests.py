@@ -1,6 +1,7 @@
 import re
 from decimal import Decimal
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
@@ -363,6 +364,10 @@ class PasswordResetTests(TestCase):
         )
         self.assertRedirects(response, reverse("verify_password_reset"))
         self.assertEqual(len(mail.outbox), 1)
+        form_response = self.client.get(reverse("verify_password_reset"))
+        self.assertContains(form_response, 'name="otp"')
+        self.assertContains(form_response, 'name="new_password1"')
+        self.assertContains(form_response, 'name="new_password2"')
         code = re.search(r"\b(\d{6})\b", mail.outbox[0].body).group(1)
         otp_record = PasswordResetOTP.objects.get(user=self.user)
         self.assertNotEqual(otp_record.code_hash, code)
@@ -383,6 +388,83 @@ class PasswordResetTests(TestCase):
         self.assertIsNotNone(otp_record.used_at)
 
     @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+    def test_password_reset_works_when_reset_session_is_missing(self):
+        self.client.post(
+            reverse("request_password_reset"),
+            {"email": self.user.email},
+        )
+        code = re.search(r"\b(\d{6})\b", mail.outbox[0].body).group(1)
+
+        session = self.client.session
+        session.pop("password_reset_user_id", None)
+        session.save()
+
+        form_response = self.client.get(reverse("verify_password_reset"))
+        self.assertContains(form_response, 'name="email"')
+        self.assertContains(form_response, 'name="otp"')
+
+        response = self.client.post(
+            reverse("verify_password_reset"),
+            {
+                "email": self.user.email,
+                "otp": code,
+                "new_password1": "New-Password-456!",
+                "new_password2": "New-Password-456!",
+            },
+        )
+
+        self.assertRedirects(response, reverse("password_reset_complete"))
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password("New-Password-456!"))
+
+    @override_settings(
+        EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend",
+        DEFAULT_FROM_EMAIL="no-reply@example.com",
+    )
+    @patch("med.views.send_mail", side_effect=OSError("SMTP unavailable"))
+    def test_email_delivery_failure_is_shown_and_code_is_invalidated(self, send_mail_mock):
+        response = self.client.post(
+            reverse("request_password_reset"),
+            {"email": self.user.email},
+            follow=True,
+        )
+
+        self.assertContains(response, "The reset email could not be sent")
+        self.assertEqual(send_mail_mock.call_count, 1)
+        otp_record = PasswordResetOTP.objects.get(user=self.user)
+        self.assertIsNotNone(otp_record.used_at)
+
+    @override_settings(EMAIL_BACKEND="django.core.mail.backends.console.EmailBackend")
+    @patch("med.views.send_mail")
+    def test_console_backend_does_not_report_otp_as_sent(self, send_mail_mock):
+        response = self.client.post(
+            reverse("request_password_reset"),
+            {"email": self.user.email},
+            follow=True,
+        )
+
+        self.assertContains(response, "The reset email could not be sent")
+        send_mail_mock.assert_not_called()
+        otp_record = PasswordResetOTP.objects.get(user=self.user)
+        self.assertIsNotNone(otp_record.used_at)
+
+    @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+    def test_reset_requests_are_limited_to_three_per_hour(self):
+        for _ in range(3):
+            self.client.post(
+                reverse("request_password_reset"),
+                {"email": self.user.email},
+            )
+
+        self.assertEqual(PasswordResetOTP.objects.filter(user=self.user).count(), 3)
+        self.client.post(
+            reverse("request_password_reset"),
+            {"email": self.user.email},
+        )
+        self.assertEqual(PasswordResetOTP.objects.filter(user=self.user).count(), 3)
+        self.assertEqual(len(mail.outbox), 3)
+
+    @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
     def test_unknown_email_gets_same_generic_response_without_mail(self):
         response = self.client.post(
             reverse("request_password_reset"),
@@ -393,6 +475,8 @@ class PasswordResetTests(TestCase):
         self.assertEqual(len(mail.outbox), 0)
         verify_response = self.client.get(reverse("verify_password_reset"))
         self.assertContains(verify_response, "If the email belongs to an active account")
+        self.assertContains(verify_response, 'name="email"')
+        self.assertContains(verify_response, 'name="otp"')
 
     def test_five_incorrect_codes_disable_the_otp(self):
         now = timezone.now()
