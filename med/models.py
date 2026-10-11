@@ -46,13 +46,6 @@ class Service(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField(blank=True)
     google_form_url = models.URLField("Google Form link")
-    payment_qr_image = models.FileField(
-        upload_to="service_payment_qr/",
-        blank=True,
-        null=True,
-        validators=[FileExtensionValidator(["png", "jpg", "jpeg", "webp"])],
-        help_text="Upload the PhonePe payment QR image for this service.",
-    )
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -75,6 +68,10 @@ class ServiceApplication(models.Model):
         ("verification_pending", "Awaiting verification"),
         ("paid", "Paid"),
         ("waived", "Waived"),
+    ]
+    PAYMENT_METHOD_CHOICES = [
+        ("phonepe", "PhonePe / UPI"),
+        ("wallet", "Wallet"),
     ]
     WORK_STATUS_CHOICES = [
         ("submitted", "Submitted"),
@@ -106,6 +103,12 @@ class ServiceApplication(models.Model):
         decimal_places=2,
         default=Decimal("0.00"),
         validators=[MinValueValidator(Decimal("0.00"))],
+    )
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_METHOD_CHOICES,
+        default="wallet",
+        db_index=True,
     )
     transaction_ref = models.CharField(max_length=100, blank=True)
     payment_status = models.CharField(
@@ -142,6 +145,108 @@ class ServiceApplication(models.Model):
     @property
     def receipt_number(self):
         return f"CSP-{self.pk:06d}" if self.pk else ""
+
+
+class UserWallet(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="wallet",
+    )
+    balance = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=Decimal("0.00"),
+        validators=[MinValueValidator(Decimal("0.00"))],
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user} wallet"
+
+
+class WalletRechargeRequest(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Awaiting verification"),
+        ("approved", "Approved"),
+        ("rejected", "Rejected"),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="wallet_recharge_requests",
+    )
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.01"))],
+    )
+    transaction_ref = models.CharField(max_length=100, unique=True)
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default="pending",
+        db_index=True,
+    )
+    submitted_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="reviewed_wallet_recharges",
+    )
+
+    class Meta:
+        ordering = ["-submitted_at"]
+
+    def __str__(self):
+        return f"{self.user} recharge: {self.amount} ({self.status})"
+
+
+class WalletTransaction(models.Model):
+    wallet = models.ForeignKey(
+        UserWallet,
+        on_delete=models.CASCADE,
+        related_name="transactions",
+    )
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    description = models.CharField(max_length=200)
+    recharge_request = models.OneToOneField(
+        WalletRechargeRequest,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="wallet_transaction",
+    )
+    application = models.OneToOneField(
+        ServiceApplication,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="wallet_transaction",
+    )
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.wallet.user}: {self.amount}"
+
+
+class WalletSettings(models.Model):
+    payment_qr_image = models.FileField(
+        upload_to="wallet_recharge_qr/",
+        blank=True,
+        validators=[FileExtensionValidator(["png", "jpg", "jpeg", "webp"])],
+        help_text="Upload the QR code used only for wallet recharges.",
+    )
+
+    def __str__(self):
+        return "Wallet recharge settings"
 
 
 class RegistrationRequest(models.Model):

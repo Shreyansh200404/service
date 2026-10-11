@@ -82,9 +82,16 @@ path(
 
     path('services/', views.service_catalog, name='service_catalog'),
     path('services/<int:service_id>/apply/', views.apply_for_service, name='apply_for_service'),
-    path('services/<int:service_id>/payment-qr/', views.service_payment_qr, name='service_payment_qr'),
     path('applications/<int:application_id>/payment/', views.payment_page, name='payment_page'),
     path('applications/<int:application_id>/receipt/', views.application_receipt, name='application_receipt'),
+    path('wallet/', views.wallet, name='wallet'),
+    path('wallet/payment-qr/', views.wallet_payment_qr, name='wallet_payment_qr'),
+    path('manage-wallet/', views.manage_wallet, name='manage_wallet'),
+    path(
+        'manage-wallet/recharges/<int:recharge_id>/<str:decision>/',
+        views.review_wallet_recharge,
+        name='review_wallet_recharge',
+    ),
     path('manage-services/', views.manage_services, name='manage_services'),
     path('manage-applications/', views.manage_applications, name='manage_applications'),
     path('manage-applications/<int:application_id>/update/', views.update_application_status, name='update_application_status'),

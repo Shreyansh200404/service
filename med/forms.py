@@ -13,6 +13,9 @@ from .models import (
     RegistrationRequest,
     Service,
     ServiceApplication,
+    WalletRechargeRequest,
+    WalletSettings,
+    WalletTransaction,
 )
 
 
@@ -235,7 +238,6 @@ class ServiceForm(forms.ModelForm):
             "description",
             "google_form_url",
             "amount",
-            "payment_qr_image",
             "is_active",
         ]
         widgets = {
@@ -252,17 +254,7 @@ class ServiceForm(forms.ModelForm):
                 "step": "0.01",
                 "placeholder": "0.00",
             }),
-            "payment_qr_image": forms.FileInput(attrs={
-                "class": "form-control",
-                "accept": ".png,.jpg,.jpeg,.webp",
-            }),
         }
-
-    def clean_payment_qr_image(self):
-        payment_qr_image = self.cleaned_data.get("payment_qr_image")
-        if payment_qr_image and payment_qr_image.size > 5 * 1024 * 1024:
-            raise forms.ValidationError("The payment QR image must be 5 MB or smaller.")
-        return payment_qr_image
 
 
 class ApplicationStatusForm(forms.ModelForm):
@@ -274,17 +266,71 @@ class ApplicationStatusForm(forms.ModelForm):
             "work_status": forms.Select(attrs={"class": "form-select form-select-sm"}),
         }
 
+    def clean_payment_status(self):
+        payment_status = self.cleaned_data["payment_status"]
+        if (
+            payment_status == "paid"
+            and self.instance.pk
+            and self.instance.payment_status == "unpaid"
+            and self.instance.amount > 0
+            and not WalletTransaction.objects.filter(
+                application=self.instance
+            ).exists()
+        ):
+            raise forms.ValidationError(
+                "Paid service applications must be charged through the wallet."
+            )
+        return payment_status
 
-class PaymentSubmissionForm(forms.ModelForm):
+
+class WalletRechargeForm(forms.ModelForm):
     transaction_ref = forms.CharField(
-        label="PhonePe UTR / transaction reference",
+        label="Payment transaction reference",
         max_length=100,
         widget=forms.TextInput(attrs={
             "class": "form-control",
-            "placeholder": "Enter the UTR shown in PhonePe",
+            "placeholder": "Enter the transaction reference / UTR",
             "autocomplete": "off",
         }),
+        help_text="Your recharge will be credited after an administrator verifies it.",
     )
+
     class Meta:
-        model = ServiceApplication
-        fields = ["transaction_ref"]
+        model = WalletRechargeRequest
+        fields = ["amount", "transaction_ref"]
+        widgets = {
+            "amount": forms.NumberInput(attrs={
+                "class": "form-control",
+                "min": "0.01",
+                "step": "0.01",
+                "placeholder": "Enter recharge amount",
+            }),
+        }
+
+    def clean_transaction_ref(self):
+        transaction_ref = self.cleaned_data["transaction_ref"].strip()
+        if WalletRechargeRequest.objects.filter(
+            transaction_ref__iexact=transaction_ref
+        ).exists():
+            raise forms.ValidationError(
+                "This transaction reference has already been submitted."
+            )
+        return transaction_ref
+
+
+class WalletSettingsForm(forms.ModelForm):
+    class Meta:
+        model = WalletSettings
+        fields = ["payment_qr_image"]
+        widgets = {
+            "payment_qr_image": forms.FileInput(attrs={
+                "class": "form-control",
+                "accept": ".png,.jpg,.jpeg,.webp",
+            }),
+        }
+
+    def clean_payment_qr_image(self):
+        payment_qr_image = self.cleaned_data.get("payment_qr_image")
+        if payment_qr_image and payment_qr_image.size > 5 * 1024 * 1024:
+            raise forms.ValidationError("The wallet recharge QR must be 5 MB or smaller.")
+        return payment_qr_image

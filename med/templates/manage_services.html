@@ -1102,34 +1102,6 @@
                                 </div>
 
 
-                                <!-- QR -->
-
-                                {% if service.payment_qr_image %}
-
-                                    <a class="service-link qr-link"
-                                       href="{% url 'service_payment_qr' service.pk %}"
-                                       target="_blank"
-                                       rel="noopener noreferrer">
-
-                                        <i class="fa-solid fa-qrcode"></i>
-
-                                        View PhonePe QR
-
-                                    </a>
-
-                                {% else %}
-
-                                    <div class="qr-missing">
-
-                                        <i class="fa-solid fa-triangle-exclamation"></i>
-
-                                        Payment QR not uploaded
-
-                                    </div>
-
-                                {% endif %}
-
-
                                 <!-- DESCRIPTION -->
 
                                 {% if service.description %}

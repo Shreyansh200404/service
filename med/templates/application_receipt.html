@@ -1218,6 +1218,27 @@
                 </div>
 
 
+                <!-- Payment Method -->
+
+                <div class="receipt-row">
+
+                    <div class="receipt-label">
+
+                        Payment Method
+
+                    </div>
+
+                    <div class="receipt-value">
+
+                        <i class="fa-solid fa-wallet"></i>
+
+                        {{ application.get_payment_method_display|default:"Not selected" }}
+
+                    </div>
+
+                </div>
+
+
                 <!-- Payment Reference -->
 
                 <div class="receipt-row">
@@ -1230,7 +1251,17 @@
 
                     <div class="receipt-value">
 
-                        {% if application.transaction_ref %}
+                        {% if application.wallet_transaction %}
+
+                            <span class="payment-reference">
+
+                                <i class="fa-solid fa-wallet"></i>
+
+                                Wallet transaction #{{ application.wallet_transaction.pk }}
+
+                            </span>
+
+                        {% elif application.transaction_ref %}
 
                             <span class="payment-reference">
 
@@ -1290,9 +1321,19 @@
 
                     <div>
 
-                        <strong>Payment Verified</strong><br>
+                        {% if application.payment_method == 'wallet' %}
 
-                        Payment verified by the service administrator.
+                            <strong>Wallet Payment Complete</strong><br>
+
+                            The service fee was deducted from your wallet.
+
+                        {% else %}
+
+                            <strong>Payment Verified</strong><br>
+
+                            Payment verified by the service administrator.
+
+                        {% endif %}
 
                     </div>
 

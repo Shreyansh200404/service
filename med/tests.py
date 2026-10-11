@@ -17,6 +17,10 @@ from .models import (
     RegistrationRequest,
     Service,
     ServiceApplication,
+    UserWallet,
+    WalletRechargeRequest,
+    WalletSettings,
+    WalletTransaction,
 )
 
 
@@ -67,6 +71,10 @@ class ServiceApplicationTests(TestCase):
         )
 
     def test_apply_records_user_and_service_before_redirecting(self):
+        wallet = UserWallet.objects.create(
+            user=self.user,
+            balance=Decimal("40.00"),
+        )
         self.client.force_login(self.user)
         response = self.client.post(
             reverse("apply_for_service", args=[self.service.pk])
@@ -81,28 +89,132 @@ class ServiceApplicationTests(TestCase):
         self.assertEqual(application.service, self.service)
         self.assertEqual(application.applicant_name, "Taylor Citizen")
         self.assertEqual(application.amount, Decimal("25.50"))
+        self.assertEqual(application.payment_method, "wallet")
         self.assertEqual(application.payment_status, "unpaid")
         self.assertEqual(application.work_status, "submitted")
 
         payment_url = reverse("payment_page", args=[application.pk])
-        self.assertContains(self.client.get(payment_url), "PhonePe")
-        response = self.client.post(
-            payment_url,
-            {"transaction_ref": "PHONEPE123456"},
-        )
+        self.assertContains(self.client.get(payment_url), "Pay with wallet")
+        response = self.client.post(payment_url)
         self.assertRedirects(
             response,
             self.service.google_form_url,
             fetch_redirect_response=False,
         )
         application.refresh_from_db()
-        self.assertEqual(application.payment_status, "verification_pending")
-        self.assertEqual(application.transaction_ref, "PHONEPE123456")
+        wallet.refresh_from_db()
+        self.assertEqual(application.payment_status, "paid")
+        self.assertEqual(wallet.balance, Decimal("14.50"))
+        self.assertEqual(
+            WalletTransaction.objects.get(application=application).amount,
+            Decimal("-25.50"),
+        )
 
         self.service.amount = Decimal("40.00")
         self.service.save()
         application.refresh_from_db()
         self.assertEqual(application.amount, Decimal("25.50"))
+
+    def test_wallet_payment_requires_sufficient_balance(self):
+        wallet = UserWallet.objects.create(
+            user=self.user,
+            balance=Decimal("10.00"),
+        )
+        self.client.force_login(self.user)
+        self.client.post(
+            reverse("apply_for_service", args=[self.service.pk])
+        )
+        application = ServiceApplication.objects.get()
+        payment_url = reverse("payment_page", args=[application.pk])
+
+        response = self.client.post(payment_url)
+
+        self.assertRedirects(
+            response,
+            reverse("wallet"),
+            fetch_redirect_response=False,
+        )
+        application.refresh_from_db()
+        wallet.refresh_from_db()
+        self.assertEqual(application.payment_status, "unpaid")
+        self.assertEqual(application.payment_method, "wallet")
+        self.assertEqual(wallet.balance, Decimal("10.00"))
+        self.assertFalse(WalletTransaction.objects.filter(application=application).exists())
+
+    def test_recharge_is_credited_only_after_admin_approval(self):
+        WalletSettings.objects.create(
+            pk=1,
+            payment_qr_image="wallet_recharge_qr/recharge.png",
+        )
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("wallet"),
+            {"amount": "100.00", "transaction_ref": "UPI-REF-123"},
+        )
+        recharge_request = WalletRechargeRequest.objects.get()
+        self.assertRedirects(response, reverse("wallet"))
+        self.assertEqual(recharge_request.status, "pending")
+        wallet = UserWallet.objects.get(user=self.user)
+        self.assertEqual(wallet.balance, Decimal("0.00"))
+
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse(
+                "review_wallet_recharge",
+                args=[recharge_request.pk, "approve"],
+            )
+        )
+
+        self.assertRedirects(response, reverse("manage_wallet"))
+        recharge_request.refresh_from_db()
+        wallet.refresh_from_db()
+        self.assertEqual(recharge_request.status, "approved")
+        self.assertEqual(recharge_request.reviewed_by, self.admin)
+        self.assertEqual(wallet.balance, Decimal("100.00"))
+        self.assertEqual(
+            WalletTransaction.objects.get(
+                recharge_request=recharge_request
+            ).amount,
+            Decimal("100.00"),
+        )
+
+        self.client.post(
+            reverse(
+                "review_wallet_recharge",
+                args=[recharge_request.pk, "approve"],
+            )
+        )
+        wallet.refresh_from_db()
+        self.assertEqual(wallet.balance, Decimal("100.00"))
+        self.assertEqual(
+            WalletTransaction.objects.filter(
+                recharge_request=recharge_request
+            ).count(),
+            1,
+        )
+
+    def test_rejected_recharge_does_not_credit_wallet(self):
+        recharge_request = WalletRechargeRequest.objects.create(
+            user=self.user,
+            amount=Decimal("50.00"),
+            transaction_ref="UPI-REF-REJECT",
+        )
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse(
+                "review_wallet_recharge",
+                args=[recharge_request.pk, "reject"],
+            )
+        )
+
+        self.assertRedirects(response, reverse("manage_wallet"))
+        recharge_request.refresh_from_db()
+        self.assertEqual(recharge_request.status, "rejected")
+        self.assertFalse(UserWallet.objects.filter(user=self.user).exists())
+        self.assertFalse(WalletTransaction.objects.filter(
+            wallet__user=self.user
+        ).exists())
 
     def test_free_service_application_is_waived(self):
         self.service.amount = Decimal("0.00")

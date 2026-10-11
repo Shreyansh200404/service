@@ -532,7 +532,7 @@
 
                                 <span class="title-icon">
 
-                                    <i class="fa-solid fa-qrcode"></i>
+                                    <i class="fa-solid fa-wallet"></i>
 
                                 </span>
 
@@ -559,40 +559,29 @@
 
                             {% if application.amount > 0 %}
 
-                                {% if application.service.payment_qr_image %}
+                                <div class="payment-alert alert-info-custom text-start">
 
-                                    <div class="qr-wrapper">
+                                    <i class="fa-solid fa-wallet"></i>
 
-                                        <img
-                                            class="qr-image"
-                                            src="{% url 'service_payment_qr' application.service_id %}"
-                                            alt="PhonePe payment QR code">
+                                    <span>
+                                        Wallet balance:
+                                        <strong>&#8377;{{ wallet.balance|floatformat:2 }}</strong>
+                                    </span>
 
-                                    </div>
+                                </div>
 
+                                {% if wallet.balance < application.amount %}
 
-                                    <p class="qr-help">
-
-                                        <i class="fa-solid fa-mobile-screen-button me-1"></i>
-
-                                        Scan with PhonePe or another UPI app
-                                        and pay the exact amount shown.
-
-                                    </p>
+                                    <a class="receipt-button" href="{% url 'wallet' %}">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Recharge wallet
+                                    </a>
 
                                 {% else %}
 
-                                    <div class="payment-alert alert-warning-custom text-start mb-0">
-
-                                        <i class="fa-solid fa-triangle-exclamation"></i>
-
-                                        <span>
-                                            The payment QR has not been uploaded
-                                            for this service yet. Contact the
-                                            administrator before paying.
-                                        </span>
-
-                                    </div>
+                                    <p class="qr-help">
+                                        Your wallet has enough funds to pay for this service.
+                                    </p>
 
                                 {% endif %}
 
@@ -652,7 +641,8 @@
                                     <i class="fa-solid fa-circle-check"></i>
 
                                     <span>
-                                        Payment has been verified by the administrator.
+                                        Your wallet payment is complete and the amount
+                                        has been deducted from your wallet.
                                     </span>
 
                                 </div>
@@ -665,8 +655,8 @@
                                     <i class="fa-solid fa-clock"></i>
 
                                     <span>
-                                        Your payment details were submitted
-                                        and are awaiting administrator verification.
+                                        This older payment is awaiting administrator
+                                        verification. You do not need to pay again.
                                     </span>
 
                                 </div>
@@ -689,9 +679,8 @@
 
                                 <p class="manual-note mb-4">
 
-                                    After paying, enter the PhonePe UTR/transaction
-                                    reference. The payment stays unverified until
-                                    an administrator checks it.
+                                    Confirm payment from your wallet. Wallet payments are
+                                    deducted immediately from your available balance.
 
                                 </p>
 
@@ -721,75 +710,29 @@
                                 </form>
 
 
-                            {% else %}
+                            {% elif application.payment_status == 'unpaid' %}
 
-
-                                <!-- =========================================
-                                     PAYMENT DETAILS FORM
-                                ========================================= -->
-
-                                <form
-                                    method="post"
-                                    class="payment-form"
-                                    novalidate>
-
+                                <form method="post">
                                     {% csrf_token %}
-
-
-                                    {% for field in form %}
-
-                                        <div class="mb-3">
-
-                                            <label
-                                                class="form-label"
-                                                for="{{ field.id_for_label }}">
-
-                                                {{ field.label }}
-
-                                            </label>
-
-
-                                            {{ field }}
-
-
-                                            {% if field.help_text %}
-
-                                                <div class="form-text">
-
-                                                    {{ field.help_text }}
-
-                                                </div>
-
-                                            {% endif %}
-
-
-                                            {% for error in field.errors %}
-
-                                                <div class="field-error">
-
-                                                    <i class="fa-solid fa-circle-exclamation me-1"></i>
-
-                                                    {{ error }}
-
-                                                </div>
-
-                                            {% endfor %}
-
-                                        </div>
-
-                                    {% endfor %}
-
-
                                     <button
                                         class="primary-button"
-                                        type="submit">
+                                        type="submit"
+                                        {% if wallet.balance < application.amount %}disabled{% endif %}>
 
-                                        Submit details and continue
-
-                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                        Pay with wallet
+                                        <i class="fa-solid fa-wallet"></i>
 
                                     </button>
+                                </form>
 
+                            {% elif application.payment_status == 'verification_pending' %}
+
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <button class="primary-button" type="submit">
+                                        Continue to Google Form
+                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    </button>
                                 </form>
 
                             {% endif %}
@@ -815,9 +758,8 @@
 
                                 <i class="fa-solid fa-circle-info me-1"></i>
 
-                                PhonePe QR payments are verified manually.
-                                This portal does not receive automatic payment
-                                confirmation from PhonePe.
+                                Wallet recharges are credited only after an
+                                administrator manually verifies the payment.
 
                             </p>
 

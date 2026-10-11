@@ -820,12 +820,28 @@
 
                             <div class="transaction-ref">
 
-                                <i class="fa-solid fa-receipt me-1"></i>
+                                <i class="fa-solid fa-wallet me-1"></i>
 
-                                PhonePe ref:
-                                {{ application.transaction_ref|default:"Not submitted" }}
+                                Payment method:
+                                {{ application.get_payment_method_display|default:"Not selected" }}
 
                             </div>
+
+                            {% if application.wallet_transaction %}
+
+                                <div class="transaction-ref">
+                                    <i class="fa-solid fa-receipt me-1"></i>
+                                    Wallet transaction #{{ application.wallet_transaction.pk }}
+                                </div>
+
+                            {% elif application.transaction_ref %}
+
+                                <div class="transaction-ref">
+                                    <i class="fa-solid fa-receipt me-1"></i>
+                                    Previous payment ref: {{ application.transaction_ref }}
+                                </div>
+
+                            {% endif %}
 
 
                             <div>

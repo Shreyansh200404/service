@@ -25,11 +25,12 @@ from .forms import (
     MedicineForm,
     PasswordResetConfirmForm,
     PasswordResetRequestForm,
-    PaymentSubmissionForm,
     PortalContactDetailsForm,
     ServiceForm,
     RegistrationRequestForm,
     UserLoginForm,
+    WalletRechargeForm,
+    WalletSettingsForm,
 )
 from .models import (
     Diagnosis,
@@ -40,6 +41,10 @@ from .models import (
     RegistrationRequest,
     Service,
     ServiceApplication,
+    UserWallet,
+    WalletRechargeRequest,
+    WalletSettings,
+    WalletTransaction,
 )
 
 User = get_user_model()
@@ -82,9 +87,11 @@ def dashboard(request):
         .select_related("main_service")
     )
     applications = request.user.service_applications.select_related("service").all()
+    wallet, _ = UserWallet.objects.get_or_create(user=request.user)
     return render(request, "dashboard.html", {
         "services": services,
         "applications": applications,
+        "wallet": wallet,
     })
 
 
@@ -525,6 +532,7 @@ def apply_for_service(request, service_id):
         service=service,
         service_name=service.name,
         amount=service.amount,
+        payment_method="wallet",
         payment_status="unpaid" if service.amount > 0 else "waived",
         applicant_name=request.user.get_full_name() or request.user.get_username(),
         applicant_email=request.user.email or "",
@@ -540,7 +548,7 @@ def payment_page(request, application_id):
     )
     if not request.user.is_superuser and application.user_id != request.user.id:
         raise Http404
-    if not application.service:
+    if not application.service or not application.user_id:
         messages.error(request, "The service application form is no longer available.")
         return redirect("dashboard")
 
@@ -549,40 +557,161 @@ def payment_page(request, application_id):
             return redirect(application.service.google_form_url)
         if application.amount <= 0:
             return redirect(application.service.google_form_url)
-        form = PaymentSubmissionForm(
-            request.POST,
-            request.FILES,
-            instance=application,
-        )
-        if form.is_valid():
-            application = form.save(commit=False)
-            application.payment_status = "verification_pending"
-            application.save()
-            return redirect(application.service.google_form_url)
-    else:
-        form = PaymentSubmissionForm(instance=application)
+        if application.user_id != request.user.id:
+            raise Http404
 
+        insufficient_balance = False
+        with transaction.atomic():
+            locked_application = ServiceApplication.objects.select_for_update().get(
+                pk=application.pk
+            )
+            if locked_application.payment_status == "unpaid":
+                wallet, _ = UserWallet.objects.get_or_create(user=request.user)
+                wallet = UserWallet.objects.select_for_update().get(pk=wallet.pk)
+                if wallet.balance < locked_application.amount:
+                    insufficient_balance = True
+                else:
+                    wallet.balance -= locked_application.amount
+                    wallet.save(update_fields=["balance", "updated_at"])
+                    locked_application.payment_method = "wallet"
+                    locked_application.payment_status = "paid"
+                    locked_application.save(
+                        update_fields=[
+                            "payment_method",
+                            "payment_status",
+                            "updated_at",
+                        ]
+                    )
+                    WalletTransaction.objects.create(
+                        wallet=wallet,
+                        amount=-locked_application.amount,
+                        description=f"Payment for {locked_application.service_name}",
+                        application=locked_application,
+                    )
+
+        if insufficient_balance:
+            messages.error(
+                request,
+                "Your wallet balance is too low. Recharge your wallet to continue.",
+            )
+            return redirect("wallet")
+        return redirect(application.service.google_form_url)
+
+    wallet, _ = UserWallet.objects.get_or_create(user=application.user)
     return render(request, "payment_page.html", {
         "application": application,
-        "form": form,
+        "wallet": wallet,
     })
 
 
-def service_payment_qr(request, service_id):
-    service = get_object_or_404(
-        Service.objects.filter(
-            is_active=True,
-            main_service__is_active=True,
+@login_required
+def wallet(request):
+    user_wallet, _ = UserWallet.objects.get_or_create(user=request.user)
+    form = WalletRechargeForm(
+        request.POST if request.method == "POST" else None
+    )
+    wallet_settings = WalletSettings.objects.filter(pk=1).first()
+    if request.method == "POST" and form.is_valid():
+        if not wallet_settings or not wallet_settings.payment_qr_image:
+            messages.error(request, "Wallet recharges are not available yet.")
+        else:
+            recharge_request = form.save(commit=False)
+            recharge_request.user = request.user
+            recharge_request.save()
+            messages.success(
+                request,
+                "Recharge request submitted. Funds will be added after verification.",
+            )
+            return redirect("wallet")
+
+    return render(request, "wallet.html", {
+        "wallet": user_wallet,
+        "recharge_requests": request.user.wallet_recharge_requests.all(),
+        "transactions": user_wallet.transactions.select_related(
+            "application", "recharge_request"
         ),
-        pk=service_id,
-    )
-    if not service.payment_qr_image:
+        "form": form,
+        "wallet_settings": wallet_settings,
+    })
+
+
+@login_required
+def wallet_payment_qr(request):
+    wallet_settings = WalletSettings.objects.filter(pk=1).first()
+    if not wallet_settings or not wallet_settings.payment_qr_image:
         raise Http404
-    content_type = mimetypes.guess_type(service.payment_qr_image.name)[0]
     return FileResponse(
-        service.payment_qr_image.open("rb"),
-        content_type=content_type or "application/octet-stream",
+        wallet_settings.payment_qr_image.open("rb"),
+        content_type=(
+            mimetypes.guess_type(wallet_settings.payment_qr_image.name)[0]
+            or "application/octet-stream"
+        ),
     )
+
+
+@user_passes_test(lambda user: user.is_superuser, login_url="/login/")
+def manage_wallet(request):
+    wallet_settings, _ = WalletSettings.objects.get_or_create(pk=1)
+    form = WalletSettingsForm(
+        request.POST if request.method == "POST" else None,
+        request.FILES if request.method == "POST" else None,
+        instance=wallet_settings,
+    )
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Wallet recharge QR updated.")
+        return redirect("manage_wallet")
+
+    return render(request, "manage_wallet.html", {
+        "form": form,
+        "recharge_requests": WalletRechargeRequest.objects.select_related(
+            "user", "reviewed_by"
+        ).all(),
+        "pending_recharge_count": WalletRechargeRequest.objects.filter(
+            status="pending"
+        ).count(),
+    })
+
+
+@user_passes_test(lambda user: user.is_superuser, login_url="/login/")
+@require_POST
+def review_wallet_recharge(request, recharge_id, decision):
+    if decision not in {"approve", "reject"}:
+        raise Http404
+
+    with transaction.atomic():
+        recharge_request = get_object_or_404(
+            WalletRechargeRequest.objects.select_for_update(),
+            pk=recharge_id,
+        )
+        if recharge_request.status != "pending":
+            messages.info(request, "This wallet recharge request has already been reviewed.")
+            return redirect("manage_wallet")
+
+        if decision == "approve":
+            wallet, _ = UserWallet.objects.get_or_create(user=recharge_request.user)
+            wallet = UserWallet.objects.select_for_update().get(pk=wallet.pk)
+            wallet.balance += recharge_request.amount
+            wallet.save(update_fields=["balance", "updated_at"])
+            WalletTransaction.objects.create(
+                wallet=wallet,
+                amount=recharge_request.amount,
+                description="Wallet recharge approved",
+                recharge_request=recharge_request,
+            )
+            recharge_request.status = "approved"
+            messages.success(request, "Recharge approved and wallet credited.")
+        else:
+            recharge_request.status = "rejected"
+            messages.success(request, "Recharge request rejected.")
+
+        recharge_request.reviewed_at = timezone.now()
+        recharge_request.reviewed_by = request.user
+        recharge_request.save(
+            update_fields=["status", "reviewed_at", "reviewed_by"]
+        )
+
+    return redirect("manage_wallet")
 
 
 @login_required

@@ -161,7 +161,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = "sevaone744@gmail.com"
-EMAIL_HOST_PASSWORD = "wzon pzco ejbl ylpt"
+EMAIL_HOST_PASSWORD = "ztaq jfko poyx xshq"
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
