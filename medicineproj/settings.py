@@ -92,7 +92,7 @@ DATABASES = {
 # DATABASES = {
 #      'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'med',
+#         'NAME': 'ser',
 #         'USER': 'root',
 #         'PASSWORD': 'Admin@123',
 #         'HOST': 'localhost',
@@ -147,10 +147,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # )
 # EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
 # EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
-# EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "true").lower() == "true"
+# EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "true").strip().lower() == "true"
 # EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 # EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-# DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL") or EMAIL_HOST_USER or "webmaster@localhost"
+# DEFAULT_FROM_EMAIL = (
+#     os.environ.get("DEFAULT_FROM_EMAIL")
+#     or EMAIL_HOST_USER
+#     or "webmaster@localhost"
+# )
 # EMAIL_TIMEOUT = int(os.environ.get("EMAIL_TIMEOUT", "15"))
 
 

@@ -1,14 +1,11 @@
 from django.urls import path
-from . import views 
-from django.urls import path
+
 from . import views
 
 
 urlpatterns = [
     path('', views.home, name='home'),
     path('home/', views.home, name='home'),
-
-    
 
     #path('login/', TemplateView.as_view(template_name='template/login.html'), name='login'),
     #path('register/', views.register, name='register'),
@@ -18,8 +15,6 @@ urlpatterns = [
     path('forgot-password/complete/', views.password_reset_complete, name='password_reset_complete'),
 
     #path('dashboard/', views.dashboard, name='dashboard'),
-
-
 
     path('dashboard/', views.dashboard, name='dashboard'),
 
@@ -32,44 +27,13 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 
 
-    path('admin_dashboard/', views.admin_dashboard),
-
-path('add-diagnosis/', views.add_diagnosis),
-
-
-
-path(
-    'delete-diagnosis/<int:id>/',
-    views.delete_diagnosis
-),
-
-path('add-medicine/', views.add_medicine),
-
-path(
-    'edit-medicine/<int:id>/',
-    views.edit_medicine
-),
-
-path(
-    'delete-medicine/<int:id>/',
-    views.delete_medicine
-),
-
-
-
-
-
-    # Diagnosis CRUD
-
-    path(
-        'add-diagnosis/',
-        views.add_diagnosis,
-        name='add_diagnosis'
-    ),
-
-
+    path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard_legacy'),
+    path('add-diagnosis/', views.add_diagnosis, name='add_diagnosis'),
+    path('delete-diagnosis/<int:id>/', views.delete_diagnosis, name='delete_diagnosis'),
+    path('add-medicine/', views.add_medicine, name='add_medicine'),
+    path('edit-medicine/<int:id>/', views.edit_medicine, name='edit_medicine'),
+    path('delete-medicine/<int:id>/', views.delete_medicine, name='delete_medicine'),
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
-
     path('edit-diagnosis/<int:id>/', views.edit_diagnosis, name='edit_diagnosis'),
 
     path('register/', views.register, name='register'),
@@ -100,6 +64,7 @@ path(
     path('manage-services/sub/<int:service_id>/edit/', views.edit_service, name='edit_service'),
     path('manage-services/main/<int:service_id>/delete/', views.delete_main_service, name='delete_main_service'),
     path('manage-services/sub/<int:service_id>/delete/', views.delete_service, name='delete_service'),
+
 
 
 ]

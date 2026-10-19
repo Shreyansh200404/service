@@ -1,6 +1,7 @@
 import mimetypes
 import logging
 import secrets
+import smtplib
 from datetime import timedelta
 
 from django.conf import settings
@@ -8,7 +9,9 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.hashers import check_password, make_password
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.core.validators import validate_email
 from django.db import transaction
 from django.db.models import Prefetch
 from django.http import FileResponse, Http404
@@ -130,76 +133,55 @@ def admin_dashboard(request):
         ).count(),
     })
 
+
+@user_passes_test(lambda user: user.is_superuser, login_url="/login/")
 def add_diagnosis(request):
-
-    if request.method == 'POST':
-
-        name = request.POST.get('name')
-
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
         if name:
             Diagnosis.objects.create(name=name)
-            return redirect('/admin-dashboard/')
-
-    return render(request, 'add_diagnosis.html')
-
-
+            messages.success(request, "Diagnosis added.")
+            return redirect("admin_dashboard")
+    return render(request, "add_diagnosis.html")
 
 
-
+@user_passes_test(lambda user: user.is_superuser, login_url="/login/")
+@require_POST
 def delete_diagnosis(request, id):
-
     diagnosis = get_object_or_404(Diagnosis, id=id)
-
     diagnosis.delete()
+    messages.success(request, "Diagnosis deleted.")
+    return redirect("admin_dashboard")
 
-    return redirect('/admin-dashboard/')
 
-
+@user_passes_test(lambda user: user.is_superuser, login_url="/login/")
 def add_medicine(request):
-
     diagnosis = Diagnosis.objects.all()
-
-    if request.method == 'POST':
-
-        diagnosis_id = request.POST.get('diagnosis')
-
-        diagnosis_obj = Diagnosis.objects.get(id=diagnosis_id)
-
+    if request.method == "POST":
+        diagnosis_id = request.POST.get("diagnosis")
+        diagnosis_obj = get_object_or_404(Diagnosis, id=diagnosis_id)
         Medicine.objects.create(
             diagnosis=diagnosis_obj,
-            name=request.POST.get('name'),
-            dosage=request.POST.get('dosage')
+            name=request.POST.get("name"),
+            dosage=request.POST.get("dosage"),
         )
-
-        return redirect('/admin-dashboard/')
-
-    return render(request, 'add_medicine.html', {
-        'diagnosis': diagnosis
-    })
+        messages.success(request, "Medicine added.")
+        return redirect("admin_dashboard")
+    return render(request, "add_medicine.html", {"diagnosis": diagnosis})
 
 
+@user_passes_test(lambda user: user.is_superuser, login_url="/login/")
 def edit_medicine(request, id):
-
     medicine = get_object_or_404(Medicine, id=id)
-
-    if request.method == 'POST':
+    if request.method == "POST":
         form = MedicineForm(request.POST, instance=medicine)
         if form.is_valid():
             form.save()
-            return redirect('/admin-dashboard/')
+            messages.success(request, "Medicine updated.")
+            return redirect("admin_dashboard")
     else:
         form = MedicineForm(instance=medicine)
-
-    return render(request, 'edit_medicine.html', {
-        'form': form,
-        'medicine': medicine
-    })
-
-
-# views.py
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+    return render(request, "edit_medicine.html", {"form": form, "medicine": medicine})
 
 
 def user_login(request):
@@ -472,39 +454,27 @@ def delete_user(request, user_id):
     return redirect("manage_users")
 
 
-# Edit Medicine
-
-
-# Delete Medicine
-
+@user_passes_test(lambda user: user.is_superuser, login_url="/login/")
+@require_POST
 def delete_medicine(request, id):
-
-    medicine = get_object_or_404(
-        Medicine,
-        id=id
-    )
-
+    medicine = get_object_or_404(Medicine, id=id)
     medicine.delete()
+    messages.success(request, "Medicine deleted.")
+    return redirect("admin_dashboard")
 
-    return redirect('/admin-dashboard/')
 
-
+@user_passes_test(lambda user: user.is_superuser, login_url="/login/")
 def edit_diagnosis(request, id):
-
     diagnosis = get_object_or_404(Diagnosis, id=id)
-
-    if request.method == 'POST':
+    if request.method == "POST":
         form = DiagnosisForm(request.POST, instance=diagnosis)
         if form.is_valid():
             form.save()
-            return redirect('/admin-dashboard/')
+            messages.success(request, "Diagnosis updated.")
+            return redirect("admin_dashboard")
     else:
         form = DiagnosisForm(instance=diagnosis)
-
-    return render(request, 'edit_diagnosis.html', {
-        'form': form,
-        'diagnosis': diagnosis
-    })
+    return render(request, "edit_diagnosis.html", {"form": form, "diagnosis": diagnosis})
 
 
 # Citizen service catalog and admin management
@@ -537,6 +507,73 @@ def apply_for_service(request, service_id):
         applicant_name=request.user.get_full_name() or request.user.get_username(),
         applicant_email=request.user.email or "",
     )
+    admin_emails = set(
+        User.objects.filter(is_superuser=True, is_active=True)
+        .exclude(email="")
+        .values_list("email", flat=True)
+    )
+    valid_admin_emails = []
+    for email in admin_emails:
+        try:
+            validate_email(email)
+        except ValidationError:
+            logger.error(
+                "Skipping invalid admin email address for service application %s",
+                application.pk,
+            )
+            continue
+        valid_admin_emails.append(email)
+
+    if not valid_admin_emails:
+        logger.error(
+            "No active superuser email addresses are available for service application %s",
+            application.pk,
+        )
+        messages.warning(
+            request,
+            "Your application was submitted, but the administrator could not be notified by email.",
+        )
+    else:
+        admin_url = request.build_absolute_uri(reverse("manage_applications"))
+        message = (
+            "A new service application has been submitted.\n\n"
+            f"Receipt: {application.receipt_number}\n"
+            f"Applicant: {application.applicant_name}\n"
+            f"Applicant email: {application.applicant_email or 'Not provided'}\n"
+            f"Service category: {service.main_service.name}\n"
+            f"Service: {service.name}\n"
+            f"Fee: INR {application.amount:.2f}\n"
+            f"Payment status: {application.get_payment_status_display()}\n"
+            f"Work status: {application.get_work_status_display()}\n\n"
+            f"Manage applications: {admin_url}\n"
+        )
+        try:
+            sent_count = send_mail(
+                subject="New service application submitted",
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=valid_admin_emails,
+                fail_silently=False,
+            )
+        except (OSError, smtplib.SMTPException, ValueError):
+            logger.exception(
+                "Failed to notify admins about service application %s",
+                application.pk,
+            )
+            messages.warning(
+                request,
+                "Your application was submitted, but the administrator could not be notified by email.",
+            )
+        else:
+            if sent_count != 1:
+                logger.error(
+                    "Admin notification for service application %s was not sent",
+                    application.pk,
+                )
+                messages.warning(
+                    request,
+                    "Your application was submitted, but the administrator could not be notified by email.",
+                )
     return redirect("payment_page", application_id=application.pk)
 
 

@@ -70,6 +70,7 @@ class ServiceApplicationTests(TestCase):
             amount=Decimal("25.50"),
         )
 
+    @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
     def test_apply_records_user_and_service_before_redirecting(self):
         wallet = UserWallet.objects.create(
             user=self.user,
@@ -92,6 +93,12 @@ class ServiceApplicationTests(TestCase):
         self.assertEqual(application.payment_method, "wallet")
         self.assertEqual(application.payment_status, "unpaid")
         self.assertEqual(application.work_status, "submitted")
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "New service application submitted")
+        self.assertEqual(mail.outbox[0].to, ["admin@example.com"])
+        self.assertIn(application.receipt_number, mail.outbox[0].body)
+        self.assertIn("Taylor Citizen", mail.outbox[0].body)
+        self.assertIn(self.service.name, mail.outbox[0].body)
 
         payment_url = reverse("payment_page", args=[application.pk])
         self.assertContains(self.client.get(payment_url), "Pay with wallet")
@@ -114,6 +121,27 @@ class ServiceApplicationTests(TestCase):
         self.service.save()
         application.refresh_from_db()
         self.assertEqual(application.amount, Decimal("25.50"))
+
+    @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+    @patch("med.views.send_mail", side_effect=OSError("SMTP unavailable"))
+    def test_application_is_saved_when_admin_notification_fails(self, send_mail_mock):
+        self.client.force_login(self.user)
+
+        with self.assertLogs("med.views", level="ERROR"):
+            response = self.client.post(
+                reverse("apply_for_service", args=[self.service.pk])
+            )
+
+        self.assertEqual(ServiceApplication.objects.count(), 1)
+        self.assertRedirects(
+            response,
+            reverse("payment_page", args=[ServiceApplication.objects.get().pk]),
+        )
+        self.assertContains(
+            self.client.get(response.url),
+            "administrator could not be notified by email",
+        )
+        send_mail_mock.assert_called_once()
 
     def test_wallet_payment_requires_sufficient_balance(self):
         wallet = UserWallet.objects.create(

@@ -1,6 +1,6 @@
 # Email Setup
 
-The account approval flow emails the administrator-assigned username and initial password to the address on the registration request. The project reads SMTP configuration from a local `.env` file.
+The account approval flow emails the administrator-assigned username and initial password to the address on the registration request. New service applications are also emailed to every active superuser account with a valid email address. Keep administrator email addresses current in the user accounts. The project reads SMTP configuration from a local `.env` file.
 
 1. Install project dependencies with `pip install -r req.txt`.
 2. Copy `.env.example` to `.env`.
