@@ -1,7 +1,6 @@
-  GNU nano 6.2                                                                   .gitignore                                                                            
 db.sqlite3
+db.sqlite3.github
 db.sqlite3.bak
-db.sqlite3..github
 media/
 staticfiles/
 .env
